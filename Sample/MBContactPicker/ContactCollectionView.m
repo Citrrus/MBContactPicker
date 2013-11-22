@@ -11,6 +11,8 @@
 @interface ContactCollectionView()
 
 @property (nonatomic) ContactCollectionViewCell *prototypeCell;
+@property (nonatomic) NSArray *contacts;
+@property (nonatomic) NSMutableArray *selectedContacts;
 
 @end
 
@@ -42,6 +44,12 @@
     [self registerClass:[ContactCollectionViewCell class] forCellWithReuseIdentifier:@"ContactCell"];
 }
 
+- (void)reloadData
+{
+    self.contacts = [self.contactDataSource contactModelsInCollectionView:self];
+    [super reloadData];
+}
+
 #pragma mark - CollectionView DataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -51,13 +59,13 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    return [self.contactDataSource numberOfContactsInCollectionView:self];
+    return [self.contacts count];
 }
 
 - (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ContactCollectionViewCell *cell = (ContactCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell" forIndexPath:indexPath];
-    cell.model = [self.contactDataSource contactModelForContactCollectionView:self atIndexPath:indexPath];
+    cell.model = self.contacts[indexPath.row];
     return cell;
 }
 
@@ -66,7 +74,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    ContactCollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+    ContactCollectionViewCell *cell = (ContactCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     cell.focused = YES;
 }
 
@@ -74,7 +82,7 @@
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return [self.prototypeCell sizeForCellWithContact:[self.contactDataSource contactModelForContactCollectionView:self atIndexPath:indexPath]];
+    return [self.prototypeCell sizeForCellWithContact:(ContactCollectionViewCellModel*)self.contacts[indexPath.row]];
 }
 
 @end

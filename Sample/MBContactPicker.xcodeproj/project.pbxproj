@@ -24,6 +24,7 @@
 		63B41D6C183DA4EF00C4321B /* ContactCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 63B41D6B183DA4EF00C4321B /* ContactCollectionViewCell.m */; };
 		63B41D6F183DA52F00C4321B /* ContactCollectionViewCellModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 63B41D6E183DA52F00C4321B /* ContactCollectionViewCellModel.m */; };
 		63B41D72183DA65700C4321B /* ContactCollectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 63B41D71183DA65700C4321B /* ContactCollectionView.m */; };
+		81AA0B73183E4D1700037C50 /* ContactEntryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 81AA0B72183E4D1700037C50 /* ContactEntryCollectionViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,6 +63,8 @@
 		63B41D6E183DA52F00C4321B /* ContactCollectionViewCellModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactCollectionViewCellModel.m; sourceTree = "<group>"; };
 		63B41D70183DA65700C4321B /* ContactCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactCollectionView.h; sourceTree = "<group>"; };
 		63B41D71183DA65700C4321B /* ContactCollectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactCollectionView.m; sourceTree = "<group>"; };
+		81AA0B71183E4D1700037C50 /* ContactEntryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactEntryCollectionViewCell.h; sourceTree = "<group>"; };
+		81AA0B72183E4D1700037C50 /* ContactEntryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactEntryCollectionViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +137,8 @@
 				63B41D6E183DA52F00C4321B /* ContactCollectionViewCellModel.m */,
 				63B41D70183DA65700C4321B /* ContactCollectionView.h */,
 				63B41D71183DA65700C4321B /* ContactCollectionView.m */,
+				81AA0B71183E4D1700037C50 /* ContactEntryCollectionViewCell.h */,
+				81AA0B72183E4D1700037C50 /* ContactEntryCollectionViewCell.m */,
 			);
 			path = MBContactPicker;
 			sourceTree = "<group>";
@@ -266,6 +271,7 @@
 			files = (
 				63B41D4C183DA31100C4321B /* ViewController.m in Sources */,
 				63B41D6C183DA4EF00C4321B /* ContactCollectionViewCell.m in Sources */,
+				81AA0B73183E4D1700037C50 /* ContactEntryCollectionViewCell.m in Sources */,
 				63B41D46183DA31100C4321B /* AppDelegate.m in Sources */,
 				63B41D72183DA65700C4321B /* ContactCollectionView.m in Sources */,
 				63B41D6F183DA52F00C4321B /* ContactCollectionViewCellModel.m in Sources */,

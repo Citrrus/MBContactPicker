@@ -32,6 +32,7 @@
                      @"Ben McGinnis",
                      @"Lenny Pham",
                      @"Jason LaFollette",
+                     @"A", @"B", @"C", @"D",
                      @"Caleb Everist"
                      ];
     
@@ -45,6 +46,20 @@
 - (NSInteger)numberOfContactsInCollectionView:(ContactCollectionView*)collectionView
 {
     return self.objects.count;
+}
+
+- (NSArray*)contactModelsInCollectionView:(ContactCollectionView*)collectionView
+{
+    NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:self.objects.count];
+    for (NSString *contact in self.objects)
+    {
+        ContactCollectionViewCellModel *model = [[ContactCollectionViewCellModel alloc] init];
+        model.contactObject = nil;
+        model.contactTitle = contact;
+        [array addObject:model];
+    }
+    
+    return array;
 }
 
 - (ContactCollectionViewCellModel *)contactModelForContactCollectionView:(ContactCollectionView*)collectionView atIndexPath:(NSIndexPath*)indexPath

@@ -15,8 +15,7 @@
 
 @required
 
-- (NSInteger)numberOfContactsInCollectionView:(ContactCollectionView*)collectionView;
-- (ContactCollectionViewCellModel *)contactModelForContactCollectionView:(ContactCollectionView*)collectionView atIndexPath:(NSIndexPath*)indexPath;
+- (NSArray*)contactModelsInCollectionView:(ContactCollectionView*)collectionView;
 
 @end
 
