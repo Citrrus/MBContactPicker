@@ -19,7 +19,7 @@
 
 @synthesize focused = _focused;
 
-- (id)initWithFrame:(CGRect)frame
+- (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
     if (self) {
@@ -28,11 +28,26 @@
     return self;
 }
 
+- (instancetype)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
+- (void)awakeFromNib
+{
+    [self setup];
+}
+
 - (void)setup
 {
     UILabel *contactLabel = [[UILabel alloc] initWithFrame:self.bounds];
     [self addSubview:contactLabel];
     contactLabel.textColor = [UIColor blueColor];
+    contactLabel.textAlignment = NSTextAlignmentCenter;
     [contactLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.contactTitleLabel = contactLabel;
 
@@ -51,12 +66,19 @@
 {
     _model = model;
     self.contactTitleLabel.text = self.model.contactTitle;
+//    CGSize newSize = [self sizeForCellWithContact:self.model];
+//    self.frame = (CGRect) {
+//        .size.width = newSize.width,
+//        .size.height = self.frame.size.height,
+//        .origin.x = self.frame.origin.x,
+//        .origin.y = self.frame.origin.y
+//    };
 }
 
 - (CGSize)sizeForCellWithContact:(ContactCollectionViewCellModel *)model
 {
     UIFont *font = self.contactTitleLabel.font;
-    CGSize size = [model.contactTitle sizeWithFont:font constrainedToSize:CGSizeMake(MAXFLOAT, MAXFLOAT) lineBreakMode:NSLineBreakByWordWrapping];
+    CGSize size = [model.contactTitle boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:0 attributes:@{ NSFontAttributeName: font } context:nil].size;
     size = CGSizeMake(size.width + 10, size.height + 10);
     NSLog(@"Size: %@", NSStringFromCGSize(size));
     return size;

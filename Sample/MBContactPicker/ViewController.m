@@ -33,7 +33,9 @@
                      @"Lenny Pham",
                      @"Jason LaFollette",
                      @"A", @"B", @"C", @"D",
-                     @"Caleb Everist"
+                     @"Caleb Everist",
+                     @"Kinda long name for a kinda long",
+                     @"Super long name for a super long person"
                      ];
     
     self.contactCollectionView.contactDelegate = self;
@@ -48,7 +50,7 @@
     return self.objects.count;
 }
 
-- (NSArray*)contactModelsInCollectionView:(ContactCollectionView*)collectionView
+- (NSArray*)contactModelsForCollectionView:(ContactCollectionView*)collectionView
 {
     NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:self.objects.count];
     for (NSString *contact in self.objects)

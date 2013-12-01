@@ -10,4 +10,9 @@
 
 @interface ContactEntryCollectionViewCell : UICollectionViewCell
 
+@property (nonatomic, weak) id<UITextFieldDelegate> delegate;
+
+- (void)setFocus;
+- (void)reset;
+
 @end
