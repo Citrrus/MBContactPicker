@@ -21,6 +21,7 @@
 @property (nonatomic) ContactCollectionViewPromptCell *promptCell;
 @property (nonatomic) ContactEntryCollectionViewCell *entryCell;
 @property CGFloat originalHeight;
+@property CGFloat originalYOffset;
 
 @end
 
@@ -53,40 +54,37 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 - (void)setup
 {
     self.originalHeight = -1;
+    self.originalYOffset = -1;
     self.prototypeCell = [[ContactCollectionViewCell alloc] init];
+    self.selectedContacts = [[NSMutableArray alloc] init];
+    self.selectedIndex = -1;
+    
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 0;
     layout.minimumLineSpacing = 1;
+    self.contentInset = UIEdgeInsetsMake(0, 5, 0, 5);
     
     self.allowsMultipleSelection = NO;
     self.allowsSelection = YES;
     self.delegate = self;
     self.dataSource = self;
+    
     [self registerClass:[ContactCollectionViewCell class] forCellWithReuseIdentifier:@"ContactCell"];
     [self registerClass:[ContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
     [self registerClass:[ContactCollectionViewPromptCell class] forCellWithReuseIdentifier:@"ContactPromptCell"];
+
     self.searchTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height, self.bounds.size.width, 0)];
     self.searchTableView.dataSource = self;
     self.searchTableView.delegate = self;
     [self.searchTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self addSubview:self.searchTableView];
     
-    self.selectedContacts = [[NSMutableArray alloc] init];
 }
 
 - (void)reloadData
 {
     self.contacts = [self.contactDataSource contactModelsForCollectionView:self];
     [super reloadData];
-}
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
-    if (self.originalHeight == -1 || self.originalHeight == 0)
-    {
-        self.originalHeight = self.frame.size.height;
-    }
 }
 
 #pragma mark - Properties
@@ -122,7 +120,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
                                             options:NSStringDrawingUsesLineFragmentOrigin
                                          attributes:nil
                                             context:nil];
-        cell.frame = (CGRect) { .size.width = frame.size.width + 20, .size.height = frame.size.height + 10, .origin.x = 0, .origin.y = 0 };
+        cell.frame = (CGRect) { .size.width = frame.size.width + 10, .size.height = frame.size.height + 10, .origin.x = 0, .origin.y = 0 };
         UILabel *label = [[UILabel alloc] initWithFrame:cell.bounds];
         [cell addSubview:label];
         label.textAlignment = NSTextAlignmentCenter;
@@ -136,6 +134,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell" forIndexPath:indexPath];
         cell.delegate = self;
         collectionCell = cell;
+        if (self.selectedIndex == -1)
+        {
+            [cell setFocus];
+        }
         self.entryCell = cell;
         
     }
@@ -280,6 +282,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     [self removeFromSelectedContacts:self.selectedIndex];
     self.selectedIndex = -1;
     [self resignFirstResponder];
+    [self scrollToEntryAnimated:NO];
     [self.entryCell setFocus];
 }
 
@@ -314,10 +317,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     ContactCollectionViewCellModel *model = self.filteredContacts[indexPath.row];
     [self addToSelectedContacts:model];
     [self hideSearchTableView];
+    [self scrollToEntry];
     [self.entryCell reset];
     [self.entryCell setFocus];
 }
-
 
 #pragma mark - Helper Methods
 
@@ -351,58 +354,84 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)showSearchTableView
 {
-    CGRect frame = self.frame;
-    CGRect entryCellFrame = self.entryCell.frame;
-
-    self.searchTableView.frame = (CGRect)
+    if (![self searchIsVisible])
     {
-        .size.width = frame.size.width,
-        .size.height = 0,
-        .origin.x = 0,
-        .origin.y = entryCellFrame.origin.y + entryCellFrame.size.height
-    };
-
-    [UIView animateWithDuration:.25 animations:^{
-        CGFloat yOffset = self.contentOffset.y - self.entryCell.frame.origin.y;
-        CGFloat distanceToKeyboard = self.window.frame.size.height - 216 - self.frame.size.height - self.frame.origin.y;
-        self.frame = (CGRect) {
-            .size.width = self.frame.size.width,
-            .size.height = self.frame.size.height - yOffset + distanceToKeyboard,
-            .origin.x = self.frame.origin.x,
-            .origin.y = self.frame.origin.y + yOffset
-        };
-
-        self.searchTableView.frame = (CGRect)
-        {
-            .size.width = frame.size.width,
-            .size.height = self.frame.size.height + yOffset - entryCellFrame.size.height,
-            .origin.x = 0,
-            .origin.y = entryCellFrame.origin.y + entryCellFrame.size.height
-        };
-    }];
-    [self scrollRectToVisible:self.entryCell.frame animated:YES];
-}
-
-- (void)hideSearchTableView
-{
-    CGRect frame = self.frame;
-    CGRect entryCellFrame = self.entryCell.frame;
-    [UIView animateWithDuration:.25 animations:^{
-        self.frame = (CGRect) {
-            .size.width = self.frame.size.width,
-            .size.height = self.originalHeight,
-            .origin.x = self.frame.origin.x,
-            .origin.y = self.frame.origin.y - (self.contentOffset.y - self.entryCell.frame.origin.y)
-        };
+        self.originalYOffset = self.frame.origin.y;
+        self.originalHeight = self.frame.size.height;
+        CGRect frame = self.frame;
+        UICollectionViewLayoutAttributes *entryAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForRow:self.selectedContacts.count + 1 inSection:0]];
+        
         self.searchTableView.frame = (CGRect)
         {
             .size.width = frame.size.width,
             .size.height = 0,
             .origin.x = 0,
-            .origin.y = entryCellFrame.origin.y + entryCellFrame.size.height
+            .origin.y = entryAttributes.frame.origin.y + entryAttributes.frame.size.height
         };
-    }];
-    [self scrollRectToVisible:self.entryCell.frame animated:YES];
+        
+        CGRect entryFrameRelativeToParent = [self convertRect:entryAttributes.frame toView:self];
+        CGFloat yOffset = entryFrameRelativeToParent.origin.y;
+        CGFloat distanceToKeyboard = self.window.frame.size.height - 216 - self.frame.size.height - self.frame.origin.y;
+        
+        self.frame = (CGRect) {
+            .size.width = self.frame.size.width,
+            .size.height = self.frame.size.height + yOffset + distanceToKeyboard,
+            .origin.x = self.frame.origin.x,
+            .origin.y = self.frame.origin.y - yOffset
+        };
+
+        [UIView animateWithDuration:.25 animations:^{
+            self.searchTableView.frame = (CGRect)
+            {
+                .size.width = frame.size.width,
+                .size.height = self.frame.size.height - yOffset - entryAttributes.frame.size.height,
+                .origin.x = 0,
+                .origin.y = entryAttributes.frame.origin.y + entryAttributes.frame.size.height
+            };
+        }];
+    }
+}
+
+- (void)hideSearchTableView
+{
+    if ([self searchIsVisible])
+    {
+        CGRect frame = self.frame;
+        UICollectionViewLayoutAttributes *entryAttributes = [self layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForRow:self.selectedContacts.count + 1 inSection:0]];
+        
+        [UIView animateWithDuration:.25
+                         animations:^{
+                             self.searchTableView.frame = (CGRect)
+                             {
+                                 .size.width = frame.size.width,
+                                 .size.height = 0,
+                                 .origin.x = 0,
+                                 .origin.y = entryAttributes.frame.origin.y + entryAttributes.frame.size.height
+                             };
+                         }
+                         completion:^(BOOL finished) {
+                             self.frame = (CGRect) {
+                                 .size.width = self.frame.size.width,
+                                 .size.height = self.originalHeight,
+                                 .origin.x = self.frame.origin.x,
+                                 .origin.y = self.originalYOffset
+                             };
+                             [self scrollToEntry];
+                         }];
+
+    }
+}
+
+- (void)scrollToEntry
+{
+    [self scrollToEntryAnimated:YES];
+}
+
+- (void)scrollToEntryAnimated:(BOOL)animated
+{
+    [self scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.selectedContacts.count + 1 inSection:0]
+                 atScrollPosition:UICollectionViewScrollPositionTop
+                         animated:animated];
 }
 
 - (BOOL)searchIsVisible
