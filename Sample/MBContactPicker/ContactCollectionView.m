@@ -18,6 +18,7 @@
 @property (nonatomic) NSArray *contacts;
 @property (nonatomic) NSArray *filteredContacts;
 @property NSInteger selectedIndex;
+@property (nonatomic) ContactCollectionViewPromptCell *promptCell;
 @property (nonatomic) ContactEntryCollectionViewCell *entryCell;
 @property CGFloat originalHeight;
 
@@ -64,16 +65,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     [self registerClass:[ContactCollectionViewCell class] forCellWithReuseIdentifier:@"ContactCell"];
     [self registerClass:[ContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
     [self registerClass:[ContactCollectionViewPromptCell class] forCellWithReuseIdentifier:@"ContactPromptCell"];
-    self.clipsToBounds = NO;
-    CGFloat tableViewHeight = self.window.bounds.size.height - self.bounds.size.height - self.frame.origin.y;
     self.searchTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height, self.bounds.size.width, 0)];
     self.searchTableView.dataSource = self;
     self.searchTableView.delegate = self;
     [self.searchTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
-//    self.searchTableView.layer.borderColor = [UIColor brownColor].CGColor;
-//    self.searchTableView.layer.borderWidth = 1.0;
-//    self.layer.borderColor = [UIColor blueColor].CGColor;
-//    self.layer.borderWidth = 1.0;
     [self addSubview:self.searchTableView];
     
     self.selectedContacts = [[NSMutableArray alloc] init];
@@ -101,68 +96,50 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
 {
-    return 3;
+    return 1;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    switch (section) {
-        case ContactCollectionViewSectionPrompt:
-            return 1;
-        case ContactCollectionViewSectionContact:
-            return [self.selectedContacts count];
-        case ContactCollectionViewSectionEntry:
-            return 1;
-        default:
-            [NSException raise:@"InvalidArgumentException" format:@"Unrecognized ContactCollectionViewSection: %d", section];
-            return -1;
-    }
+    // Index 0 is the prompt (To:)
+    // self.selectedContacts.count + 1 is the input box (where you put in your search terms)
+    return self.selectedContacts.count + 2;
 }
 
 - (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell *collectionCell;
     
-    switch (indexPath.section) {
-        case ContactCollectionViewSectionContact:
-        {
-            ContactCollectionViewCell *cell = (ContactCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell" forIndexPath:indexPath];
-            cell.model = self.selectedContacts[indexPath.row];
-            collectionCell = cell;
-            break;
-        }
-        case ContactCollectionViewSectionPrompt:
-        {
-            ContactCollectionViewPromptCell *cell = (ContactCollectionViewPromptCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactPromptCell" forIndexPath:indexPath];
-            NSString *prompt = @"To:";
-            CGRect frame = [prompt boundingRectWithSize:(CGSize){ .width = CGFLOAT_MAX, .height = CGFLOAT_MAX }
-                                                options:NSStringDrawingUsesLineFragmentOrigin
-                                             attributes:nil
-                                                context:nil];
-            cell.frame = (CGRect) { .size.width = frame.size.width + 20, .size.height = frame.size.height + 10, .origin.x = 0, .origin.y = 0 };
-            cell.layer.borderColor = [UIColor greenColor].CGColor;
-            cell.layer.borderWidth = 1.0;
-            UILabel *label = [[UILabel alloc] initWithFrame:cell.bounds];
-            [cell addSubview:label];
-            label.textAlignment = NSTextAlignmentCenter;
-            label.text = prompt;
-            label.textColor = [UIColor blackColor];
-            collectionCell = cell;
-            break;
-        }
-        case ContactCollectionViewSectionEntry:
-        {
-            ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell" forIndexPath:indexPath];
-            cell.delegate = self;
-            collectionCell = cell;
-            self.entryCell = cell;
-            break;
-        }
-        default:
-        {
-            [NSException raise:@"InvalidArgumentException" format:@"Invalid ContactCollectionViewSection: %d", indexPath.section];
-            break;
-        }
+    if ([self isPromptCell:indexPath])
+    {
+        ContactCollectionViewPromptCell *cell = (ContactCollectionViewPromptCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactPromptCell" forIndexPath:indexPath];
+        NSString *prompt = @"To:";
+        CGRect frame = [prompt boundingRectWithSize:(CGSize){ .width = CGFLOAT_MAX, .height = CGFLOAT_MAX }
+                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                         attributes:nil
+                                            context:nil];
+        cell.frame = (CGRect) { .size.width = frame.size.width + 20, .size.height = frame.size.height + 10, .origin.x = 0, .origin.y = 0 };
+        UILabel *label = [[UILabel alloc] initWithFrame:cell.bounds];
+        [cell addSubview:label];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.text = prompt;
+        label.textColor = [UIColor blackColor];
+        collectionCell = cell;
+        self.promptCell = cell;
+    }
+    else if ([self isEntryCell:indexPath])
+    {
+        ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell" forIndexPath:indexPath];
+        cell.delegate = self;
+        collectionCell = cell;
+        self.entryCell = cell;
+        
+    }
+    else
+    {
+        ContactCollectionViewCell *cell = (ContactCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell" forIndexPath:indexPath];
+        cell.model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
+        collectionCell = cell;
     }
 
     return collectionCell;
@@ -181,7 +158,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    return indexPath.section == ContactCollectionViewSectionContact;
+    return [self isContactCell:indexPath];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -194,19 +171,18 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    switch (indexPath.section)
+    if ([self isPromptCell:indexPath])
     {
-        case ContactCollectionViewSectionContact:
-            return [self.prototypeCell sizeForCellWithContact:(ContactCollectionViewCellModel*)self.selectedContacts[indexPath.row]];
-        case ContactCollectionViewSectionEntry:
-            return CGSizeMake(200, 30);
-        case ContactCollectionViewSectionPrompt:
-            return CGSizeMake(50, 30);
-        default:
-        {
-            [NSException raise:@"InvalidArgumentException" format:@"Unrecognized ContactCollectionViewSection: %d", indexPath.section];
-            return CGSizeZero;
-        }
+        return CGSizeMake(50, 30);
+    }
+    else if ([self isEntryCell:indexPath])
+    {
+        return CGSizeMake(150, 30);
+    }
+    else
+    {
+        ContactCollectionViewCellModel *model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
+        return [self.prototypeCell sizeForCellWithContact:model];
     }
 }
 
@@ -228,8 +204,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         if (self.selectedContacts.count > 0)
         {
             [textField resignFirstResponder];
-            NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.selectedContacts.count - 1
-                                                                    inSection:ContactCollectionViewSectionContact];
+            NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.selectedContacts.count
+                                                                    inSection:0];
             [self selectItemAtIndexPath:newSelectedIndexPath
                                animated:YES
                          scrollPosition:UICollectionViewScrollPositionBottom];
@@ -275,14 +251,24 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void) deleteBackward
 {
-    if (self.selectedIndex != -1 && self.selectedContacts.count > self.selectedIndex)
+    if (self.selectedIndex != -1 && self.selectedContacts.count + 1 > self.selectedIndex)
     {
-        [self.selectedContacts removeObjectAtIndex:self.selectedIndex];
-        [self reloadSelectedContacts];
+        [self.selectedContacts removeObjectAtIndex:[self selectedContactIndexFromRow:self.selectedIndex]];
+        [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedIndex inSection:0]]];
     }
     self.selectedIndex = -1;
     [self resignFirstResponder];
     [self.entryCell setFocus];
+}
+
+- (BOOL)hasText
+{
+    return YES;
+}
+
+- (void)insertText:(NSString *)text
+{
+    
 }
 
 #pragma mark - UITableViewDataSource
@@ -307,7 +293,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     if (![self.selectedContacts containsObject:model])
     {
         [self.selectedContacts addObject:model];
-        [self reloadSelectedContacts];
+        [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
     }
     [self hideSearchTableView];
     [self.entryCell reset];
@@ -316,11 +302,6 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 
 #pragma mark - Helper Methods
-
-- (void)reloadSelectedContacts
-{
-    [self reloadSections:[NSIndexSet indexSetWithIndex:ContactCollectionViewSectionContact]];
-}
 
 - (void)showSearchTableView
 {
@@ -381,5 +362,35 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 - (BOOL)searchIsVisible
 {
     return self.searchTableView.frame.size.height > 0;
+}
+
+- (BOOL)isEntryCell:(NSIndexPath*)indexPath
+{
+    return indexPath.row == [self entryCellIndex];
+}
+
+- (BOOL)isPromptCell:(NSIndexPath*)indexPath
+{
+    return indexPath.row == 0;
+}
+
+- (BOOL)isContactCell:(NSIndexPath*)indexPath
+{
+    return ![self isPromptCell:indexPath] && ![self isEntryCell:indexPath];
+}
+
+- (NSInteger)entryCellIndex
+{
+    return self.selectedContacts.count + 1;
+}
+
+- (NSInteger)selectedContactIndexFromIndexPath:(NSIndexPath*)indexPath
+{
+    return [self selectedContactIndexFromRow:indexPath.row];
+}
+
+- (NSInteger)selectedContactIndexFromRow:(NSInteger)row
+{
+    return row - 1;
 }
 @end

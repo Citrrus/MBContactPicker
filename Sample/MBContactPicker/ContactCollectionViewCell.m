@@ -66,13 +66,6 @@
 {
     _model = model;
     self.contactTitleLabel.text = self.model.contactTitle;
-//    CGSize newSize = [self sizeForCellWithContact:self.model];
-//    self.frame = (CGRect) {
-//        .size.width = newSize.width,
-//        .size.height = self.frame.size.height,
-//        .origin.x = self.frame.origin.x,
-//        .origin.y = self.frame.origin.y
-//    };
 }
 
 - (CGSize)sizeForCellWithContact:(ContactCollectionViewCellModel *)model
@@ -80,7 +73,6 @@
     UIFont *font = self.contactTitleLabel.font;
     CGSize size = [model.contactTitle boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:0 attributes:@{ NSFontAttributeName: font } context:nil].size;
     size = CGSizeMake(size.width + 10, size.height + 10);
-    NSLog(@"Size: %@", NSStringFromCGSize(size));
     return size;
 }
 
