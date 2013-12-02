@@ -91,6 +91,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 #pragma mark - Properties
 
+- (NSArray*)contactsSelected
+{
+    return [NSArray arrayWithArray:self.selectedContacts];
+}
 
 #pragma mark - UICollectionViewDataSource
 
@@ -147,13 +151,17 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 #pragma mark - UICollectionViewDelegate
 
-
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ContactCollectionViewCell *cell = (ContactCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
     [self becomeFirstResponder];
     self.selectedIndex = indexPath.row;
     cell.focused = YES;
+    
+    if ([self.contactDelegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
+    {
+        [self.contactDelegate didSelectContact:cell.model inContactCollectionView:self];
+    }
 }
 
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
@@ -173,7 +181,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if ([self isPromptCell:indexPath])
     {
-        return CGSizeMake(50, 30);
+        return CGSizeMake(30, 30);
     }
     else if ([self isEntryCell:indexPath])
     {
@@ -182,7 +190,16 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     else
     {
         ContactCollectionViewCellModel *model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
-        return [self.prototypeCell sizeForCellWithContact:model];
+        CGSize actualSize = [self.prototypeCell sizeForCellWithContact:model];
+        CGSize maxSize = CGSizeMake(self.frame.size.width - self.contentInset.left - self.contentInset.right, actualSize.height);
+        if (actualSize.width > maxSize.width)
+        {
+            return maxSize;
+        }
+        else
+        {
+            return actualSize;
+        }
     }
 }
 
@@ -247,15 +264,20 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     return YES;
 }
 
+- (BOOL)resignFirstResponder
+{
+    if (self.selectedIndex > -1)
+    {
+        [self.delegate collectionView:self didDeselectItemAtIndexPath:[NSIndexPath indexPathForRow:self.selectedIndex inSection:0]];
+    }
+    return YES;
+}
+
 #pragma mark - UIKeyInput
 
 - (void) deleteBackward
 {
-    if (self.selectedIndex != -1 && self.selectedContacts.count + 1 > self.selectedIndex)
-    {
-        [self.selectedContacts removeObjectAtIndex:[self selectedContactIndexFromRow:self.selectedIndex]];
-        [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedIndex inSection:0]]];
-    }
+    [self removeFromSelectedContacts:self.selectedIndex];
     self.selectedIndex = -1;
     [self resignFirstResponder];
     [self.entryCell setFocus];
@@ -290,11 +312,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ContactCollectionViewCellModel *model = self.filteredContacts[indexPath.row];
-    if (![self.selectedContacts containsObject:model])
-    {
-        [self.selectedContacts addObject:model];
-        [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
-    }
+    [self addToSelectedContacts:model];
     [self hideSearchTableView];
     [self.entryCell reset];
     [self.entryCell setFocus];
@@ -302,6 +320,34 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 
 #pragma mark - Helper Methods
+
+- (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model
+{
+    if (![self.selectedContacts containsObject:model])
+    {
+        [self.selectedContacts addObject:model];
+        [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
+        if ([self.contactDelegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
+        {
+            [self.contactDelegate didAddContact:model toContactCollectionView:self];
+        }
+    }
+}
+
+- (void)removeFromSelectedContacts:(NSInteger)index
+{
+    if (self.selectedIndex != -1 && self.selectedContacts.count + 1 > self.selectedIndex)
+    {
+        ContactCollectionViewCellModel *model = (ContactCollectionViewCellModel *)self.selectedContacts[[self selectedContactIndexFromRow:self.selectedIndex]];
+        [self.selectedContacts removeObjectAtIndex:[self selectedContactIndexFromRow:self.selectedIndex]];
+        [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedIndex inSection:0]]];
+        
+        if ([self.contactDelegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
+        {
+            [self.contactDelegate didRemoveContact:model fromContactCollectionView:self];
+        }
+    }
+}
 
 - (void)showSearchTableView
 {

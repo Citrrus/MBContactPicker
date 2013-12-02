@@ -35,7 +35,7 @@
                      @"A", @"B", @"C", @"D",
                      @"Caleb Everist",
                      @"Kinda long name for a kinda long",
-                     @"Super long name for a super long person"
+                     @"Super long name for a super long person with a long name"
                      ];
     
     self.contactCollectionView.contactDelegate = self;

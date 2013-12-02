@@ -39,5 +39,6 @@
 @property (nonatomic, weak) id<ContactCollectionViewDataSource> contactDataSource;
 @property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
 @property (nonatomic, weak) id<UITableViewDelegate> searchTableViewDelegate;
+@property (nonatomic, readonly) NSArray *contactsSelected;
 
 @end
