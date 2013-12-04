@@ -7,13 +7,13 @@
 //
 
 #import "ViewController.h"
-#import "ContactCollectionViewCellModel.h"
-#import "ContactCollectionView.h"
+#import "MBContactPicker.h"
 
-@interface ViewController () <ContactCollectionViewDataSource, ContactCollectionViewDelegate>
+@interface ViewController () <ContactCollectionViewDataSource, ContactCollectionViewDelegate, ContactPickerDelegate>
 
 @property NSArray *objects;
-@property (weak, nonatomic) IBOutlet ContactCollectionView *contactCollectionView;
+@property (weak, nonatomic) IBOutlet ContactPickerView *contactPickerView;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
 
 @end
 
@@ -38,10 +38,31 @@
                      @"Super long name for a super long person with a long name"
                      ];
     
-    self.contactCollectionView.contactDelegate = self;
-    self.contactCollectionView.contactDataSource = self;
+    self.contactPickerView.delegate = self;
+    self.contactPickerView.contactDelegate = self;
+    self.contactPickerView.contactDataSource = self;
+    [self.contactPickerView reloadData];
 }
 
+#pragma mark - ContactPickerDelegate
+
+- (void)showFilteredContacts
+{
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:.25 animations:^{
+        self.contactPickerViewHeightConstraint.constant = 200;
+        [self.view layoutIfNeeded];
+    }];
+}
+
+- (void)hideFilteredContacts
+{
+    [self.view layoutIfNeeded];
+    [UIView animateWithDuration:.25 animations:^{
+        self.contactPickerViewHeightConstraint.constant = 31;
+        [self.view layoutIfNeeded];
+    }];
+}
 
 #pragma mark - ContactCollectionViewDataSource
 

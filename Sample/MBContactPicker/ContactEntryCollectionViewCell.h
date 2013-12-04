@@ -11,8 +11,10 @@
 @interface ContactEntryCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic, weak) id<UITextFieldDelegate> delegate;
+@property (nonatomic, readonly) NSString *text;
 
 - (void)setFocus;
 - (void)reset;
+- (CGFloat)widthForText:(NSString*)text;
 
 @end

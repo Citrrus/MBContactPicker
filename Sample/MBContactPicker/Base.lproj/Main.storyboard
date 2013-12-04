@@ -77,28 +77,26 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <collectionView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="RoG-rf-smi" customClass="ContactCollectionView">
-                                <rect key="frame" x="0.0" y="99" width="320" height="62"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <collectionViewLayout key="collectionViewLayout" id="b2c-0K-cNV" customClass="UICollectionViewContactFlowLayout"/>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="BhI-2j-A7W">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                                        </view>
-                                    </collectionViewCell>
-                                </cells>
-                            </collectionView>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gVn-GW-f9z" customClass="ContactPickerView">
+                                <rect key="frame" x="0.0" y="104" width="320" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="8b6-Lk-fgg"/>
+                                </constraints>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="8rX-BI-7hI" firstAttribute="top" relation="lessThanOrEqual" secondItem="gVn-GW-f9z" secondAttribute="bottom" constant="433" id="Daz-nP-CV8"/>
+                            <constraint firstItem="gVn-GW-f9z" firstAttribute="top" secondItem="VDA-XU-QaJ" secondAttribute="bottom" constant="84" id="Xl9-hb-jrR"/>
+                            <constraint firstItem="gVn-GW-f9z" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="a7I-Ol-8O0"/>
+                            <constraint firstAttribute="trailing" secondItem="gVn-GW-f9z" secondAttribute="trailing" id="x0J-Ve-m6r"/>
+                        </constraints>
                     </view>
                     <connections>
-                        <outlet property="contactCollectionView" destination="RoG-rf-smi" id="ycq-Xy-cg3"/>
+                        <outlet property="contactPickerView" destination="gVn-GW-f9z" id="iwJ-RC-IkB"/>
+                        <outlet property="contactPickerViewHeightConstraint" destination="8b6-Lk-fgg" id="DIP-6k-EvS"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

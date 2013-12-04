@@ -9,36 +9,25 @@
 #import <UIKit/UIKit.h>
 #import "ContactCollectionViewCellModel.h"
 #import "ContactCollectionViewCell.h"
+#import "ContactEntryCollectionViewCell.h"
+#import "ContactCollectionViewPromptCell.h"
 @class ContactCollectionView;
 
-@protocol ContactCollectionViewDataSource <NSObject>
+@interface ContactCollectionView : UICollectionView <UICollectionViewDelegateFlowLayout, UIKeyInput>
 
-@required
-
-@optional
-
-- (NSArray *)contactModelsForCollectionView:(ContactCollectionView*)collectionView;
-- (ContactCollectionViewCellModel *)contactModelForCollectionView:(ContactCollectionView*)collectionView atIndexPath:(NSIndexPath *)indexPath;
-
-@end
-
-@protocol ContactCollectionViewDelegate <NSObject>
-
-@optional
-
-- (void)maximumHeightForContactSearchTableViewInContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didSelectContact:(ContactCollectionViewCellModel*)model inContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didAddContact:(ContactCollectionViewCellModel*)model toContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didRemoveContact:(ContactCollectionViewCellModel*)model fromContactCollectionView:(ContactCollectionView*)collectionView;
-
-@end
-
-
-@interface ContactCollectionView : UICollectionView <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UITableViewDataSource, UITableViewDelegate, UITextFieldDelegate, UIKeyInput>
-
-@property (nonatomic, weak) id<ContactCollectionViewDataSource> contactDataSource;
-@property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
 @property (nonatomic, weak) id<UITableViewDelegate> searchTableViewDelegate;
 @property (nonatomic, readonly) NSArray *contactsSelected;
+@property (nonatomic) NSArray *contacts;
+
+- (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model;
+- (void)removeFromSelectedContacts:(NSInteger)index;
+- (void)scrollToEntry;
+- (BOOL)isEntryCell:(NSIndexPath*)indexPath;
+- (BOOL)isPromptCell:(NSIndexPath*)indexPath;
+- (BOOL)isContactCell:(NSIndexPath*)indexPath;
+- (NSInteger)entryCellIndex;
+- (NSInteger)selectedContactIndexFromIndexPath:(NSIndexPath*)indexPath;
+- (NSInteger)selectedContactIndexFromRow:(NSInteger)row;
+- (NSIndexPath*)indexPathOfSelectedCell;
 
 @end
