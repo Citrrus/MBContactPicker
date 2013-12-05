@@ -150,6 +150,10 @@
         ContactCollectionViewCell *cell = (ContactCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell"
                                                                                                                 forIndexPath:indexPath];
         cell.model = self.collectionView.contactsSelected[[self.collectionView selectedContactIndexFromIndexPath:indexPath]];
+        if ([self.collectionView.indexPathOfSelectedCell isEqual:indexPath])
+        {
+            cell.focused = YES;
+        }
         collectionCell = cell;
     }
     
@@ -197,7 +201,8 @@
         {
             prototype = [[ContactEntryCollectionViewCell alloc] init];
         }
-        return CGSizeMake([prototype widthForText:prototype.text], 30);
+        CGSize cellSize = CGSizeMake([prototype widthForText:prototype.text], 30);
+        return cellSize;
     }
     else
     {
@@ -215,20 +220,19 @@
     }
 }
 
-#pragma mark - UITextFieldDelegate
+#pragma mark - UITextFieldDelegateImproved
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-    
-    if ([string isEqualToString:@"\n"])
-    {
-        return NO;
-    }
-    else if ([newString isEqualToString:@""] &&
-             [string isEqualToString:@""] &&
-             range.location == 0 &&
-             range.length == 1)
+
+    // If backspace is pressed and there isn't any text in the field, we want to select the
+    // last selected contact and not let them delete the space we inserted (the space allows
+    // us to catch the last backspace press - without it, we get no event!)
+    if ([newString isEqualToString:@""] &&
+        [string isEqualToString:@""] &&
+        range.location == 0 &&
+        range.length == 1)
     {
         if (self.collectionView.contactsSelected.count > 0)
         {
@@ -236,35 +240,32 @@
             NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.contactsSelected.count
                                                                     inSection:0];
             [self.collectionView selectItemAtIndexPath:newSelectedIndexPath
-                               animated:YES
-                         scrollPosition:UICollectionViewScrollPositionBottom];
+                                              animated:YES
+                                        scrollPosition:UICollectionViewScrollPositionBottom];
             [self.collectionView.delegate collectionView:self.collectionView didSelectItemAtIndexPath:newSelectedIndexPath];
             [self becomeFirstResponder];
         }
         return NO;
     }
+    
+    return YES;
+}
+
+- (void)textFieldDidChange:(UITextField *)textField
+{
+    [self.collectionView.collectionViewLayout invalidateLayout];
+    
+    if ([textField.text isEqualToString:@" "])
+    {
+        [self hideSearchTableView];
+    }
     else
     {
-        [self.collectionView.collectionViewLayout invalidateLayout];
-        
-        if ([newString isEqualToString:@" "])
-        {
-            [self hideSearchTableView];
-        }
-        else
-        {
-            if (![self searchIsVisible])
-            {
-                [self showSearchTableView];
-                
-            }
-            NSString *searchString = [newString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
-            self.filteredContacts = [self.contacts filteredArrayUsingPredicate:predicate];
-            [self.searchTableView reloadData];
-        }
-        
-        return YES;
+        [self showSearchTableView];
+        NSString *searchString = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
+        self.filteredContacts = [self.contacts filteredArrayUsingPredicate:predicate];
+        [self.searchTableView reloadData];
     }
 }
 
@@ -300,87 +301,21 @@
 }
 
 #pragma mark Helper Methods
+
 - (void)showSearchTableView
 {
-    if ([self.delegate conformsToProtocol:@protocol(ContactPickerDelegate)])
+    if ([self.delegate respondsToSelector:@selector(showFilteredContacts)])
     {
         [self.delegate showFilteredContacts];
     }
-//    if (![self searchIsVisible])
-//    {
-//        self.originalYOffset = self.frame.origin.y;
-//        self.originalHeight = self.frame.size.height;
-//    }
-//    
-//    CGRect frame = self.frame;
-//    UICollectionViewLayoutAttributes *entryAttributes = [self.collectionView layoutAttributesForItemAtIndexPath:[NSIndexPath indexPathForRow:self.collectionView.contactsSelected.count + 1 inSection:0]];
-//    
-//    self.searchTableView.frame = (CGRect)
-//    {
-//        .size.width = frame.size.width,
-//        .size.height = 0,
-//        .origin.x = 0,
-//        .origin.y = self.originalHeight
-//    };
-//    
-//    CGRect entryFrameRelativeToParent = [self convertRect:entryAttributes.frame toView:self];
-//    CGFloat yOffset = entryFrameRelativeToParent.origin.y;
-//    CGFloat distanceToKeyboard = self.window.frame.size.height - 216 - self.frame.size.height - self.frame.origin.y;
-//    
-//    self.frame = (CGRect) {
-//        .size.width = self.frame.size.width,
-//        .size.height = self.frame.size.height + yOffset + distanceToKeyboard,
-//        .origin.x = self.frame.origin.x,
-//        .origin.y = self.frame.origin.y - yOffset
-//    };
-//    
-//    [UIView animateWithDuration:.25 animations:^{
-//        self.searchTableView.frame = (CGRect)
-//        {
-//            .size.width = frame.size.width,
-//            .size.height = self.frame.size.height - yOffset,
-//            .origin.x = 0,
-//            .origin.y = self.originalHeight
-//        };
-//    }];
 }
 
 - (void)hideSearchTableView
 {
-    if ([self.delegate conformsToProtocol:@protocol(ContactPickerDelegate)])
+    if ([self.delegate respondsToSelector:@selector(hideFilteredContacts)])
     {
         [self.delegate hideFilteredContacts];
     }
-//    if ([self searchIsVisible])
-//    {
-//        CGRect frame = self.frame;
-//        
-//        [UIView animateWithDuration:.25
-//                         animations:^{
-//                             self.searchTableView.frame = (CGRect)
-//                             {
-//                                 .size.width = frame.size.width,
-//                                 .size.height = 0,
-//                                 .origin.x = 0,
-//                                 .origin.y = self.originalHeight
-//                             };
-//                         }
-//                         completion:^(BOOL finished) {
-//                             self.frame = (CGRect) {
-//                                 .size.width = self.frame.size.width,
-//                                 .size.height = self.originalHeight,
-//                                 .origin.x = self.frame.origin.x,
-//                                 .origin.y = self.originalYOffset
-//                             };
-//                             [self.collectionView scrollToEntry];
-//                         }];
-//        
-//    }
-}
-
-- (BOOL)searchIsVisible
-{
-    return self.searchTableView.frame.size.height > 0;
 }
 
 @end

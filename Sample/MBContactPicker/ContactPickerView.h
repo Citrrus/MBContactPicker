@@ -38,7 +38,7 @@
 
 @end
 
-@interface ContactPickerView : UIView <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface ContactPickerView : UIView <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) id<ContactPickerDelegate> delegate;
 @property (nonatomic, weak) id<ContactCollectionViewDataSource> contactDataSource;

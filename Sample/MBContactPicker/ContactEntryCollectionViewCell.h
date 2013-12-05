@@ -8,9 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol UITextFieldDelegateImproved <UITextFieldDelegate>
+
+- (void)textFieldDidChange:(UITextField*)textField;
+
+@end
+
 @interface ContactEntryCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, weak) id<UITextFieldDelegate> delegate;
+@property (nonatomic, weak) id<UITextFieldDelegateImproved> delegate;
 @property (nonatomic, readonly) NSString *text;
 
 - (void)setFocus;

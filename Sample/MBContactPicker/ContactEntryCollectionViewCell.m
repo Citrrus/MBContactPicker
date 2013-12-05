@@ -63,9 +63,15 @@
     [self addConstraints:c];
 }
 
-- (void)setDelegate:(id<UITextFieldDelegate>)delegate
+- (void)setDelegate:(id<UITextFieldDelegateImproved>)delegate
 {
+    if (_delegate)
+    {
+        [self.contactEntryTextField removeTarget:_delegate action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    }
+    
     _delegate = delegate;
+    [self.contactEntryTextField addTarget:delegate action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
     self.contactEntryTextField.delegate = delegate;
 }
 
@@ -90,7 +96,7 @@
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{ NSFontAttributeName: self.contactEntryTextField.font }
                                        context:nil].size.width;
-    width += 20;
+    width += 40;
     return width;
 }
 
