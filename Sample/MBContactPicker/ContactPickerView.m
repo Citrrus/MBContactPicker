@@ -9,6 +9,11 @@
 #import "ContactPickerView.h"
 #import "ContactCollectionView.h"
 
+const NSInteger kCellHeight = 31;
+const NSString *kPrompt = @"To:";
+const CGFloat kMaxVisibleRows = 3;
+
+
 @interface ContactPickerView()
 
 @property (nonatomic, weak) ContactCollectionView *collectionView;
@@ -23,9 +28,7 @@
 @property CGFloat originalHeight;
 @property CGFloat originalYOffset;
 
-
 @end
-
 
 @implementation ContactPickerView
 
@@ -39,13 +42,17 @@
     self.selectedIndex = -1;
     self.originalHeight = -1;
     self.originalYOffset = -1;
+    self.cellHeight = kCellHeight;
+    self.prompt = [kPrompt copy];
+    self.maxVisibleRows = kMaxVisibleRows;
     
     UICollectionViewContactFlowLayout *layout = [[UICollectionViewContactFlowLayout alloc] init];
     ContactCollectionView *contactCollectionView = [[ContactCollectionView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
     contactCollectionView.layer.borderColor = [UIColor redColor].CGColor;
-    contactCollectionView.layer.borderWidth = 0.0;
+    contactCollectionView.layer.borderWidth = 1.0;
     contactCollectionView.delegate = self;
     contactCollectionView.dataSource = self;
+    contactCollectionView.clipsToBounds = YES;
     [self addSubview:contactCollectionView];
     [contactCollectionView registerClass:[ContactCollectionViewCell class] forCellWithReuseIdentifier:@"ContactCell"];
     [contactCollectionView registerClass:[ContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
@@ -67,7 +74,7 @@
     contactCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contactCollectionView(>=31,<=63)][searchTableView(>=0)]|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[contactCollectionView(%ld)][searchTableView(>=0)]|", (long)self.cellHeight]
                                                                  options:0
                                                                  metrics:nil
                                                                    views:NSDictionaryOfVariableBindings(contactCollectionView, searchTableView)]];
@@ -97,6 +104,31 @@
     return self.collectionView.contactsSelected;
 }
 
+- (void)setCellHeight:(NSInteger)cellHeight
+{
+    _cellHeight = cellHeight;
+    [self updateCollectionViewHeightConstraints];
+    [self.collectionView.collectionViewLayout invalidateLayout];
+}
+
+- (void)setPrompt:(NSString *)prompt
+{
+    _prompt = prompt;
+    self.promptCell.prompt = prompt;
+}
+
+- (void)setMaxVisibleRows:(CGFloat)maxVisibleRows
+{
+    _maxVisibleRows = maxVisibleRows;
+    [self updateCollectionViewHeightConstraints];
+}
+
+- (CGFloat)currentContentHeight
+{
+    NSLog(@"Content Height: %f, Max Height: %f", self.collectionView.contentSize.height, self.maxVisibleRows * self.cellHeight);
+    return MIN(self.collectionView.contentSize.height, self.maxVisibleRows * self.cellHeight);
+}
+
 #pragma mark - UICollectionViewDataSource
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -118,19 +150,7 @@
     if ([self.collectionView isPromptCell:indexPath])
     {
         ContactCollectionViewPromptCell *cell = (ContactCollectionViewPromptCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactPromptCell" forIndexPath:indexPath];
-        NSString *prompt = @"To:";
-        CGRect frame = [prompt boundingRectWithSize:(CGSize){ .width = CGFLOAT_MAX, .height = CGFLOAT_MAX }
-                                            options:NSStringDrawingUsesLineFragmentOrigin
-                                         attributes:nil
-                                            context:nil];
-        cell.frame = (CGRect) { .size.width = ceilf(frame.size.width) + 10, .size.height = 31, .origin.x = 0, .origin.y = 0 };
-        cell.layer.borderWidth = 1.0;
-        cell.layer.borderColor = [UIColor purpleColor].CGColor;
-        UILabel *label = [[UILabel alloc] initWithFrame:cell.bounds];
-        [cell addSubview:label];
-        label.textAlignment = NSTextAlignmentCenter;
-        label.text = prompt;
-        label.textColor = [UIColor blackColor];
+        cell.prompt = self.prompt;
         collectionCell = cell;
         self.promptCell = cell;
     }
@@ -194,13 +214,9 @@
 {
     if ([self.collectionView isPromptCell:indexPath])
     {
-        NSString *prompt = @"To:";
-        CGRect frame = [prompt boundingRectWithSize:(CGSize){ .width = CGFLOAT_MAX, .height = CGFLOAT_MAX }
-                                            options:NSStringDrawingUsesLineFragmentOrigin
-                                         attributes:nil
-                                            context:nil];
-        CGRect x = (CGRect) { .size.width = frame.size.width + 10, .size.height = 30, .origin.x = 0, .origin.y = 0 };
-        return CGSizeMake(ceilf(x.size.width), 31);
+        CGFloat width = [ContactCollectionViewPromptCell widthWithPrompt:self.prompt];
+        width += 10;
+        return CGSizeMake(width, self.cellHeight);
     }
     else if ([self.collectionView isEntryCell:indexPath])
     {
@@ -209,7 +225,8 @@
         {
             prototype = [[ContactEntryCollectionViewCell alloc] init];
         }
-        CGSize cellSize = CGSizeMake([prototype widthForText:prototype.text], 31);
+        CGFloat newWidth = MIN(prototype.frame.size.width, MAX(50, [prototype widthForText:prototype.text]));
+        CGSize cellSize = CGSizeMake(newWidth, self.cellHeight);
         return cellSize;
     }
     else
@@ -232,6 +249,8 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
+    NSLog(@"Content Width: %f", self.collectionView.contentSize.width);
+    NSLog(@"Content Insets: (%f, %f)", self.collectionView.contentInset.left, self.collectionView.contentInset.right);
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
 
     // If backspace is pressed and there isn't any text in the field, we want to select the
@@ -264,6 +283,7 @@
 
     [self.collectionView performBatchUpdates:^{
         [self.collectionView.collectionViewLayout invalidateLayout];
+        [self updateCollectionViewHeightConstraints];
     }
                                   completion:^(BOOL finished) {
                                       [self.collectionView scrollToEntry];
@@ -308,10 +328,12 @@
 {
     ContactCollectionViewCellModel *model = self.filteredContacts[indexPath.row];
     [self.entryCell reset];
-    [self.collectionView addToSelectedContacts:model];
-    [self hideSearchTableView];
-    [self.collectionView scrollToEntry];
-    [self.entryCell setFocus];
+    [self.collectionView addToSelectedContacts:model withCompletion:^{
+        [self hideSearchTableView];
+        [self.collectionView scrollToEntry];
+        [self.entryCell setFocus];
+        [self updateCollectionViewHeightConstraints];
+    }];
 }
 
 #pragma mark Helper Methods
@@ -329,6 +351,29 @@
     if ([self.delegate respondsToSelector:@selector(hideFilteredContacts)])
     {
         [self.delegate hideFilteredContacts];
+    }
+}
+
+- (void)updateCollectionViewHeightConstraints
+{
+    for (NSLayoutConstraint *constraint in self.constraints)
+    {
+        if (constraint.firstItem == self.collectionView)
+        {
+            if (constraint.firstAttribute == NSLayoutAttributeHeight)
+            {
+                if (constraint.relation == NSLayoutRelationEqual)
+                {
+//                    NSLog(@"New Content Height on CollectionView: %f", self.currentContentHeight);
+                    constraint.constant = self.currentContentHeight;
+                    NSLog(@"Collection View Height Constraint: %@", constraint);
+                }
+//                else if (constraint.relation == NSLayoutRelationGreaterThanOrEqual)
+//                {
+//                    constraint.constant = self.cellHeight;
+//                }
+            }
+        }
     }
 }
 

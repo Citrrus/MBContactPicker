@@ -48,23 +48,25 @@
 
 - (void)showFilteredContacts
 {
-    if (self.contactPickerViewHeightConstraint.constant != 200)
+    NSLog(@"Show Constraint Height: %f", self.contactPickerViewHeightConstraint.constant);
+    if (self.contactPickerViewHeightConstraint.constant <= self.contactPickerView.currentContentHeight)
     {
-        [self.view layoutIfNeeded];
+//        [self.view layoutIfNeeded];
         [UIView animateWithDuration:.25 animations:^{
             self.contactPickerViewHeightConstraint.constant = 200;
-            [self.view layoutIfNeeded];
+//            [self.view layoutIfNeeded];
         }];
     }
 }
 
 - (void)hideFilteredContacts
 {
-    if (self.contactPickerViewHeightConstraint.constant != 31)
+    NSLog(@"Hide Constraint Height: %f", self.contactPickerViewHeightConstraint.constant);
+    if (self.contactPickerViewHeightConstraint.constant > self.contactPickerView.currentContentHeight)
     {
         [self.view layoutIfNeeded];
         [UIView animateWithDuration:.25 animations:^{
-            self.contactPickerViewHeightConstraint.constant = 31;
+            self.contactPickerViewHeightConstraint.constant = self.contactPickerView.currentContentHeight;
             [self.view layoutIfNeeded];
         }];
     }

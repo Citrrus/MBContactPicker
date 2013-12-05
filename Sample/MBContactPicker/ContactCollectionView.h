@@ -15,12 +15,11 @@
 
 @interface ContactCollectionView : UICollectionView <UICollectionViewDelegateFlowLayout, UIKeyInput>
 
-@property (nonatomic, weak) id<UITableViewDelegate> searchTableViewDelegate;
 @property (nonatomic, readonly) NSArray *contactsSelected;
 @property (nonatomic) NSArray *contacts;
 
-- (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model;
-- (void)removeFromSelectedContacts:(NSInteger)index;
+- (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model withCompletion:(void(^)())completion;
+- (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
 - (void)scrollToEntry;
 - (BOOL)isEntryCell:(NSIndexPath*)indexPath;
 - (BOOL)isPromptCell:(NSIndexPath*)indexPath;

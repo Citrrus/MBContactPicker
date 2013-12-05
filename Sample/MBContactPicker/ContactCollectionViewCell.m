@@ -51,15 +51,15 @@
     [contactLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.contactTitleLabel = contactLabel;
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contactTitleLabel]|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(2)-[contactLabel]-(2)-|"
                                                                  options:0
                                                                  metrics:nil
-                                                                   views:@{@"contactTitleLabel":self.contactTitleLabel}]];
+                                                                   views:NSDictionaryOfVariableBindings(contactLabel)]];
 
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contactTitleLabel]|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contactLabel]|"
                                                                  options:0
                                                                  metrics:nil
-                                                                   views:@{@"contactTitleLabel":self.contactTitleLabel}]];
+                                                                   views:NSDictionaryOfVariableBindings(contactLabel)]];
 }
 
 - (void)setModel:(ContactCollectionViewCellModel *)model

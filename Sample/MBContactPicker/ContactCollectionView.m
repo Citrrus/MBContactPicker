@@ -57,7 +57,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.selectedContacts = [[NSMutableArray alloc] init];
     
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout*)self.collectionViewLayout;
-    layout.minimumInteritemSpacing = 0;
+    layout.minimumInteritemSpacing = 5;
     layout.minimumLineSpacing = 1;
     layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10);
     
@@ -91,17 +91,13 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if ([self indexPathsForSelectedItems].count > 0)
     {
-        [self performBatchUpdates:^{
-            [self removeFromSelectedContacts:[self selectedContactIndexFromRow:self.indexPathOfSelectedCell.row]];
-            [self scrollToEntry];
-        } completion:^(BOOL finished) {
-            [self resignFirstResponder];
-            ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
-            [entryCell setFocus];
-        }];
-        // NEED DELEGATE METHOD TO INVOKE FOR REMOVING ITEM
-#warning
-//    [self scrollToEntryAnimated:NO];
+            [self removeFromSelectedContacts:[self selectedContactIndexFromRow:self.indexPathOfSelectedCell.row] withCompletion:^{
+                [self scrollToEntry];
+                [self resignFirstResponder];
+                ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+                [entryCell setFocus];
+                [self scrollToEntryAnimated:NO];
+            }];
     }
 }
 
@@ -116,12 +112,19 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 #pragma mark - Helper Methods
 
-- (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model
+- (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model withCompletion:(void(^)())completion
 {
     if (![self.selectedContacts containsObject:model])
     {
-        [self.selectedContacts addObject:model];
-        [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
+        [self performBatchUpdates:^{
+            [self.selectedContacts addObject:model];
+            [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
+        } completion:^(BOOL finished) {
+            if (completion)
+            {
+                completion();
+            }
+        }];
 #warning
 //        if ([self.contactDelegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
 //        {
@@ -130,14 +133,21 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
-- (void)removeFromSelectedContacts:(NSInteger)index
+- (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion
 {
     if (self.selectedContacts.count + 1 > self.indexPathsForSelectedItems.count)
     {
-        ContactCollectionViewCellModel *model = (ContactCollectionViewCellModel *)self.selectedContacts[index];
-        [self.selectedContacts removeObjectAtIndex:index];
-        [self deselectItemAtIndexPath:self.indexPathOfSelectedCell animated:NO];
-        [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index + 1 inSection:0]]];
+        [self performBatchUpdates:^{
+            ContactCollectionViewCellModel *model = (ContactCollectionViewCellModel *)self.selectedContacts[index];
+            [self.selectedContacts removeObjectAtIndex:index];
+            [self deselectItemAtIndexPath:self.indexPathOfSelectedCell animated:NO];
+            [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index + 1 inSection:0]]];
+        } completion:^(BOOL finished) {
+            if (completion)
+            {
+                completion();
+            }
+        }];
 
 #warning
 //        if ([self.contactDelegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])

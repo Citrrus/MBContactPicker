@@ -54,15 +54,18 @@
     self.layer.borderColor = [UIColor orangeColor].CGColor;
     self.layer.borderWidth = 1.0;
     textField.layer.borderColor = [UIColor greenColor].CGColor;
-    textField.layer.borderWidth = 1.0;
+    textField.layer.borderWidth = 2.0;
     [self addSubview:textField];
     self.contactEntryTextField = textField;
-    NSArray *c = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[textField]|"
-                                                         options:0
-                                                         metrics:nil
-                                                           views:NSDictionaryOfVariableBindings(textField)];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[textField]|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:NSDictionaryOfVariableBindings(textField)]];
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[textField]|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:NSDictionaryOfVariableBindings(textField)]];
     self.contactEntryTextField.translatesAutoresizingMaskIntoConstraints = NO;
-    [self addConstraints:c];
 }
 
 - (void)setDelegate:(id<UITextFieldDelegateImproved>)delegate

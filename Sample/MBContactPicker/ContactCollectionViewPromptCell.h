@@ -10,4 +10,9 @@
 
 @interface ContactCollectionViewPromptCell : UICollectionViewCell
 
+@property (nonatomic, copy) NSString *prompt;
+@property (nonatomic) UIEdgeInsets insets;
+
++ (CGFloat)widthWithPrompt:(NSString *)prompt;
+
 @end

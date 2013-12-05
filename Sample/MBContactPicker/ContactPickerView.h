@@ -38,12 +38,16 @@
 
 @end
 
-@interface ContactPickerView : UIView <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UITableViewDataSource, UITableViewDelegate>
+@interface ContactPickerView : UIView <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UITableViewDataSource, UITableViewDelegate, ContactCollectionViewDelegate>
 
 @property (nonatomic, weak) id<ContactPickerDelegate> delegate;
 @property (nonatomic, weak) id<ContactCollectionViewDataSource> contactDataSource;
 @property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
 @property (nonatomic, readonly) NSArray *contactsSelected;
+@property (nonatomic) NSInteger cellHeight;
+@property (nonatomic, copy) NSString *prompt;
+@property (nonatomic) CGFloat maxVisibleRows;
+@property (nonatomic) CGFloat currentContentHeight;
 
 - (void)reloadData;
 

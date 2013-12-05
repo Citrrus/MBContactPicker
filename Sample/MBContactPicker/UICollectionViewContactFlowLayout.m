@@ -8,8 +8,6 @@
 
 #import "UICollectionViewContactFlowLayout.h"
 
-const NSInteger kMaxCellSpacing = 9;
-
 // This is using the answer provided in the stack overflow post: http://bit.ly/INr0ie
 
 @implementation UICollectionViewContactFlowLayout
@@ -57,7 +55,7 @@ const NSInteger kMaxCellSpacing = 9;
     
     NSIndexPath* previousIndexPath = [NSIndexPath indexPathForItem:indexPath.item-1 inSection:indexPath.section];
     CGRect previousFrame = [self layoutAttributesForItemAtIndexPath:previousIndexPath].frame;
-    CGFloat previousFrameRightPoint = previousFrame.origin.x + previousFrame.size.width + kMaxCellSpacing;
+    CGFloat previousFrameRightPoint = previousFrame.origin.x + previousFrame.size.width;// + self.minimumInteritemSpacing;
     
     CGRect currentFrame = currentItemAttributes.frame;
     CGRect stretchedCurrentFrame = CGRectMake(0,
@@ -76,7 +74,7 @@ const NSInteger kMaxCellSpacing = 9;
         if (indexPath.row == total - 1)
         {
             CGFloat newWidth = self.collectionView.frame.size.width - sectionInset.left - sectionInset.right;
-            frame.size.width = MAX(newWidth, frame.size.width);
+            frame.size.width = MAX(MAX(50, newWidth), frame.size.width);
         }
         currentItemAttributes.frame = frame;
         return currentItemAttributes;
@@ -87,7 +85,7 @@ const NSInteger kMaxCellSpacing = 9;
     if (indexPath.row == total - 1)
     {
         CGFloat newWidth = self.collectionView.frame.size.width - previousFrameRightPoint - sectionInset.right;
-        frame.size.width = MAX(newWidth, frame.size.width);
+        frame.size.width = MAX(MAX(50, newWidth), frame.size.width);
     }
     currentItemAttributes.frame = frame;
     return currentItemAttributes;
