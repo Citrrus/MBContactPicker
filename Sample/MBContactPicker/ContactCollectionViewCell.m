@@ -72,7 +72,7 @@
 {
     UIFont *font = self.contactTitleLabel.font;
     CGSize size = [model.contactTitle boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:0 attributes:@{ NSFontAttributeName: font } context:nil].size;
-    size = CGSizeMake(size.width + 10, size.height + 10);
+    size = CGSizeMake(ceilf(size.width) + 10, ceilf(size.height) + 10);
     return size;
 }
 

@@ -59,7 +59,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 0;
     layout.minimumLineSpacing = 1;
-    self.contentInset = UIEdgeInsetsMake(0, 5, 0, 5);
+    layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10);
     
     self.allowsMultipleSelection = NO;
     self.allowsSelection = YES;

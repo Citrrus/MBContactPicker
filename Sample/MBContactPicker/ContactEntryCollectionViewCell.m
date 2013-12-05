@@ -53,6 +53,8 @@
     textField.autocorrectionType = UITextAutocorrectionTypeNo;
     self.layer.borderColor = [UIColor orangeColor].CGColor;
     self.layer.borderWidth = 1.0;
+    textField.layer.borderColor = [UIColor greenColor].CGColor;
+    textField.layer.borderWidth = 1.0;
     [self addSubview:textField];
     self.contactEntryTextField = textField;
     NSArray *c = [NSLayoutConstraint constraintsWithVisualFormat:@"H:|[textField]|"
@@ -96,8 +98,7 @@
                                        options:NSStringDrawingUsesLineFragmentOrigin
                                     attributes:@{ NSFontAttributeName: self.contactEntryTextField.font }
                                        context:nil].size.width;
-    width += 40;
-    return width;
+    return ceilf(width);
 }
 
 @end

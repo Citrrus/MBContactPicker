@@ -48,20 +48,26 @@
 
 - (void)showFilteredContacts
 {
-    [self.view layoutIfNeeded];
-    [UIView animateWithDuration:.25 animations:^{
-        self.contactPickerViewHeightConstraint.constant = 200;
+    if (self.contactPickerViewHeightConstraint.constant != 200)
+    {
         [self.view layoutIfNeeded];
-    }];
+        [UIView animateWithDuration:.25 animations:^{
+            self.contactPickerViewHeightConstraint.constant = 200;
+            [self.view layoutIfNeeded];
+        }];
+    }
 }
 
 - (void)hideFilteredContacts
 {
-    [self.view layoutIfNeeded];
-    [UIView animateWithDuration:.25 animations:^{
-        self.contactPickerViewHeightConstraint.constant = 31;
+    if (self.contactPickerViewHeightConstraint.constant != 31)
+    {
         [self.view layoutIfNeeded];
-    }];
+        [UIView animateWithDuration:.25 animations:^{
+            self.contactPickerViewHeightConstraint.constant = 31;
+            [self.view layoutIfNeeded];
+        }];
+    }
 }
 
 #pragma mark - ContactCollectionViewDataSource

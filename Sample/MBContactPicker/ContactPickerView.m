@@ -43,7 +43,7 @@
     UICollectionViewContactFlowLayout *layout = [[UICollectionViewContactFlowLayout alloc] init];
     ContactCollectionView *contactCollectionView = [[ContactCollectionView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
     contactCollectionView.layer.borderColor = [UIColor redColor].CGColor;
-    contactCollectionView.layer.borderWidth = 1.0;
+    contactCollectionView.layer.borderWidth = 0.0;
     contactCollectionView.delegate = self;
     contactCollectionView.dataSource = self;
     [self addSubview:contactCollectionView];
@@ -67,7 +67,7 @@
     contactCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contactCollectionView(>=31,<=62)][searchTableView(>=0)]|"
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contactCollectionView(>=31,<=63)][searchTableView(>=0)]|"
                                                                  options:0
                                                                  metrics:nil
                                                                    views:NSDictionaryOfVariableBindings(contactCollectionView, searchTableView)]];
@@ -123,7 +123,9 @@
                                             options:NSStringDrawingUsesLineFragmentOrigin
                                          attributes:nil
                                             context:nil];
-        cell.frame = (CGRect) { .size.width = frame.size.width + 10, .size.height = frame.size.height + 10, .origin.x = 0, .origin.y = 0 };
+        cell.frame = (CGRect) { .size.width = ceilf(frame.size.width) + 10, .size.height = 31, .origin.x = 0, .origin.y = 0 };
+        cell.layer.borderWidth = 1.0;
+        cell.layer.borderColor = [UIColor purpleColor].CGColor;
         UILabel *label = [[UILabel alloc] initWithFrame:cell.bounds];
         [cell addSubview:label];
         label.textAlignment = NSTextAlignmentCenter;
@@ -192,7 +194,13 @@
 {
     if ([self.collectionView isPromptCell:indexPath])
     {
-        return CGSizeMake(30, 30);
+        NSString *prompt = @"To:";
+        CGRect frame = [prompt boundingRectWithSize:(CGSize){ .width = CGFLOAT_MAX, .height = CGFLOAT_MAX }
+                                            options:NSStringDrawingUsesLineFragmentOrigin
+                                         attributes:nil
+                                            context:nil];
+        CGRect x = (CGRect) { .size.width = frame.size.width + 10, .size.height = 30, .origin.x = 0, .origin.y = 0 };
+        return CGSizeMake(ceilf(x.size.width), 31);
     }
     else if ([self.collectionView isEntryCell:indexPath])
     {
@@ -201,7 +209,7 @@
         {
             prototype = [[ContactEntryCollectionViewCell alloc] init];
         }
-        CGSize cellSize = CGSizeMake([prototype widthForText:prototype.text], 30);
+        CGSize cellSize = CGSizeMake([prototype widthForText:prototype.text], 31);
         return cellSize;
     }
     else
@@ -253,8 +261,14 @@
 
 - (void)textFieldDidChange:(UITextField *)textField
 {
-    [self.collectionView.collectionViewLayout invalidateLayout];
-    
+
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView.collectionViewLayout invalidateLayout];
+    }
+                                  completion:^(BOOL finished) {
+                                      [self.collectionView scrollToEntry];
+                                  }];
+
     if ([textField.text isEqualToString:@" "])
     {
         [self hideSearchTableView];
