@@ -45,40 +45,46 @@ const CGFloat kMaxVisibleRows = 3;
     self.cellHeight = kCellHeight;
     self.prompt = [kPrompt copy];
     self.maxVisibleRows = kMaxVisibleRows;
+    self.prototypeCell = [[ContactCollectionViewCell alloc] init];
+    self.translatesAutoresizingMaskIntoConstraints = NO;
     
+
     UICollectionViewContactFlowLayout *layout = [[UICollectionViewContactFlowLayout alloc] init];
     ContactCollectionView *contactCollectionView = [[ContactCollectionView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
-    contactCollectionView.layer.borderColor = [UIColor redColor].CGColor;
-    contactCollectionView.layer.borderWidth = 1.0;
+    contactCollectionView.contactDelegate = self;
     contactCollectionView.delegate = self;
     contactCollectionView.dataSource = self;
     contactCollectionView.clipsToBounds = YES;
+    contactCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:contactCollectionView];
     [contactCollectionView registerClass:[ContactCollectionViewCell class] forCellWithReuseIdentifier:@"ContactCell"];
     [contactCollectionView registerClass:[ContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
     [contactCollectionView registerClass:[ContactCollectionViewPromptCell class] forCellWithReuseIdentifier:@"ContactPromptCell"];
-    
     self.collectionView = contactCollectionView;
     
-    self.prototypeCell = [[ContactCollectionViewCell alloc] init];
 
     UITableView *searchTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height, self.bounds.size.width, 0)];
     searchTableView.dataSource = self;
     searchTableView.delegate = self;
-    searchTableView.layer.borderColor = [UIColor blueColor].CGColor;
-    searchTableView.layer.borderWidth = 1.0;
+    searchTableView.translatesAutoresizingMaskIntoConstraints = NO;
     [searchTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self addSubview:searchTableView];
+    self.searchTableView = searchTableView;
     
-    searchTableView.translatesAutoresizingMaskIntoConstraints = NO;
-    contactCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
-    self.translatesAutoresizingMaskIntoConstraints = NO;
     
-    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[contactCollectionView(%ld)][searchTableView(>=0)]|", (long)self.cellHeight]
+    [contactCollectionView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisVertical];
+    [searchTableView setContentCompressionResistancePriority:UILayoutPriorityDefaultLow forAxis:UILayoutConstraintAxisVertical];
+    
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:[NSString stringWithFormat:@"V:|[contactCollectionView(>=%ld,<=%ld)][searchTableView(>=0)]|", (long)self.cellHeight, (long)self.cellHeight]
                                                                  options:0
                                                                  metrics:nil
                                                                    views:NSDictionaryOfVariableBindings(contactCollectionView, searchTableView)]];
 
+    [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[contactCollectionView]-(0@500)-|"
+                                                                 options:0
+                                                                 metrics:nil
+                                                                   views:NSDictionaryOfVariableBindings(contactCollectionView)]];
+    
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|[contactCollectionView]|"
                                                                  options:0
                                                                  metrics:nil
@@ -88,8 +94,17 @@ const CGFloat kMaxVisibleRows = 3;
                                                                  options:0
                                                                  metrics:nil
                                                                    views:NSDictionaryOfVariableBindings(searchTableView)]];
-    self.searchTableView = searchTableView;
     
+#ifdef DEBUG_BORDERS
+    self.layer.borderColor = [UIColor grayColor].CGColor;
+    self.layer.borderWidth = 1.0;
+    contactCollectionView.layer.borderColor = [UIColor redColor].CGColor;
+    contactCollectionView.layer.borderWidth = 1.0;
+    searchTableView.layer.borderColor = [UIColor blueColor].CGColor;
+    searchTableView.layer.borderWidth = 1.0;
+#endif
+    
+
 }
 
 - (void)reloadData
@@ -125,7 +140,6 @@ const CGFloat kMaxVisibleRows = 3;
 
 - (CGFloat)currentContentHeight
 {
-    NSLog(@"Content Height: %f, Max Height: %f", self.collectionView.contentSize.height, self.maxVisibleRows * self.cellHeight);
     return MIN(self.collectionView.contentSize.height, self.maxVisibleRows * self.cellHeight);
 }
 
@@ -249,8 +263,6 @@ const CGFloat kMaxVisibleRows = 3;
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    NSLog(@"Content Width: %f", self.collectionView.contentSize.width);
-    NSLog(@"Content Insets: (%f, %f)", self.collectionView.contentInset.left, self.collectionView.contentInset.right);
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
 
     // If backspace is pressed and there isn't any text in the field, we want to select the
@@ -328,18 +340,53 @@ const CGFloat kMaxVisibleRows = 3;
 {
     ContactCollectionViewCellModel *model = self.filteredContacts[indexPath.row];
     [self.entryCell reset];
+    [self hideSearchTableView];
     [self.collectionView addToSelectedContacts:model withCompletion:^{
-        [self hideSearchTableView];
-        [self.collectionView scrollToEntry];
-        [self.entryCell setFocus];
-        [self updateCollectionViewHeightConstraints];
+        [UIView animateWithDuration:.25 animations:^{
+            [self updateCollectionViewHeightConstraints];
+            [self.delegate updateViewHeightTo:self.currentContentHeight];
+        } completion:^(BOOL finished) {
+            [self.collectionView scrollToEntry];
+            [self.entryCell setFocus];
+        }];
     }];
+}
+
+#pragma mark - ContactCollectionViewDelegate
+
+- (void)didRemoveContact:(ContactCollectionViewCellModel *)model fromContactCollectionView:(ContactCollectionView *)collectionView
+{
+    [UIView animateWithDuration:.25 animations:^{
+        [self updateCollectionViewHeightConstraints];
+        [self.delegate updateViewHeightTo:self.currentContentHeight];
+    }];
+    if ([self.delegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
+    {
+        [self.delegate didRemoveContact:model fromContactCollectionView:collectionView];
+    }
+}
+
+- (void)didAddContact:(ContactCollectionViewCellModel *)model toContactCollectionView:(ContactCollectionView *)collectionView
+{
+    if ([self.delegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
+    {
+        [self.delegate didAddContact:model toContactCollectionView:collectionView];
+    }
+}
+
+- (void)didSelectContact:(ContactCollectionViewCellModel *)model inContactCollectionView:(ContactCollectionView *)collectionView
+{
+    if ([self.delegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
+    {
+        [self.delegate didSelectContact:model inContactCollectionView:collectionView];
+    }
 }
 
 #pragma mark Helper Methods
 
 - (void)showSearchTableView
 {
+    self.searchTableView.hidden = NO;
     if ([self.delegate respondsToSelector:@selector(showFilteredContacts)])
     {
         [self.delegate showFilteredContacts];
@@ -348,6 +395,7 @@ const CGFloat kMaxVisibleRows = 3;
 
 - (void)hideSearchTableView
 {
+    self.searchTableView.hidden = YES;
     if ([self.delegate respondsToSelector:@selector(hideFilteredContacts)])
     {
         [self.delegate hideFilteredContacts];
@@ -362,16 +410,14 @@ const CGFloat kMaxVisibleRows = 3;
         {
             if (constraint.firstAttribute == NSLayoutAttributeHeight)
             {
-                if (constraint.relation == NSLayoutRelationEqual)
+                if (constraint.relation == NSLayoutRelationLessThanOrEqual)
                 {
-//                    NSLog(@"New Content Height on CollectionView: %f", self.currentContentHeight);
                     constraint.constant = self.currentContentHeight;
-                    NSLog(@"Collection View Height Constraint: %@", constraint);
                 }
-//                else if (constraint.relation == NSLayoutRelationGreaterThanOrEqual)
-//                {
-//                    constraint.constant = self.cellHeight;
-//                }
+                else if (constraint.relation == NSLayoutRelationGreaterThanOrEqual)
+                {
+                    constraint.constant = self.cellHeight;
+                }
             }
         }
     }

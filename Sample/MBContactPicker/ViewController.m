@@ -48,20 +48,18 @@
 
 - (void)showFilteredContacts
 {
-    NSLog(@"Show Constraint Height: %f", self.contactPickerViewHeightConstraint.constant);
     if (self.contactPickerViewHeightConstraint.constant <= self.contactPickerView.currentContentHeight)
     {
-//        [self.view layoutIfNeeded];
+        [self.view layoutIfNeeded];
         [UIView animateWithDuration:.25 animations:^{
             self.contactPickerViewHeightConstraint.constant = 200;
-//            [self.view layoutIfNeeded];
+            [self.view layoutIfNeeded];
         }];
     }
 }
 
 - (void)hideFilteredContacts
 {
-    NSLog(@"Hide Constraint Height: %f", self.contactPickerViewHeightConstraint.constant);
     if (self.contactPickerViewHeightConstraint.constant > self.contactPickerView.currentContentHeight)
     {
         [self.view layoutIfNeeded];
@@ -70,6 +68,13 @@
             [self.view layoutIfNeeded];
         }];
     }
+}
+
+- (void)updateViewHeightTo:(CGFloat)newHeight
+{
+    [UIView animateWithDuration:.25 animations:^{
+        self.contactPickerViewHeightConstraint.constant = newHeight;
+    }];
 }
 
 #pragma mark - ContactCollectionViewDataSource

@@ -24,10 +24,6 @@
         {
             NSIndexPath* indexPath = attributes.indexPath;
             attributes.frame = [self layoutAttributesForItemAtIndexPath:indexPath].frame;
-            if (indexPath.row == total - 1)
-            {
-                NSLog(@"Attributes: %@", attributes);
-            }
         }
     }
     

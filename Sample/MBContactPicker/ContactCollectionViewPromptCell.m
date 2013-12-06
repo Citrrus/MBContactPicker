@@ -55,8 +55,10 @@
 - (void)setup
 {
     self.insets = UIEdgeInsetsMake(0, 5, 0, 5);
+#ifdef DEBUG_BORDERS
     self.layer.borderWidth = 1.0;
     self.layer.borderColor = [UIColor purpleColor].CGColor;
+#endif
     UILabel *label = [[UILabel alloc] init];
     label.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:label];

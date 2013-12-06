@@ -19,22 +19,13 @@
 
 @end
 
-@protocol ContactCollectionViewDelegate <NSObject>
-
-@optional
-
-- (void)didSelectContact:(ContactCollectionViewCellModel*)model inContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didAddContact:(ContactCollectionViewCellModel*)model toContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didRemoveContact:(ContactCollectionViewCellModel*)model fromContactCollectionView:(ContactCollectionView*)collectionView;
-
-@end
-
 @protocol ContactPickerDelegate <ContactCollectionViewDelegate>
 
 @required
 
 - (void)showFilteredContacts;
 - (void)hideFilteredContacts;
+- (void)updateViewHeightTo:(CGFloat)newHeight;
 
 @end
 

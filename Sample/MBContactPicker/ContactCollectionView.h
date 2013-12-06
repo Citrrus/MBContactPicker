@@ -13,10 +13,21 @@
 #import "ContactCollectionViewPromptCell.h"
 @class ContactCollectionView;
 
+@protocol ContactCollectionViewDelegate <NSObject>
+
+@optional
+
+- (void)didSelectContact:(ContactCollectionViewCellModel*)model inContactCollectionView:(ContactCollectionView*)collectionView;
+- (void)didAddContact:(ContactCollectionViewCellModel*)model toContactCollectionView:(ContactCollectionView*)collectionView;
+- (void)didRemoveContact:(ContactCollectionViewCellModel*)model fromContactCollectionView:(ContactCollectionView*)collectionView;
+
+@end
+
 @interface ContactCollectionView : UICollectionView <UICollectionViewDelegateFlowLayout, UIKeyInput>
 
 @property (nonatomic, readonly) NSArray *contactsSelected;
 @property (nonatomic) NSArray *contacts;
+@property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
 
 - (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;

@@ -51,10 +51,12 @@
     textField.delegate = self.delegate;
     textField.text = @" ";
     textField.autocorrectionType = UITextAutocorrectionTypeNo;
+#ifdef DEBUG_BORDERS
     self.layer.borderColor = [UIColor orangeColor].CGColor;
     self.layer.borderWidth = 1.0;
     textField.layer.borderColor = [UIColor greenColor].CGColor;
     textField.layer.borderWidth = 2.0;
+#endif
     [self addSubview:textField];
     self.contactEntryTextField = textField;
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[textField]|"

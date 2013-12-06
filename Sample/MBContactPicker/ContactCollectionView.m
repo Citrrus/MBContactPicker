@@ -116,20 +116,19 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if (![self.selectedContacts containsObject:model])
     {
+        [self.selectedContacts addObject:model];
         [self performBatchUpdates:^{
-            [self.selectedContacts addObject:model];
             [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
         } completion:^(BOOL finished) {
             if (completion)
             {
                 completion();
             }
+            if ([self.contactDelegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
+            {
+                [self.contactDelegate didAddContact:model toContactCollectionView:self];
+            }
         }];
-#warning
-//        if ([self.contactDelegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
-//        {
-//            [self.contactDelegate didAddContact:model toContactCollectionView:self];
-//        }
     }
 }
 
@@ -137,8 +136,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if (self.selectedContacts.count + 1 > self.indexPathsForSelectedItems.count)
     {
+        ContactCollectionViewCellModel *model = (ContactCollectionViewCellModel *)self.selectedContacts[index];
         [self performBatchUpdates:^{
-            ContactCollectionViewCellModel *model = (ContactCollectionViewCellModel *)self.selectedContacts[index];
             [self.selectedContacts removeObjectAtIndex:index];
             [self deselectItemAtIndexPath:self.indexPathOfSelectedCell animated:NO];
             [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index + 1 inSection:0]]];
@@ -147,13 +146,11 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 completion();
             }
+            if ([self.contactDelegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
+            {
+                [self.contactDelegate didRemoveContact:model fromContactCollectionView:self];
+            }
         }];
-
-#warning
-//        if ([self.contactDelegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
-//        {
-//            [self.contactDelegate didRemoveContact:model fromContactCollectionView:self];
-//        }
     }
 }
 
@@ -212,7 +209,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 - (void)scrollToEntryAnimated:(BOOL)animated
 {
     [self scrollToItemAtIndexPath:[self entryCellIndexPath]
-                 atScrollPosition:UICollectionViewScrollPositionTop
+                 atScrollPosition:UICollectionViewScrollPositionBottom
                          animated:animated];
 }
 
