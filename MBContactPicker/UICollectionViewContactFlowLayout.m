@@ -16,8 +16,6 @@
 {
     NSArray* attributesToReturn = [super layoutAttributesForElementsInRect:rect];
 
-    NSInteger total = [self.collectionView.dataSource collectionView:self.collectionView numberOfItemsInSection:0];
-
     for (UICollectionViewLayoutAttributes* attributes in attributesToReturn)
     {
         if (nil == attributes.representedElementKind)

@@ -10,12 +10,12 @@
 #define MBContactPicker_MBContactPicker_h
 
 #import <UIKit/UIKit.h>
-#import "ContactPickerView.h"
 #import "ContactCollectionView.h"
 #import "ContactCollectionViewCell.h"
 #import "ContactCollectionViewCellModel.h"
 #import "ContactCollectionViewPromptCell.h"
 #import "ContactEntryCollectionViewCell.h"
 #import "UICollectionViewContactFlowLayout.h"
+#import "ContactPickerView.h"
 
 #endif
