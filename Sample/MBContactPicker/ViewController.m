@@ -52,7 +52,9 @@
     {
         [self.view layoutIfNeeded];
         [UIView animateWithDuration:.25 animations:^{
-            self.contactPickerViewHeightConstraint.constant = 200;
+            CGRect pickerRectInWindow = [self.view convertRect:self.contactPickerView.frame fromView:nil];
+            CGFloat newHeight = self.view.window.bounds.size.height - pickerRectInWindow.origin.y - self.contactPickerView.keyboardHeight;
+            self.contactPickerViewHeightConstraint.constant = newHeight;
             [self.view layoutIfNeeded];
         }];
     }
