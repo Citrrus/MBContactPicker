@@ -7,13 +7,13 @@
 //
 
 #import "ViewController.h"
-#import "ContactCollectionViewCellModel.h"
-#import "ContactCollectionView.h"
+#import "MBContactPicker.h"
 
-@interface ViewController () <ContactCollectionViewDataSource, ContactCollectionViewDelegate>
+@interface ViewController () <ContactCollectionViewDataSource, ContactCollectionViewDelegate, ContactPickerDelegate>
 
-@property NSArray *objects;
-@property (weak, nonatomic) IBOutlet ContactCollectionView *contactCollectionView;
+@property (nonatomic) NSArray *contacts;
+@property (weak, nonatomic) IBOutlet ContactPickerView *contactPickerView;
+@property (nonatomic, weak) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
 
 @end
 
@@ -22,40 +22,51 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
-    self.objects = @[
-                     @"Bryan Reed",
-                     @"Matt Bowman",
-                     @"Matt Hupman",
-                     @"Erica Stein",
-                     @"Erin Pfiffner",
-                     @"Ben McGinnis",
-                     @"Lenny Pham",
-                     @"Jason LaFollette",
-                     @"Caleb Everist"
-                     ];
     
-    self.contactCollectionView.contactDelegate = self;
-    self.contactCollectionView.contactDataSource = self;
+    NSArray *array = @[
+                       @"Bryan Reed",
+                       @"Matt Bowman",
+                       @"Matt Hupman",
+                       @"Erica Stein",
+                       @"Erin Pfiffner",
+                       @"Ben McGinnis",
+                       @"Lenny Pham",
+                       @"Jason LaFollette",
+                       @"A", @"B", @"C", @"D",
+                       @"Caleb Everist",
+                       @"Kinda long name for a kinda long",
+                       @"Super long name for a super long person with a long name"
+                       ];
+    
+	NSMutableArray *contacts = [[NSMutableArray alloc] initWithCapacity:array.count];
+    for (NSString *contact in array)
+    {
+        ContactCollectionViewCellModel *model = [[ContactCollectionViewCellModel alloc] init];
+        model.contactObject = nil;
+        model.contactTitle = contact;
+        [contacts addObject:model];
+    }
+    self.contacts = contacts;
+    
+    self.contactPickerView.delegate = self;
+    self.contactPickerView.contactDelegate = self;
+    self.contactPickerView.contactDataSource = self;
+    [self.contactPickerView reloadData];
 }
-
 
 #pragma mark - ContactCollectionViewDataSource
 
 - (NSInteger)numberOfContactsInCollectionView:(ContactCollectionView*)collectionView
 {
-    return self.objects.count;
+    return self.contacts.count;
 }
 
-- (ContactCollectionViewCellModel *)contactModelForContactCollectionView:(ContactCollectionView*)collectionView atIndexPath:(NSIndexPath*)indexPath
+- (NSArray*)contactModelsForCollectionView:(ContactCollectionView*)collectionView
 {
-    ContactCollectionViewCellModel *model = [[ContactCollectionViewCellModel alloc] init];
-    model.contactObject = nil;
-    model.contactTitle = self.objects[indexPath.row];
-    return model;
+    return self.contacts;
 }
 
-#pragma mark - ContactCollectionViewDelegate
+#pragma mark - ContactPickerDelegate
 
 - (void)didSelectContact:(ContactCollectionViewCellModel*)model inContactCollectionView:(ContactCollectionView*)collectionView
 {
@@ -72,5 +83,44 @@
     NSLog(@"Did Remove: %@", model.contactTitle);
 }
 
+// This delegate method is called to allow the parent view to increase the size of
+// the contact picker view to show the search table view
+- (void)showFilteredContacts
+{
+    if (self.contactPickerViewHeightConstraint.constant <= self.contactPickerView.currentContentHeight)
+    {
+        [self.view layoutIfNeeded];
+        [UIView animateWithDuration:.25 animations:^{
+            CGRect pickerRectInWindow = [self.view convertRect:self.contactPickerView.frame fromView:nil];
+            CGFloat newHeight = self.view.window.bounds.size.height - pickerRectInWindow.origin.y - self.contactPickerView.keyboardHeight;
+            self.contactPickerViewHeightConstraint.constant = newHeight;
+            [self.view layoutIfNeeded];
+        }];
+    }
+}
+
+// This delegate method is called to allow the parent view to decrease the size of
+// the contact picker view to hide the search table view
+- (void)hideFilteredContacts
+{
+    if (self.contactPickerViewHeightConstraint.constant > self.contactPickerView.currentContentHeight)
+    {
+        [self.view layoutIfNeeded];
+        [UIView animateWithDuration:.25 animations:^{
+            self.contactPickerViewHeightConstraint.constant = self.contactPickerView.currentContentHeight;
+            [self.view layoutIfNeeded];
+        }];
+    }
+}
+
+// This delegate method is invoked to allow the parent to increase the size of the
+// collectionview that shows which contacts have been selected. To increase or decrease
+// the number of rows visible, change the maxVisibleRows property of the ContactPickerView
+- (void)updateViewHeightTo:(CGFloat)newHeight
+{
+    [UIView animateWithDuration:.25 animations:^{
+        self.contactPickerViewHeightConstraint.constant = newHeight;
+    }];
+}
 
 @end
