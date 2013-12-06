@@ -96,7 +96,6 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
                 [self resignFirstResponder];
                 ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
                 [entryCell setFocus];
-                [self scrollToEntryAnimated:NO];
             }];
     }
 }

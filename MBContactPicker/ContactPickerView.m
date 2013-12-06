@@ -11,7 +11,7 @@
 
 const NSInteger kCellHeight = 31;
 const NSString *kPrompt = @"To:";
-const CGFloat kMaxVisibleRows = 3;
+const CGFloat kMaxVisibleRows = 2;
 
 
 @interface ContactPickerView()
@@ -20,9 +20,10 @@ const CGFloat kMaxVisibleRows = 3;
 @property (nonatomic, weak) UITableView *searchTableView;
 @property (nonatomic) NSArray *filteredContacts;
 @property (nonatomic) NSArray *contacts;
+@property (nonatomic) ContactCollectionViewCell *prototypeCell;
+@property (nonatomic) CGFloat keyboardHeight;
 @property (nonatomic) ContactCollectionViewPromptCell *promptCell;
 @property (nonatomic) ContactEntryCollectionViewCell *entryCell;
-@property (nonatomic) ContactCollectionViewCell *prototypeCell;
 
 @property NSInteger selectedIndex;
 @property CGFloat originalHeight;
@@ -35,6 +36,26 @@ const CGFloat kMaxVisibleRows = 3;
 - (void)awakeFromNib
 {
     [self setup];
+}
+
+- (void)didMoveToWindow
+{
+    if (self.window)
+    {
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc addObserver:self selector:@selector(keyboardChangedStatus:) name:UIKeyboardWillShowNotification object:nil];
+        [nc addObserver:self selector:@selector(keyboardChangedStatus:) name:UIKeyboardWillHideNotification object:nil];
+    }
+}
+
+- (void)willMoveToWindow:(UIWindow *)newWindow
+{
+    if (newWindow == nil)
+    {
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+        [nc removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+    }
 }
 
 - (void)setup
@@ -103,8 +124,15 @@ const CGFloat kMaxVisibleRows = 3;
     searchTableView.layer.borderColor = [UIColor blueColor].CGColor;
     searchTableView.layer.borderWidth = 1.0;
 #endif
-    
 
+}
+
+#pragma mark - Keyboard Notification Handling
+- (void)keyboardChangedStatus:(NSNotification*)notification
+{
+    CGRect keyboardRect;
+    [[[notification userInfo] objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardRect];
+    self.keyboardHeight = keyboardRect.size.height;
 }
 
 - (void)reloadData
@@ -174,7 +202,7 @@ const CGFloat kMaxVisibleRows = 3;
                                                                                                                            forIndexPath:indexPath];
         cell.delegate = self;
         collectionCell = cell;
-        if (self.collectionView.indexPathOfSelectedCell)
+        if (!self.collectionView.indexPathOfSelectedCell)
         {
             [cell setFocus];
         }
@@ -201,7 +229,7 @@ const CGFloat kMaxVisibleRows = 3;
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     ContactCollectionViewCell *cell = (ContactCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    [self becomeFirstResponder];
+    [self.collectionView becomeFirstResponder];
     self.selectedIndex = indexPath.row;
     cell.focused = YES;
     
@@ -282,7 +310,7 @@ const CGFloat kMaxVisibleRows = 3;
                                               animated:YES
                                         scrollPosition:UICollectionViewScrollPositionBottom];
             [self.collectionView.delegate collectionView:self.collectionView didSelectItemAtIndexPath:newSelectedIndexPath];
-            [self becomeFirstResponder];
+            [self.collectionView becomeFirstResponder];
         }
         return NO;
     }

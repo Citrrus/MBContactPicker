@@ -38,7 +38,14 @@
 @property (nonatomic) NSInteger cellHeight;
 @property (nonatomic, copy) NSString *prompt;
 @property (nonatomic) CGFloat maxVisibleRows;
-@property (nonatomic) CGFloat currentContentHeight;
+@property (nonatomic, readonly) CGFloat currentContentHeight;
+@property (nonatomic, readonly) CGFloat keyboardHeight;
+@property (nonatomic, readonly) ContactCollectionViewPromptCell *promptCell;
+@property (nonatomic, readonly) ContactEntryCollectionViewCell *entryCell;
+
+@property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
+@property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
+
 
 - (void)reloadData;
 
