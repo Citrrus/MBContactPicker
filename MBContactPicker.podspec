@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
   s.license      = 'MIT'
   s.author       = { "Matt Bowman" => "mbowman@citrrus.com" }
   s.platform     = :ios, '7.0'
-  s.source       = { :git => "http://github.com/Citrrus/MBContactPicker.git", :tag => "0.0.1" }
+  s.source       = { :git => "https://github.com/Citrrus/MBContactPicker.git", :tag => "0.0.1" }
   s.source_files  = 'MBContactPicker'
   s.requires_arc = true
 
