@@ -25,8 +25,7 @@
 
 @interface ContactCollectionView : UICollectionView <UICollectionViewDelegateFlowLayout, UIKeyInput>
 
-@property (nonatomic, readonly) NSArray *contactsSelected;
-@property (nonatomic) NSArray *contacts;
+@property (nonatomic) NSMutableArray *selectedContacts;
 @property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
 
 - (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model withCompletion:(void(^)())completion;

@@ -12,7 +12,6 @@
 
 @interface ContactCollectionView()
 
-@property (nonatomic) NSMutableArray *selectedContacts;
 @property (nonatomic, readonly) NSIndexPath *indexPathOfSelectedCell;
 
 @end
@@ -210,11 +209,6 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     [self scrollToItemAtIndexPath:[self entryCellIndexPath]
                  atScrollPosition:UICollectionViewScrollPositionBottom
                          animated:animated];
-}
-
-- (NSArray*)contactsSelected
-{
-    return self.selectedContacts;
 }
 
 @end

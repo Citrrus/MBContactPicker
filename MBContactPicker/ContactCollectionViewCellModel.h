@@ -10,7 +10,7 @@
 
 @interface ContactCollectionViewCellModel : NSObject
 
-@property (nonatomic, weak) id contactObject;
+@property (nonatomic) id contactObject;
 @property (nonatomic, copy) NSString *contactTitle;
 
 @end
