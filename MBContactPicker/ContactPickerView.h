@@ -47,6 +47,7 @@
 @property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
 
 
+- (void)addPreselectedContact:(ContactCollectionViewCellModel*)model;
 - (void)reloadData;
 
 @end
