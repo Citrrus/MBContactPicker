@@ -136,7 +136,7 @@ const CGFloat kMaxVisibleRows = 2;
 
 - (void)reloadData
 {
-    self.contacts = [self.contactDataSource contactModelsForCollectionView:self.collectionView];
+    self.contacts = [self.datasource contactModelsForCollectionView:self.collectionView];
 }
 
 - (void)addPreselectedContact:(ContactCollectionViewCellModel*)model
@@ -241,9 +241,9 @@ const CGFloat kMaxVisibleRows = 2;
     self.selectedIndex = indexPath.row;
     cell.focused = YES;
     
-    if ([self.contactDelegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
+    if ([self.delegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
     {
-        [self.contactDelegate didSelectContact:cell.model inContactCollectionView:self.collectionView];
+        [self.delegate didSelectContact:cell.model inContactCollectionView:self.collectionView];
     }
 }
 
@@ -380,7 +380,10 @@ const CGFloat kMaxVisibleRows = 2;
     [self.collectionView addToSelectedContacts:model withCompletion:^{
         [UIView animateWithDuration:.25 animations:^{
             [self updateCollectionViewHeightConstraints];
-            [self.delegate updateViewHeightTo:self.currentContentHeight];
+            if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
+            {
+                [self.delegate updateViewHeightTo:self.currentContentHeight];
+            }
         } completion:^(BOOL finished) {
             [self.collectionView scrollToEntry];
             [self.entryCell setFocus];
@@ -394,7 +397,10 @@ const CGFloat kMaxVisibleRows = 2;
 {
     [UIView animateWithDuration:.25 animations:^{
         [self updateCollectionViewHeightConstraints];
-        [self.delegate updateViewHeightTo:self.currentContentHeight];
+        if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
+        {
+            [self.delegate updateViewHeightTo:self.currentContentHeight];
+        }
     }];
     if ([self.delegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
     {
