@@ -88,6 +88,7 @@ const CGFloat kMaxVisibleRows = 2;
     searchTableView.dataSource = self;
     searchTableView.delegate = self;
     searchTableView.translatesAutoresizingMaskIntoConstraints = NO;
+    searchTableView.hidden = YES;
     [searchTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self addSubview:searchTableView];
     self.searchTableView = searchTableView;
