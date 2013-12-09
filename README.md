@@ -9,7 +9,7 @@ I wrote this library to provide an update to the awesome THContactPicker that ou
 
 My secondary goal was to make using it extremely simple while still providing a high level of flexibility for projects that need it.
 
-![Animated GIF of Contact Picker](http://i.imgur.com/XynY6Mg.gif)
+![Animated GIF of Contact Picker](assets/contact_picker.gif)
 
 ## Code Example
 
