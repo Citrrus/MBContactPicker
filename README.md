@@ -135,6 +135,8 @@ pod 'MBContactPicker'
 
 I am actively maintaining this along with the team at Citrrus, so please fork our project and make it better!
 
+Special thanks to [Matt Hupman](http://github.com/mhupman) for putting this library into a project and providing feedback and PRs to make it better.
+
 ## License
 
 This project uses the MIT license, so there are no strings attached.
