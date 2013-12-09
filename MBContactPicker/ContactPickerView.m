@@ -124,7 +124,6 @@ const CGFloat kMaxVisibleRows = 2;
     searchTableView.layer.borderColor = [UIColor blueColor].CGColor;
     searchTableView.layer.borderWidth = 1.0;
 #endif
-
 }
 
 #pragma mark - Keyboard Notification Handling
@@ -140,11 +139,16 @@ const CGFloat kMaxVisibleRows = 2;
     self.contacts = [self.contactDataSource contactModelsForCollectionView:self.collectionView];
 }
 
+- (void)addPreselectedContact:(ContactCollectionViewCellModel*)model
+{
+    [self.collectionView.selectedContacts addObject:model];
+}
+
 #pragma mark - Properties
 
 - (NSArray*)contactsSelected
 {
-    return self.collectionView.contactsSelected;
+    return self.collectionView.selectedContacts;
 }
 
 - (void)setCellHeight:(NSInteger)cellHeight
@@ -182,7 +186,7 @@ const CGFloat kMaxVisibleRows = 2;
 {
     // Index 0 is the prompt (To:)
     // self.selectedContacts.count + 1 is the input box (where you put in your search terms)
-    return self.collectionView.contactsSelected.count + 2;
+    return self.collectionView.selectedContacts.count + 2;
 }
 
 - (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -213,10 +217,14 @@ const CGFloat kMaxVisibleRows = 2;
     {
         ContactCollectionViewCell *cell = (ContactCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell"
                                                                                                                 forIndexPath:indexPath];
-        cell.model = self.collectionView.contactsSelected[[self.collectionView selectedContactIndexFromIndexPath:indexPath]];
+        cell.model = self.collectionView.selectedContacts[[self.collectionView selectedContactIndexFromIndexPath:indexPath]];
         if ([self.collectionView.indexPathOfSelectedCell isEqual:indexPath])
         {
             cell.focused = YES;
+        }
+        else
+        {
+            cell.focused = NO;
         }
         collectionCell = cell;
     }
@@ -301,7 +309,7 @@ const CGFloat kMaxVisibleRows = 2;
         range.location == 0 &&
         range.length == 1)
     {
-        if (self.collectionView.contactsSelected.count > 0)
+        if (self.collectionView.selectedContacts.count > 0)
         {
             [textField resignFirstResponder];
             NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.contactsSelected.count
