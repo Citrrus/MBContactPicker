@@ -20,7 +20,7 @@ The fastest way to get started using this library is to copy the code below:
 #import "ViewController.h"
 #import <MBContactPicker.h>
 
-@interface ViewController () <ContactCollectionViewDataSource, ContactCollectionViewDelegate, ContactPickerDelegate>
+@interface ViewController () <ContactPickerDataSource, ContactPickerDelegate>
 
 @property (nonatomic) NSArray *contacts;
 @property (weak, nonatomic) IBOutlet ContactPickerView *contactPickerView;
@@ -47,17 +47,11 @@ The fastest way to get started using this library is to copy the code below:
     self.contacts = contacts;
     
     self.contactPickerView.delegate = self;
-    self.contactPickerView.contactDelegate = self;
-    self.contactPickerView.contactDataSource = self;
+    self.contactPickerView.datasource = self;
     [self.contactPickerView reloadData];
 }
 
-#pragma mark - ContactCollectionViewDataSource
-
-- (NSInteger)numberOfContactsInCollectionView:(ContactCollectionView*)collectionView
-{
-    return self.contacts.count;
-}
+#pragma mark - ContactPickerDataSource
 
 - (NSArray*)contactModelsForCollectionView:(ContactCollectionView*)collectionView
 {
