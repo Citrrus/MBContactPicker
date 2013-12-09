@@ -17,8 +17,6 @@
 
 @implementation ContactCollectionViewCell
 
-@synthesize focused = _focused;
-
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -78,6 +76,8 @@
 
 - (void)setFocused:(BOOL)focused
 {
+    _focused = focused;
+    
     if (focused)
     {
         self.contactTitleLabel.textColor = [UIColor whiteColor];
@@ -89,7 +89,6 @@
         self.contactTitleLabel.textColor = [UIColor blueColor];
         self.contactTitleLabel.backgroundColor = [UIColor clearColor];
     }
-    _focused = focused;
 }
 
 @end
