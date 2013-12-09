@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MBContactPicker.h"
 
-@protocol ContactCollectionViewDataSource <NSObject>
+@protocol ContactPickerDataSource <NSObject>
 
 @required
 
@@ -32,8 +32,7 @@
 @interface ContactPickerView : UIView <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UITableViewDataSource, UITableViewDelegate, ContactCollectionViewDelegate>
 
 @property (nonatomic, weak) id<ContactPickerDelegate> delegate;
-@property (nonatomic, weak) id<ContactCollectionViewDataSource> contactDataSource;
-@property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
+@property (nonatomic, weak) id<ContactPickerDataSource> datasource;
 @property (nonatomic, readonly) NSArray *contactsSelected;
 @property (nonatomic) NSInteger cellHeight;
 @property (nonatomic, copy) NSString *prompt;
