@@ -222,6 +222,10 @@ const CGFloat kMaxVisibleRows = 2;
         {
             cell.focused = YES;
         }
+        else
+        {
+            cell.focused = NO;
+        }
         collectionCell = cell;
     }
     
