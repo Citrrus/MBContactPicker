@@ -23,7 +23,7 @@ The fastest way to get started using this library is to copy the code below:
 @interface ViewController () <ContactPickerDataSource, ContactPickerDelegate>
 
 @property (nonatomic) NSArray *contacts;
-@property (weak, nonatomic) IBOutlet ContactPickerView *contactPickerView;
+@property (weak, nonatomic) IBOutlet MBContactPicker *contactPickerView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
 
 @end
