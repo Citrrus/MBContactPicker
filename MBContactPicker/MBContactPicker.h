@@ -2,12 +2,9 @@
 //  MBContactPicker.h
 //  MBContactPicker
 //
-//  Created by Matt Bowman on 12/4/13.
+//  Created by Matt Bowman on 12/2/13.
 //  Copyright (c) 2013 Citrrus, LLC. All rights reserved.
 //
-
-#ifndef MBContactPicker_MBContactPicker_h
-#define MBContactPicker_MBContactPicker_h
 
 #import <UIKit/UIKit.h>
 #import "ContactCollectionView.h"
@@ -16,6 +13,45 @@
 #import "ContactCollectionViewPromptCell.h"
 #import "ContactEntryCollectionViewCell.h"
 #import "UICollectionViewContactFlowLayout.h"
-#import "ContactPickerView.h"
 
-#endif
+@protocol MBContactPickerDataSource <NSObject>
+
+@required
+
+@optional
+
+- (NSArray *)contactModelsForCollectionView:(ContactCollectionView*)collectionView;
+
+@end
+
+@protocol MBContactPickerDelegate <ContactCollectionViewDelegate>
+
+@required
+
+- (void)showFilteredContacts;
+- (void)hideFilteredContacts;
+- (void)updateViewHeightTo:(CGFloat)newHeight;
+
+@end
+
+@interface MBContactPicker : UIView <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UITableViewDataSource, UITableViewDelegate, ContactCollectionViewDelegate>
+
+@property (nonatomic, weak) id<MBContactPickerDelegate> delegate;
+@property (nonatomic, weak) id<MBContactPickerDataSource> datasource;
+@property (nonatomic, readonly) NSArray *contactsSelected;
+@property (nonatomic) NSInteger cellHeight;
+@property (nonatomic, copy) NSString *prompt;
+@property (nonatomic) CGFloat maxVisibleRows;
+@property (nonatomic, readonly) CGFloat currentContentHeight;
+@property (nonatomic, readonly) CGFloat keyboardHeight;
+@property (nonatomic, readonly) ContactCollectionViewPromptCell *promptCell;
+@property (nonatomic, readonly) ContactEntryCollectionViewCell *entryCell;
+
+@property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
+@property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
+
+
+- (void)addPreselectedContact:(ContactCollectionViewCellModel*)model;
+- (void)reloadData;
+
+@end

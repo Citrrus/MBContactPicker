@@ -12,7 +12,7 @@
 		632577DE185181B600211E57 /* ContactCollectionViewCellModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 632577D2185181B600211E57 /* ContactCollectionViewCellModel.m */; };
 		632577DF185181B600211E57 /* ContactCollectionViewPromptCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 632577D4185181B600211E57 /* ContactCollectionViewPromptCell.m */; };
 		632577E0185181B600211E57 /* ContactEntryCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 632577D6185181B600211E57 /* ContactEntryCollectionViewCell.m */; };
-		632577E1185181B600211E57 /* ContactPickerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 632577D8185181B600211E57 /* ContactPickerView.m */; };
+		632577E1185181B600211E57 /* MBContactPicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 632577D8185181B600211E57 /* MBContactPicker.m */; };
 		632577E2185181B600211E57 /* UICollectionViewContactFlowLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 632577DB185181B600211E57 /* UICollectionViewContactFlowLayout.m */; };
 		63B41D36183DA31100C4321B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B41D35183DA31100C4321B /* Foundation.framework */; };
 		63B41D38183DA31100C4321B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B41D37183DA31100C4321B /* CoreGraphics.framework */; };
@@ -51,9 +51,8 @@
 		632577D4185181B600211E57 /* ContactCollectionViewPromptCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactCollectionViewPromptCell.m; sourceTree = "<group>"; };
 		632577D5185181B600211E57 /* ContactEntryCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactEntryCollectionViewCell.h; sourceTree = "<group>"; };
 		632577D6185181B600211E57 /* ContactEntryCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactEntryCollectionViewCell.m; sourceTree = "<group>"; };
-		632577D7185181B600211E57 /* ContactPickerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactPickerView.h; sourceTree = "<group>"; };
-		632577D8185181B600211E57 /* ContactPickerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactPickerView.m; sourceTree = "<group>"; };
-		632577D9185181B600211E57 /* MBContactPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBContactPicker.h; sourceTree = "<group>"; };
+		632577D7185181B600211E57 /* MBContactPicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBContactPicker.h; sourceTree = "<group>"; };
+		632577D8185181B600211E57 /* MBContactPicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBContactPicker.m; sourceTree = "<group>"; };
 		632577DA185181B600211E57 /* UICollectionViewContactFlowLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UICollectionViewContactFlowLayout.h; sourceTree = "<group>"; };
 		632577DB185181B600211E57 /* UICollectionViewContactFlowLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UICollectionViewContactFlowLayout.m; sourceTree = "<group>"; };
 		63B41D32183DA31100C4321B /* MBContactPicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MBContactPicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -114,9 +113,8 @@
 				632577D4185181B600211E57 /* ContactCollectionViewPromptCell.m */,
 				632577D5185181B600211E57 /* ContactEntryCollectionViewCell.h */,
 				632577D6185181B600211E57 /* ContactEntryCollectionViewCell.m */,
-				632577D7185181B600211E57 /* ContactPickerView.h */,
-				632577D8185181B600211E57 /* ContactPickerView.m */,
-				632577D9185181B600211E57 /* MBContactPicker.h */,
+				632577D7185181B600211E57 /* MBContactPicker.h */,
+				632577D8185181B600211E57 /* MBContactPicker.m */,
 				632577DA185181B600211E57 /* UICollectionViewContactFlowLayout.h */,
 				632577DB185181B600211E57 /* UICollectionViewContactFlowLayout.m */,
 			);
@@ -298,7 +296,7 @@
 				632577E0185181B600211E57 /* ContactEntryCollectionViewCell.m in Sources */,
 				632577DE185181B600211E57 /* ContactCollectionViewCellModel.m in Sources */,
 				63B41D4C183DA31100C4321B /* ViewController.m in Sources */,
-				632577E1185181B600211E57 /* ContactPickerView.m in Sources */,
+				632577E1185181B600211E57 /* MBContactPicker.m in Sources */,
 				632577DC185181B600211E57 /* ContactCollectionView.m in Sources */,
 				632577DD185181B600211E57 /* ContactCollectionViewCell.m in Sources */,
 				63B41D46183DA31100C4321B /* AppDelegate.m in Sources */,

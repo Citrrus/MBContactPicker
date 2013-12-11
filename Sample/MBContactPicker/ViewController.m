@@ -9,10 +9,10 @@
 #import "ViewController.h"
 #import "MBContactPicker.h"
 
-@interface ViewController () <ContactPickerDataSource, ContactPickerDelegate>
+@interface ViewController () <MBContactPickerDataSource, MBContactPickerDelegate>
 
 @property (nonatomic) NSArray *contacts;
-@property (weak, nonatomic) IBOutlet ContactPickerView *contactPickerView;
+@property (weak, nonatomic) IBOutlet MBContactPicker *contactPickerView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
 
 @end
@@ -109,7 +109,7 @@
 
 // This delegate method is invoked to allow the parent to increase the size of the
 // collectionview that shows which contacts have been selected. To increase or decrease
-// the number of rows visible, change the maxVisibleRows property of the ContactPickerView
+// the number of rows visible, change the maxVisibleRows property of the MBContactPicker
 - (void)updateViewHeightTo:(CGFloat)newHeight
 {
     [UIView animateWithDuration:.25 animations:^{

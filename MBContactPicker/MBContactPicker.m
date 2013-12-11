@@ -1,20 +1,19 @@
 //
-//  ContactPickerView.m
+//  MBContactPicker.m
 //  MBContactPicker
 //
 //  Created by Matt Bowman on 12/2/13.
 //  Copyright (c) 2013 Citrrus, LLC. All rights reserved.
 //
 
-#import "ContactPickerView.h"
-#import "ContactCollectionView.h"
+#import "MBContactPicker.h"
 
 const NSInteger kCellHeight = 31;
 const NSString *kPrompt = @"To:";
 const CGFloat kMaxVisibleRows = 2;
 
 
-@interface ContactPickerView()
+@interface MBContactPicker()
 
 @property (nonatomic, weak) ContactCollectionView *collectionView;
 @property (nonatomic, weak) UITableView *searchTableView;
@@ -31,7 +30,7 @@ const CGFloat kMaxVisibleRows = 2;
 
 @end
 
-@implementation ContactPickerView
+@implementation MBContactPicker
 
 - (void)awakeFromNib
 {
