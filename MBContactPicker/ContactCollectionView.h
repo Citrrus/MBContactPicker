@@ -39,4 +39,9 @@
 - (NSInteger)selectedContactIndexFromRow:(NSInteger)row;
 - (NSIndexPath*)indexPathOfSelectedCell;
 
++ (ContactCollectionView*)contactCollectionViewWithFrame:(CGRect)frame;
+
+@property (nonatomic) NSInteger cellHeight;
+@property (nonatomic, copy) NSString *prompt;
+
 @end

@@ -9,10 +9,15 @@
 #import "ContactCollectionView.h"
 #import "ContactEntryCollectionViewCell.h"
 #import "ContactCollectionViewPromptCell.h"
+#import "UICollectionViewContactFlowLayout.h"
+
+NSInteger const kCellHeight = 31;
+NSString * const kPrompt = @"To:";
 
 @interface ContactCollectionView()
 
 @property (nonatomic, readonly) NSIndexPath *indexPathOfSelectedCell;
+@property (nonatomic) ContactCollectionViewCell *prototypeCell;
 
 @end
 
@@ -23,6 +28,12 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 };
 
 @implementation ContactCollectionView
+
++ (ContactCollectionView*)contactCollectionViewWithFrame:(CGRect)frame
+{
+    UICollectionViewContactFlowLayout *layout = [[UICollectionViewContactFlowLayout alloc] init];
+    return [[self alloc] initWithFrame:frame collectionViewLayout:layout];
+}
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -55,15 +66,25 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     self.selectedContacts = [[NSMutableArray alloc] init];
     
-    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout*)self.collectionViewLayout;
+    self.cellHeight = kCellHeight;
+    self.prompt = kPrompt;
+    
+    UICollectionViewContactFlowLayout *layout = (UICollectionViewContactFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 5;
     layout.minimumLineSpacing = 1;
     layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10);
+    
+    self.prototypeCell = [[ContactCollectionViewCell alloc] init];
     
     self.allowsMultipleSelection = NO;
     self.allowsSelection = YES;
     self.backgroundColor = [UIColor whiteColor];
     
+    [self registerClass:[ContactCollectionViewCell class] forCellWithReuseIdentifier:@"ContactCell"];
+    [self registerClass:[ContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
+    [self registerClass:[ContactCollectionViewPromptCell class] forCellWithReuseIdentifier:@"ContactPromptCell"];
+    
+    self.delegate = self;
 }
 
 #pragma mark - UIResponder
@@ -210,6 +231,72 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     [self scrollToItemAtIndexPath:[self entryCellIndexPath]
                  atScrollPosition:UICollectionViewScrollPositionBottom
                          animated:animated];
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    ContactCollectionViewCell *cell = (ContactCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    [self becomeFirstResponder];
+    cell.focused = YES;
+    
+    if ([self.contactDelegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
+    {
+        [self.contactDelegate didSelectContact:cell.model inContactCollectionView:self];
+    }
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [self isContactCell:indexPath];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    ContactCollectionViewCell *cell = (ContactCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    cell.focused = NO;
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self isPromptCell:indexPath])
+    {
+        CGFloat width = [ContactCollectionViewPromptCell widthWithPrompt:self.prompt];
+        width += 10;
+        return CGSizeMake(width, self.cellHeight);
+    }
+    else if ([self isEntryCell:indexPath])
+    {
+//        ContactEntryCollectionViewCell *prototype = self.entryCell;
+//        if (!prototype)
+//        {
+//            prototype = [[ContactEntryCollectionViewCell alloc] init];
+//        }
+        
+#warning TODO: put above logic back, I think so we can measure against the real text if it's available
+        ContactEntryCollectionViewCell *prototype = [[ContactEntryCollectionViewCell alloc] init];
+        
+        CGFloat newWidth = MIN(prototype.frame.size.width, MAX(50, [prototype widthForText:prototype.text]));
+        CGSize cellSize = CGSizeMake(newWidth, self.cellHeight);
+        return cellSize;
+    }
+    else
+    {
+        ContactCollectionViewCellModel *model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
+        CGSize actualSize = [self.prototypeCell sizeForCellWithContact:model];
+        CGSize maxSize = CGSizeMake(self.frame.size.width - self.contentInset.left - self.contentInset.right, actualSize.height);
+        if (actualSize.width > maxSize.width)
+        {
+            return maxSize;
+        }
+        else
+        {
+            return actualSize;
+        }
+    }
 }
 
 @end

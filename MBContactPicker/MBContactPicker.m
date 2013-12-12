@@ -8,23 +8,18 @@
 
 #import "MBContactPicker.h"
 
-const NSInteger kCellHeight = 31;
-const NSString *kPrompt = @"To:";
 const CGFloat kMaxVisibleRows = 2;
-
 
 @interface MBContactPicker()
 
-@property (nonatomic, weak) ContactCollectionView *collectionView;
+@property (nonatomic, weak) ContactCollectionView *contactCollectionView;
 @property (nonatomic, weak) UITableView *searchTableView;
 @property (nonatomic) NSArray *filteredContacts;
 @property (nonatomic) NSArray *contacts;
-@property (nonatomic) ContactCollectionViewCell *prototypeCell;
 @property (nonatomic) CGFloat keyboardHeight;
 @property (nonatomic) ContactCollectionViewPromptCell *promptCell;
 @property (nonatomic) ContactEntryCollectionViewCell *entryCell;
 
-@property NSInteger selectedIndex;
 @property CGFloat originalHeight;
 @property CGFloat originalYOffset;
 
@@ -59,29 +54,20 @@ const CGFloat kMaxVisibleRows = 2;
 
 - (void)setup
 {
-    self.selectedIndex = -1;
     self.originalHeight = -1;
     self.originalYOffset = -1;
     self.cellHeight = kCellHeight;
     self.prompt = [kPrompt copy];
     self.maxVisibleRows = kMaxVisibleRows;
-    self.prototypeCell = [[ContactCollectionViewCell alloc] init];
     self.translatesAutoresizingMaskIntoConstraints = NO;
     
-
-    UICollectionViewContactFlowLayout *layout = [[UICollectionViewContactFlowLayout alloc] init];
-    ContactCollectionView *contactCollectionView = [[ContactCollectionView alloc] initWithFrame:self.bounds collectionViewLayout:layout];
+    ContactCollectionView *contactCollectionView = [ContactCollectionView contactCollectionViewWithFrame:self.bounds];
     contactCollectionView.contactDelegate = self;
-    contactCollectionView.delegate = self;
     contactCollectionView.dataSource = self;
     contactCollectionView.clipsToBounds = YES;
     contactCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:contactCollectionView];
-    [contactCollectionView registerClass:[ContactCollectionViewCell class] forCellWithReuseIdentifier:@"ContactCell"];
-    [contactCollectionView registerClass:[ContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
-    [contactCollectionView registerClass:[ContactCollectionViewPromptCell class] forCellWithReuseIdentifier:@"ContactPromptCell"];
-    self.collectionView = contactCollectionView;
-    
+    self.contactCollectionView = contactCollectionView;
 
     UITableView *searchTableView = [[UITableView alloc] initWithFrame:CGRectMake(0, self.bounds.size.height, self.bounds.size.width, 0)];
     searchTableView.dataSource = self;
@@ -136,32 +122,35 @@ const CGFloat kMaxVisibleRows = 2;
 
 - (void)reloadData
 {
-    self.contacts = [self.datasource contactModelsForCollectionView:self.collectionView];
+    self.contacts = [self.datasource contactModelsForCollectionView:self.contactCollectionView];
+    [self.contactCollectionView reloadData];
 }
 
 - (void)addPreselectedContact:(ContactCollectionViewCellModel*)model
 {
-    [self.collectionView.selectedContacts addObject:model];
+    [self.contactCollectionView.selectedContacts addObject:model];
 }
 
 #pragma mark - Properties
 
 - (NSArray*)contactsSelected
 {
-    return self.collectionView.selectedContacts;
+    return self.contactCollectionView.selectedContacts;
 }
 
 - (void)setCellHeight:(NSInteger)cellHeight
 {
     _cellHeight = cellHeight;
+    self.contactCollectionView.cellHeight = cellHeight;
     [self updateCollectionViewHeightConstraints];
-    [self.collectionView.collectionViewLayout invalidateLayout];
+    [self.contactCollectionView.collectionViewLayout invalidateLayout];
 }
 
 - (void)setPrompt:(NSString *)prompt
 {
     _prompt = prompt;
-    self.promptCell.prompt = prompt;
+    self.contactCollectionView.prompt = prompt;
+    [self.contactCollectionView.collectionViewLayout invalidateLayout];
 }
 
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows
@@ -172,7 +161,7 @@ const CGFloat kMaxVisibleRows = 2;
 
 - (CGFloat)currentContentHeight
 {
-    return MIN(self.collectionView.contentSize.height, self.maxVisibleRows * self.cellHeight);
+    return MIN(self.contactCollectionView.contentSize.height, self.maxVisibleRows * self.cellHeight);
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -186,28 +175,28 @@ const CGFloat kMaxVisibleRows = 2;
 {
     // Index 0 is the prompt (To:)
     // self.selectedContacts.count + 1 is the input box (where you put in your search terms)
-    return self.collectionView.selectedContacts.count + 2;
+    return self.contactCollectionView.selectedContacts.count + 2;
 }
 
 - (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionViewCell *collectionCell;
     
-    if ([self.collectionView isPromptCell:indexPath])
+    if ([self.contactCollectionView isPromptCell:indexPath])
     {
         ContactCollectionViewPromptCell *cell = (ContactCollectionViewPromptCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactPromptCell" forIndexPath:indexPath];
         cell.prompt = self.prompt;
         collectionCell = cell;
         self.promptCell = cell;
     }
-    else if ([self.collectionView isEntryCell:indexPath])
+    else if ([self.contactCollectionView isEntryCell:indexPath])
     {
         ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
                                                                                                                            forIndexPath:indexPath];
         cell.delegate = self;
         collectionCell = cell;
 
-        if ([self.collectionView isFirstResponder] && self.collectionView.indexPathOfSelectedCell == nil)
+        if ([self.contactCollectionView isFirstResponder] && self.contactCollectionView.indexPathOfSelectedCell == nil)
         {
             [cell setFocus];
         }
@@ -218,8 +207,8 @@ const CGFloat kMaxVisibleRows = 2;
     {
         ContactCollectionViewCell *cell = (ContactCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell"
                                                                                                                 forIndexPath:indexPath];
-        cell.model = self.collectionView.selectedContacts[[self.collectionView selectedContactIndexFromIndexPath:indexPath]];
-        if ([self.collectionView.indexPathOfSelectedCell isEqual:indexPath])
+        cell.model = self.contactCollectionView.selectedContacts[[self.contactCollectionView selectedContactIndexFromIndexPath:indexPath]];
+        if ([self.contactCollectionView.indexPathOfSelectedCell isEqual:indexPath])
         {
             cell.focused = YES;
         }
@@ -231,69 +220,6 @@ const CGFloat kMaxVisibleRows = 2;
     }
     
     return collectionCell;
-}
-
-#pragma mark - UICollectionViewDelegate
-
-- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    ContactCollectionViewCell *cell = (ContactCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    [self.collectionView becomeFirstResponder];
-    self.selectedIndex = indexPath.row;
-    cell.focused = YES;
-    
-    if ([self.delegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
-    {
-        [self.delegate didSelectContact:cell.model inContactCollectionView:self.collectionView];
-    }
-}
-
-- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    return [self.collectionView isContactCell:indexPath];
-}
-
-- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    ContactCollectionViewCell *cell = (ContactCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    cell.focused = NO;
-}
-
-#pragma mark - UICollectionViewDelegateFlowLayout
-
-- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    if ([self.collectionView isPromptCell:indexPath])
-    {
-        CGFloat width = [ContactCollectionViewPromptCell widthWithPrompt:self.prompt];
-        width += 10;
-        return CGSizeMake(width, self.cellHeight);
-    }
-    else if ([self.collectionView isEntryCell:indexPath])
-    {
-        ContactEntryCollectionViewCell *prototype = self.entryCell;
-        if (!prototype)
-        {
-            prototype = [[ContactEntryCollectionViewCell alloc] init];
-        }
-        CGFloat newWidth = MIN(prototype.frame.size.width, MAX(50, [prototype widthForText:prototype.text]));
-        CGSize cellSize = CGSizeMake(newWidth, self.cellHeight);
-        return cellSize;
-    }
-    else
-    {
-        ContactCollectionViewCellModel *model = self.contactsSelected[[self.collectionView selectedContactIndexFromIndexPath:indexPath]];
-        CGSize actualSize = [self.prototypeCell sizeForCellWithContact:model];
-        CGSize maxSize = CGSizeMake(self.frame.size.width - self.collectionView.contentInset.left - self.collectionView.contentInset.right, actualSize.height);
-        if (actualSize.width > maxSize.width)
-        {
-            return maxSize;
-        }
-        else
-        {
-            return actualSize;
-        }
-    }
 }
 
 #pragma mark - UITextFieldDelegateImproved
@@ -310,16 +236,16 @@ const CGFloat kMaxVisibleRows = 2;
         range.location == 0 &&
         range.length == 1)
     {
-        if (self.collectionView.selectedContacts.count > 0)
+        if (self.contactCollectionView.selectedContacts.count > 0)
         {
             [textField resignFirstResponder];
             NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.contactsSelected.count
                                                                     inSection:0];
-            [self.collectionView selectItemAtIndexPath:newSelectedIndexPath
+            [self.contactCollectionView selectItemAtIndexPath:newSelectedIndexPath
                                               animated:YES
                                         scrollPosition:UICollectionViewScrollPositionBottom];
-            [self.collectionView.delegate collectionView:self.collectionView didSelectItemAtIndexPath:newSelectedIndexPath];
-            [self.collectionView becomeFirstResponder];
+            [self.contactCollectionView.delegate collectionView:self.contactCollectionView didSelectItemAtIndexPath:newSelectedIndexPath];
+            [self.contactCollectionView becomeFirstResponder];
         }
         return NO;
     }
@@ -330,12 +256,12 @@ const CGFloat kMaxVisibleRows = 2;
 - (void)textFieldDidChange:(UITextField *)textField
 {
 
-    [self.collectionView performBatchUpdates:^{
-        [self.collectionView.collectionViewLayout invalidateLayout];
+    [self.contactCollectionView performBatchUpdates:^{
+        [self.contactCollectionView.collectionViewLayout invalidateLayout];
         [self updateCollectionViewHeightConstraints];
     }
                                   completion:^(BOOL finished) {
-                                      [self.collectionView scrollToEntry];
+                                      [self.contactCollectionView scrollToEntry];
                                   }];
 
     if ([textField.text isEqualToString:@" "])
@@ -378,7 +304,7 @@ const CGFloat kMaxVisibleRows = 2;
     ContactCollectionViewCellModel *model = self.filteredContacts[indexPath.row];
     [self.entryCell reset];
     [self hideSearchTableView];
-    [self.collectionView addToSelectedContacts:model withCompletion:^{
+    [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
         [UIView animateWithDuration:.25 animations:^{
             [self updateCollectionViewHeightConstraints];
             if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
@@ -402,6 +328,7 @@ const CGFloat kMaxVisibleRows = 2;
             [self.delegate updateViewHeightTo:self.currentContentHeight];
         }
     }];
+    
     if ([self.delegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
     {
         [self.delegate didRemoveContact:model fromContactCollectionView:collectionView];
@@ -435,13 +362,13 @@ const CGFloat kMaxVisibleRows = 2;
 {
     if (![self isFirstResponder])
     {
-        if (self.collectionView.indexPathOfSelectedCell)
+        if (self.contactCollectionView.indexPathOfSelectedCell)
         {
-            [self.collectionView scrollToItemAtIndexPath:self.collectionView.indexPathOfSelectedCell atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
+            [self.contactCollectionView scrollToItemAtIndexPath:self.contactCollectionView.indexPathOfSelectedCell atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
         }
         else
         {
-            [self.collectionView scrollToEntry];
+            [self.contactCollectionView scrollToEntry];
             [self.entryCell setFocus];
         }
     }
@@ -452,7 +379,7 @@ const CGFloat kMaxVisibleRows = 2;
 - (BOOL)resignFirstResponder
 {
     [super resignFirstResponder];
-    return [self.collectionView resignFirstResponder];
+    return [self.contactCollectionView resignFirstResponder];
 }
 
 #pragma mark Helper Methods
@@ -479,7 +406,7 @@ const CGFloat kMaxVisibleRows = 2;
 {
     for (NSLayoutConstraint *constraint in self.constraints)
     {
-        if (constraint.firstItem == self.collectionView)
+        if (constraint.firstItem == self.contactCollectionView)
         {
             if (constraint.firstAttribute == NSLayoutAttributeHeight)
             {
