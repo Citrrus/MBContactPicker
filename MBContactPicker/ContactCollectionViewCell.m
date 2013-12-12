@@ -60,6 +60,10 @@
                                                                    views:NSDictionaryOfVariableBindings(contactLabel)]];
 }
 
+- (void)tintColorDidChange {
+    self.focused = self.focused;
+}
+
 - (void)setModel:(ContactCollectionViewCellModel *)model
 {
     _model = model;
@@ -81,12 +85,12 @@
     if (focused)
     {
         self.contactTitleLabel.textColor = [UIColor whiteColor];
-        self.contactTitleLabel.backgroundColor = [UIColor blueColor];
+        self.contactTitleLabel.backgroundColor = self.tintColor;
         self.contactTitleLabel.layer.cornerRadius = 3.0f;
     }
     else
     {
-        self.contactTitleLabel.textColor = [UIColor blueColor];
+        self.contactTitleLabel.textColor = self.tintColor;
         self.contactTitleLabel.backgroundColor = [UIColor clearColor];
     }
 }
