@@ -119,6 +119,16 @@ The fastest way to get started using this library is to copy the code below:
 
 ```
 
+### Change Color of the Selected Contacts
+
+Thanks to [Roman](http://github.com/firmach) for this enhancement.
+
+```objc
+[[ContactCollectionViewCell appearance] setTintColor:[UIColor orangeColor]];
+```
+
+![Orange Colored Contacts](assets/orange-contact.png)
+
 ## Motivation
 
 This project exists to because no other cocoapods existed that solved the problem of providing a robust contact selector that was easy to implement, used the latest iOS tools, and matched the appearance of iOS7's flat design.
