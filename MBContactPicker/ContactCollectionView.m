@@ -9,10 +9,17 @@
 #import "ContactCollectionView.h"
 #import "ContactEntryCollectionViewCell.h"
 #import "ContactCollectionViewPromptCell.h"
+#import "UICollectionViewContactFlowLayout.h"
 
-@interface ContactCollectionView()
+NSInteger const kCellHeight = 31;
+NSString * const kPrompt = @"To:";
+
+@interface ContactCollectionView() <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved>
 
 @property (nonatomic, readonly) NSIndexPath *indexPathOfSelectedCell;
+@property (nonatomic) ContactCollectionViewCell *prototypeCell;
+@property (nonatomic) ContactCollectionViewPromptCell *promptCell;
+@property (nonatomic) ContactEntryCollectionViewCell *entryCell;
 
 @end
 
@@ -23,6 +30,12 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 };
 
 @implementation ContactCollectionView
+
++ (ContactCollectionView*)contactCollectionViewWithFrame:(CGRect)frame
+{
+    UICollectionViewContactFlowLayout *layout = [[UICollectionViewContactFlowLayout alloc] init];
+    return [[self alloc] initWithFrame:frame collectionViewLayout:layout];
+}
 
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
@@ -55,15 +68,26 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     self.selectedContacts = [[NSMutableArray alloc] init];
     
-    UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout*)self.collectionViewLayout;
+    self.cellHeight = kCellHeight;
+    self.prompt = kPrompt;
+    
+    UICollectionViewContactFlowLayout *layout = (UICollectionViewContactFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 5;
     layout.minimumLineSpacing = 1;
     layout.sectionInset = UIEdgeInsetsMake(0, 10, 0, 10);
+    
+    self.prototypeCell = [[ContactCollectionViewCell alloc] init];
     
     self.allowsMultipleSelection = NO;
     self.allowsSelection = YES;
     self.backgroundColor = [UIColor whiteColor];
     
+    [self registerClass:[ContactCollectionViewCell class] forCellWithReuseIdentifier:@"ContactCell"];
+    [self registerClass:[ContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
+    [self registerClass:[ContactCollectionViewPromptCell class] forCellWithReuseIdentifier:@"ContactPromptCell"];
+    
+    self.dataSource = self;
+    self.delegate = self;
 }
 
 #pragma mark - UIResponder
@@ -92,7 +116,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     if ([self indexPathsForSelectedItems].count > 0)
     {
             [self removeFromSelectedContacts:[self selectedContactIndexFromRow:self.indexPathOfSelectedCell.row] withCompletion:^{
-                [self scrollToEntry];
+                [self focusOnEntry];
                 [self resignFirstResponder];
                 ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
                 [entryCell setFocus];
@@ -113,6 +137,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion
 {
+    [self.entryCell reset];
+    
     if (![self.selectedContacts containsObject:model])
     {
         [self.selectedContacts addObject:model];
@@ -200,9 +226,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
-- (void)scrollToEntry
+- (void)focusOnEntry
 {
     [self scrollToEntryAnimated:YES];
+    [self.entryCell setFocus];
 }
 
 - (void)scrollToEntryAnimated:(BOOL)animated
@@ -210,6 +237,167 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     [self scrollToItemAtIndexPath:[self entryCellIndexPath]
                  atScrollPosition:UICollectionViewScrollPositionBottom
                          animated:animated];
+}
+
+#pragma mark - UICollectionViewDelegate
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    ContactCollectionViewCell *cell = (ContactCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    [self becomeFirstResponder];
+    cell.focused = YES;
+    
+    if ([self.contactDelegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
+    {
+        [self.contactDelegate didSelectContact:cell.model inContactCollectionView:self];
+    }
+}
+
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldHighlightItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [self isContactCell:indexPath];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    ContactCollectionViewCell *cell = (ContactCollectionViewCell *)[collectionView cellForItemAtIndexPath:indexPath];
+    cell.focused = NO;
+}
+
+#pragma mark - UICollectionViewDelegateFlowLayout
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    if ([self isPromptCell:indexPath])
+    {
+        CGFloat width = [ContactCollectionViewPromptCell widthWithPrompt:self.prompt];
+        width += 10;
+        return CGSizeMake(width, self.cellHeight);
+    }
+    else if ([self isEntryCell:indexPath])
+    {
+        ContactEntryCollectionViewCell *prototype = [[ContactEntryCollectionViewCell alloc] init];
+        
+        CGFloat newWidth = MAX(50, [prototype widthForText:prototype.text]);
+        CGSize cellSize = CGSizeMake(newWidth, self.cellHeight);
+        return cellSize;
+    }
+    else
+    {
+        id<MBContactPickerModelProtocol> model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
+        CGSize actualSize = [self.prototypeCell sizeForCellWithContact:model];
+        CGSize maxSize = CGSizeMake(self.frame.size.width - self.contentInset.left - self.contentInset.right, actualSize.height);
+        if (actualSize.width > maxSize.width)
+        {
+            return maxSize;
+        }
+        else
+        {
+            return actualSize;
+        }
+    }
+}
+
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    // Index 0 is the prompt (To:)
+    // self.selectedContacts.count + 1 is the input box (where you put in your search terms)
+    return self.selectedContacts.count + 2;
+}
+
+- (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *collectionCell;
+    
+    if ([self isPromptCell:indexPath])
+    {
+        ContactCollectionViewPromptCell *cell = (ContactCollectionViewPromptCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactPromptCell" forIndexPath:indexPath];
+        cell.prompt = self.prompt;
+        collectionCell = cell;
+        self.promptCell = cell;
+    }
+    else if ([self isEntryCell:indexPath])
+    {
+        ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
+                                                                                                                           forIndexPath:indexPath];
+        cell.delegate = self;
+        collectionCell = cell;
+        
+        if ([self isFirstResponder] && self.indexPathOfSelectedCell == nil)
+        {
+            [cell setFocus];
+        }
+        
+        self.entryCell = cell;
+    }
+    else
+    {
+        ContactCollectionViewCell *cell = (ContactCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell"
+                                                                                                                forIndexPath:indexPath];
+        cell.model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
+        if ([self.indexPathOfSelectedCell isEqual:indexPath])
+        {
+            cell.focused = YES;
+        }
+        else
+        {
+            cell.focused = NO;
+        }
+        collectionCell = cell;
+    }
+    
+    return collectionCell;
+}
+
+#pragma mark - UITextFieldDelegateImproved
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    // If backspace is pressed and there isn't any text in the field, we want to select the
+    // last selected contact and not let them delete the space we inserted (the space allows
+    // us to catch the last backspace press - without it, we get no event!)
+    if ([newString isEqualToString:@""] &&
+        [string isEqualToString:@""] &&
+        range.location == 0 &&
+        range.length == 1)
+    {
+        if (self.selectedContacts.count > 0)
+        {
+            [textField resignFirstResponder];
+            NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.selectedContacts.count
+                                                                    inSection:0];
+            [self selectItemAtIndexPath:newSelectedIndexPath
+                                                     animated:YES
+                                               scrollPosition:UICollectionViewScrollPositionBottom];
+            [self.delegate collectionView:self didSelectItemAtIndexPath:newSelectedIndexPath];
+            [self becomeFirstResponder];
+        }
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (void)textFieldDidChange:(UITextField *)textField
+{
+    if ([self.contactDelegate respondsToSelector:@selector(entryTextDidChange:inContactCollectionView:)])
+    {
+        [self.contactDelegate entryTextDidChange:textField.text inContactCollectionView:self];
+    }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    return NO;
 }
 
 @end

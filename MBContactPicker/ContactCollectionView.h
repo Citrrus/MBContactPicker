@@ -16,6 +16,7 @@
 
 @optional
 
+- (void)entryTextDidChange:(NSString*)text inContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView*)collectionView;
@@ -29,7 +30,7 @@
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
-- (void)scrollToEntry;
+- (void)focusOnEntry;
 - (BOOL)isEntryCell:(NSIndexPath*)indexPath;
 - (BOOL)isPromptCell:(NSIndexPath*)indexPath;
 - (BOOL)isContactCell:(NSIndexPath*)indexPath;
@@ -37,5 +38,10 @@
 - (NSInteger)selectedContactIndexFromIndexPath:(NSIndexPath*)indexPath;
 - (NSInteger)selectedContactIndexFromRow:(NSInteger)row;
 - (NSIndexPath*)indexPathOfSelectedCell;
+
++ (ContactCollectionView*)contactCollectionViewWithFrame:(CGRect)frame;
+
+@property (nonatomic) NSInteger cellHeight;
+@property (nonatomic, copy) NSString *prompt;
 
 @end

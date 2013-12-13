@@ -12,7 +12,6 @@
 #import "ContactCollectionViewCell.h"
 #import "ContactCollectionViewPromptCell.h"
 #import "ContactEntryCollectionViewCell.h"
-#import "UICollectionViewContactFlowLayout.h"
 
 @protocol MBContactPickerDataSource <NSObject>
 
@@ -34,7 +33,7 @@
 
 @end
 
-@interface MBContactPicker : UIView <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UITableViewDataSource, UITableViewDelegate, ContactCollectionViewDelegate>
+@interface MBContactPicker : UIView <UITableViewDataSource, UITableViewDelegate, ContactCollectionViewDelegate>
 
 @property (nonatomic, weak) id<MBContactPickerDelegate> delegate;
 @property (nonatomic, weak) id<MBContactPickerDataSource> datasource;
@@ -44,12 +43,9 @@
 @property (nonatomic) CGFloat maxVisibleRows;
 @property (nonatomic, readonly) CGFloat currentContentHeight;
 @property (nonatomic, readonly) CGFloat keyboardHeight;
-@property (nonatomic, readonly) ContactCollectionViewPromptCell *promptCell;
-@property (nonatomic, readonly) ContactEntryCollectionViewCell *entryCell;
 
 @property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
 @property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
-
 
 - (void)addPreselectedContact:(id<MBContactPickerModelProtocol>)model;
 - (void)reloadData;
