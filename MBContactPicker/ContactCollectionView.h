@@ -27,6 +27,7 @@
 
 @property (nonatomic) NSMutableArray *selectedContacts;
 @property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
+@property (nonatomic, weak) id<UITextFieldDelegateImproved> contactEntryTextDelegate;
 
 - (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;

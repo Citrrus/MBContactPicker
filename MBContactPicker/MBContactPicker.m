@@ -18,8 +18,6 @@ NSString * const kMBPrompt = @"To:";
 @property (nonatomic) NSArray *filteredContacts;
 @property (nonatomic) NSArray *contacts;
 @property (nonatomic) CGFloat keyboardHeight;
-@property (nonatomic) ContactCollectionViewPromptCell *promptCell;
-@property (nonatomic) ContactEntryCollectionViewCell *entryCell;
 
 @property CGFloat originalHeight;
 @property CGFloat originalYOffset;
@@ -57,13 +55,12 @@ NSString * const kMBPrompt = @"To:";
 {
     self.originalHeight = -1;
     self.originalYOffset = -1;
-    self.prompt = kMBPrompt;
     self.maxVisibleRows = kMaxVisibleRows;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     
     ContactCollectionView *contactCollectionView = [ContactCollectionView contactCollectionViewWithFrame:self.bounds];
     contactCollectionView.contactDelegate = self;
-    contactCollectionView.dataSource = self;
+    contactCollectionView.contactEntryTextDelegate = self;
     contactCollectionView.clipsToBounds = YES;
     contactCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:contactCollectionView];
@@ -166,64 +163,6 @@ NSString * const kMBPrompt = @"To:";
     return MIN(self.contactCollectionView.contentSize.height, self.maxVisibleRows * self.contactCollectionView.cellHeight);
 }
 
-#pragma mark - UICollectionViewDataSource
-
-- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
-{
-    return 1;
-}
-
-- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
-{
-    // Index 0 is the prompt (To:)
-    // self.selectedContacts.count + 1 is the input box (where you put in your search terms)
-    return self.contactCollectionView.selectedContacts.count + 2;
-}
-
-- (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
-{
-    UICollectionViewCell *collectionCell;
-    
-    if ([self.contactCollectionView isPromptCell:indexPath])
-    {
-        ContactCollectionViewPromptCell *cell = (ContactCollectionViewPromptCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactPromptCell" forIndexPath:indexPath];
-        cell.prompt = self.prompt;
-        collectionCell = cell;
-        self.promptCell = cell;
-    }
-    else if ([self.contactCollectionView isEntryCell:indexPath])
-    {
-        ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
-                                                                                                                           forIndexPath:indexPath];
-        cell.delegate = self;
-        collectionCell = cell;
-
-        if ([self.contactCollectionView isFirstResponder] && self.contactCollectionView.indexPathOfSelectedCell == nil)
-        {
-            [cell setFocus];
-        }
-
-        self.entryCell = cell;
-    }
-    else
-    {
-        ContactCollectionViewCell *cell = (ContactCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell"
-                                                                                                                forIndexPath:indexPath];
-        cell.model = self.contactCollectionView.selectedContacts[[self.contactCollectionView selectedContactIndexFromIndexPath:indexPath]];
-        if ([self.contactCollectionView.indexPathOfSelectedCell isEqual:indexPath])
-        {
-            cell.focused = YES;
-        }
-        else
-        {
-            cell.focused = NO;
-        }
-        collectionCell = cell;
-    }
-    
-    return collectionCell;
-}
-
 #pragma mark - UITextFieldDelegateImproved
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
@@ -304,7 +243,8 @@ NSString * const kMBPrompt = @"To:";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ContactCollectionViewCellModel *model = self.filteredContacts[indexPath.row];
-    [self.entryCell reset];
+#warning TODO: Figure this out somehow.  Maybe a reloadData overload?
+//    [self.entryCell reset];
     [self hideSearchTableView];
     [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
         [UIView animateWithDuration:.25 animations:^{
@@ -362,6 +302,7 @@ NSString * const kMBPrompt = @"To:";
 
 - (BOOL)becomeFirstResponder
 {
+#warning need to push this logic down into ContactCollectionView, it'll make more sense there
     if (![self isFirstResponder])
     {
         if (self.contactCollectionView.indexPathOfSelectedCell)
@@ -371,7 +312,8 @@ NSString * const kMBPrompt = @"To:";
         else
         {
             [self.contactCollectionView scrollToEntry];
-            [self.entryCell setFocus];
+
+//            [self.entryCell setFocus];
         }
     }
     

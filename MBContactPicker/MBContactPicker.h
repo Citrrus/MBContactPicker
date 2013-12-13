@@ -33,7 +33,7 @@
 
 @end
 
-@interface MBContactPicker : UIView <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UITableViewDataSource, UITableViewDelegate, ContactCollectionViewDelegate>
+@interface MBContactPicker : UIView <UITextFieldDelegateImproved, UITableViewDataSource, UITableViewDelegate, ContactCollectionViewDelegate>
 
 @property (nonatomic, weak) id<MBContactPickerDelegate> delegate;
 @property (nonatomic, weak) id<MBContactPickerDataSource> datasource;

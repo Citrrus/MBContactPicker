@@ -14,10 +14,12 @@
 NSInteger const kCellHeight = 31;
 NSString * const kPrompt = @"To:";
 
-@interface ContactCollectionView()
+@interface ContactCollectionView() <UICollectionViewDataSource, UICollectionViewDelegate>
 
 @property (nonatomic, readonly) NSIndexPath *indexPathOfSelectedCell;
 @property (nonatomic) ContactCollectionViewCell *prototypeCell;
+@property (nonatomic) ContactCollectionViewPromptCell *promptCell;
+@property (nonatomic) ContactEntryCollectionViewCell *entryCell;
 
 @end
 
@@ -84,6 +86,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     [self registerClass:[ContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
     [self registerClass:[ContactCollectionViewPromptCell class] forCellWithReuseIdentifier:@"ContactPromptCell"];
     
+    self.dataSource = self;
     self.delegate = self;
 }
 
@@ -297,6 +300,64 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             return actualSize;
         }
     }
+}
+
+#pragma mark - UICollectionViewDataSource
+
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
+{
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
+{
+    // Index 0 is the prompt (To:)
+    // self.selectedContacts.count + 1 is the input box (where you put in your search terms)
+    return self.selectedContacts.count + 2;
+}
+
+- (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewCell *collectionCell;
+    
+    if ([self isPromptCell:indexPath])
+    {
+        ContactCollectionViewPromptCell *cell = (ContactCollectionViewPromptCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactPromptCell" forIndexPath:indexPath];
+        cell.prompt = self.prompt;
+        collectionCell = cell;
+        self.promptCell = cell;
+    }
+    else if ([self isEntryCell:indexPath])
+    {
+        ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
+                                                                                                                           forIndexPath:indexPath];
+        cell.delegate = self.contactEntryTextDelegate;
+        collectionCell = cell;
+        
+        if ([self isFirstResponder] && self.indexPathOfSelectedCell == nil)
+        {
+            [cell setFocus];
+        }
+        
+        self.entryCell = cell;
+    }
+    else
+    {
+        ContactCollectionViewCell *cell = (ContactCollectionViewCell*)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactCell"
+                                                                                                                forIndexPath:indexPath];
+        cell.model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
+        if ([self.indexPathOfSelectedCell isEqual:indexPath])
+        {
+            cell.focused = YES;
+        }
+        else
+        {
+            cell.focused = NO;
+        }
+        collectionCell = cell;
+    }
+    
+    return collectionCell;
 }
 
 @end
