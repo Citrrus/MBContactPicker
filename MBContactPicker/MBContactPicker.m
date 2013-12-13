@@ -70,7 +70,6 @@ NSString * const kMBPrompt = @"To:";
     searchTableView.delegate = self;
     searchTableView.translatesAutoresizingMaskIntoConstraints = NO;
     searchTableView.hidden = YES;
-    [searchTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self addSubview:searchTableView];
     self.searchTableView = searchTableView;
     
@@ -124,7 +123,7 @@ NSString * const kMBPrompt = @"To:";
     [self.contactCollectionView reloadData];
 }
 
-- (void)addPreselectedContact:(ContactCollectionViewCellModel*)model
+- (void)addPreselectedContact:(id<MBContactPickerModelProtocol>)model
 {
     [self.contactCollectionView.selectedContacts addObject:model];
 }
@@ -171,8 +170,30 @@ NSString * const kMBPrompt = @"To:";
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    cell.textLabel.text = ((ContactCollectionViewCellModel*)self.filteredContacts[indexPath.row]).contactTitle;
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    if (!cell)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                      reuseIdentifier:@"Cell"];
+    }
+
+    id<MBContactPickerModelProtocol> model = (id<MBContactPickerModelProtocol>)self.filteredContacts[indexPath.row];
+
+    cell.textLabel.text = model.contactTitle;
+
+    cell.detailTextLabel.text = nil;
+    cell.imageView.image = nil;
+    
+    if ([model respondsToSelector:@selector(contactSubtitle)])
+    {
+        cell.detailTextLabel.text = model.contactSubtitle;
+    }
+    
+    if ([model respondsToSelector:@selector(contactImage)])
+    {
+        cell.imageView.image = model.contactImage;
+    }
+    
     return cell;
 }
 
@@ -180,7 +201,7 @@ NSString * const kMBPrompt = @"To:";
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ContactCollectionViewCellModel *model = self.filteredContacts[indexPath.row];
+    id<MBContactPickerModelProtocol> model = self.filteredContacts[indexPath.row];
     [self hideSearchTableView];
     [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
         [UIView animateWithDuration:.25 animations:^{
@@ -221,7 +242,7 @@ NSString * const kMBPrompt = @"To:";
     }
 }
 
-- (void)didRemoveContact:(ContactCollectionViewCellModel *)model fromContactCollectionView:(ContactCollectionView *)collectionView
+- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView *)collectionView
 {
     [UIView animateWithDuration:.25 animations:^{
         [self updateCollectionViewHeightConstraints];
@@ -237,7 +258,7 @@ NSString * const kMBPrompt = @"To:";
     }
 }
 
-- (void)didAddContact:(ContactCollectionViewCellModel *)model toContactCollectionView:(ContactCollectionView *)collectionView
+- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView *)collectionView
 {
     if ([self.delegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
     {
@@ -245,7 +266,7 @@ NSString * const kMBPrompt = @"To:";
     }
 }
 
-- (void)didSelectContact:(ContactCollectionViewCellModel *)model inContactCollectionView:(ContactCollectionView *)collectionView
+- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView *)collectionView
 {
     if ([self.delegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
     {

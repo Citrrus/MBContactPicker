@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBContactModel.h"
 #import "ContactCollectionView.h"
 #import "ContactCollectionViewCell.h"
-#import "ContactCollectionViewCellModel.h"
 #import "ContactCollectionViewPromptCell.h"
 #import "ContactEntryCollectionViewCell.h"
 
@@ -25,7 +25,7 @@
 
 @protocol MBContactPickerDelegate <ContactCollectionViewDelegate>
 
-@required
+@optional
 
 - (void)showFilteredContacts;
 - (void)hideFilteredContacts;
@@ -47,6 +47,7 @@
 @property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
 @property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
 
+- (void)addPreselectedContact:(id<MBContactPickerModelProtocol>)model;
 - (void)reloadData;
 
 @end

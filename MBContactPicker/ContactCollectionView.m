@@ -135,7 +135,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 #pragma mark - Helper Methods
 
-- (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model withCompletion:(void(^)())completion
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion
 {
     [self.entryCell reset];
     
@@ -161,7 +161,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if (self.selectedContacts.count + 1 > self.indexPathsForSelectedItems.count)
     {
-        ContactCollectionViewCellModel *model = (ContactCollectionViewCellModel *)self.selectedContacts[index];
+        id<MBContactPickerModelProtocol> model = (id<MBContactPickerModelProtocol>)self.selectedContacts[index];
         [self performBatchUpdates:^{
             [self.selectedContacts removeObjectAtIndex:index];
             [self deselectItemAtIndexPath:self.indexPathOfSelectedCell animated:NO];
@@ -283,7 +283,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
     else
     {
-        ContactCollectionViewCellModel *model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
+        id<MBContactPickerModelProtocol> model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
         CGSize actualSize = [self.prototypeCell sizeForCellWithContact:model];
         CGSize maxSize = CGSizeMake(self.frame.size.width - self.contentInset.left - self.contentInset.right, actualSize.height);
         if (actualSize.width > maxSize.width)

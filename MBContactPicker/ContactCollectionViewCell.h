@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-@class ContactCollectionViewCellModel;
+#import "MBContactModel.h"
 
 @interface ContactCollectionViewCell : UICollectionViewCell
 
-@property (nonatomic, strong) ContactCollectionViewCellModel *model;
+@property (nonatomic, strong) id<MBContactPickerModelProtocol> model;
 @property (nonatomic) BOOL focused;
 
-- (CGSize)sizeForCellWithContact:(ContactCollectionViewCellModel *)model;
+- (CGSize)sizeForCellWithContact:(id<MBContactPickerModelProtocol>)model;
 
 @end

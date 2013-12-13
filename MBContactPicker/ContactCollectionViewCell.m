@@ -7,7 +7,6 @@
 //
 
 #import "ContactCollectionViewCell.h"
-#import "ContactCollectionViewCellModel.h"
 
 @interface ContactCollectionViewCell()
 
@@ -60,13 +59,17 @@
                                                                    views:NSDictionaryOfVariableBindings(contactLabel)]];
 }
 
-- (void)setModel:(ContactCollectionViewCellModel *)model
+- (void)tintColorDidChange {
+    self.focused = self.focused;
+}
+
+- (void)setModel:(id<MBContactPickerModelProtocol>)model
 {
     _model = model;
     self.contactTitleLabel.text = self.model.contactTitle;
 }
 
-- (CGSize)sizeForCellWithContact:(ContactCollectionViewCellModel *)model
+- (CGSize)sizeForCellWithContact:(id<MBContactPickerModelProtocol>)model
 {
     UIFont *font = self.contactTitleLabel.font;
     CGSize size = [model.contactTitle boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:0 attributes:@{ NSFontAttributeName: font } context:nil].size;
@@ -81,12 +84,12 @@
     if (focused)
     {
         self.contactTitleLabel.textColor = [UIColor whiteColor];
-        self.contactTitleLabel.backgroundColor = [UIColor blueColor];
+        self.contactTitleLabel.backgroundColor = self.tintColor;
         self.contactTitleLabel.layer.cornerRadius = 3.0f;
     }
     else
     {
-        self.contactTitleLabel.textColor = [UIColor blueColor];
+        self.contactTitleLabel.textColor = self.tintColor;
         self.contactTitleLabel.backgroundColor = [UIColor clearColor];
     }
 }
