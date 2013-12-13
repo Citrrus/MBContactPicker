@@ -275,16 +275,9 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
     else if ([self isEntryCell:indexPath])
     {
-//        ContactEntryCollectionViewCell *prototype = self.entryCell;
-//        if (!prototype)
-//        {
-//            prototype = [[ContactEntryCollectionViewCell alloc] init];
-//        }
-        
-#warning TODO: put above logic back, I think so we can measure against the real text if it's available
         ContactEntryCollectionViewCell *prototype = [[ContactEntryCollectionViewCell alloc] init];
         
-        CGFloat newWidth = MIN(prototype.frame.size.width, MAX(50, [prototype widthForText:prototype.text]));
+        CGFloat newWidth = MAX(50, [prototype widthForText:prototype.text]);
         CGSize cellSize = CGSizeMake(newWidth, self.cellHeight);
         return cellSize;
     }
