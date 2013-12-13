@@ -66,10 +66,7 @@
 - (void)setModel:(id<MBContactPickerModelProtocol>)model
 {
     _model = model;
-    if ([model respondsToSelector:@selector(contactTitle)])
-    {
-        self.contactTitleLabel.text = self.model.contactTitle;
-    }
+    self.contactTitleLabel.text = self.model.contactTitle;
 }
 
 - (CGSize)sizeForCellWithContact:(id<MBContactPickerModelProtocol>)model

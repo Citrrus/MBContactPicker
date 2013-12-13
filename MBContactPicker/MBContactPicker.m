@@ -374,14 +374,10 @@ const CGFloat kMaxVisibleRows = 2;
 
     id<MBContactPickerModelProtocol> model = (id<MBContactPickerModelProtocol>)self.filteredContacts[indexPath.row];
 
-    cell.textLabel.text = nil;
+    cell.textLabel.text = model.contactTitle;
+
     cell.detailTextLabel.text = nil;
     cell.imageView.image = nil;
-    
-    if ([model respondsToSelector:@selector(contactTitle)])
-    {
-        cell.textLabel.text = model.contactTitle;
-    }
     
     if ([model respondsToSelector:@selector(contactSubtitle)])
     {
