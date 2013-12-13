@@ -137,10 +137,14 @@ NSString * const kMBPrompt = @"To:";
 
 - (void)setCellHeight:(NSInteger)cellHeight
 {
-    _cellHeight = cellHeight;
     self.contactCollectionView.cellHeight = cellHeight;
     [self updateCollectionViewHeightConstraints];
     [self.contactCollectionView.collectionViewLayout invalidateLayout];
+}
+
+- (NSInteger)cellHeight
+{
+    return self.contactCollectionView.cellHeight;
 }
 
 - (void)setPrompt:(NSString *)prompt
@@ -158,7 +162,7 @@ NSString * const kMBPrompt = @"To:";
 
 - (CGFloat)currentContentHeight
 {
-    return MIN(self.contactCollectionView.contentSize.height, self.maxVisibleRows * self.contactCollectionView.cellHeight);
+    return MIN(MAX(self.cellHeight, self.contactCollectionView.contentSize.height), self.maxVisibleRows * self.cellHeight);
 }
 
 #pragma mark - UITableViewDataSource
