@@ -78,10 +78,11 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     if (self.indexPathsForSelectedItems.count > 0)
     {
         for (NSIndexPath *indexPath in self.indexPathsForSelectedItems) {
+            [self deselectItemAtIndexPath:indexPath animated:YES];
             [self.delegate collectionView:self didDeselectItemAtIndexPath:indexPath];
         }
     }
-    return YES;
+    return [super resignFirstResponder];
 }
 
 #pragma mark - UIKeyInput
