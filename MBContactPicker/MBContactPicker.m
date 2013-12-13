@@ -165,6 +165,8 @@ NSString * const kMBPrompt = @"To:";
 
 #pragma mark - UITextFieldDelegateImproved
 
+
+#warning All of the logic in this method has to do with what happens when the user hits backspace.  Can move down to collection view, most likely
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
     NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
