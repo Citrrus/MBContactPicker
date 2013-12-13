@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ContactCollectionViewCellModel.h"
 #import "ContactCollectionViewCell.h"
 #import "ContactEntryCollectionViewCell.h"
 #import "ContactCollectionViewPromptCell.h"
@@ -17,9 +16,9 @@
 
 @optional
 
-- (void)didSelectContact:(ContactCollectionViewCellModel*)model inContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didAddContact:(ContactCollectionViewCellModel*)model toContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didRemoveContact:(ContactCollectionViewCellModel*)model fromContactCollectionView:(ContactCollectionView*)collectionView;
+- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView*)collectionView;
+- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView*)collectionView;
+- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView*)collectionView;
 
 @end
 
@@ -28,7 +27,7 @@
 @property (nonatomic) NSMutableArray *selectedContacts;
 @property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
 
-- (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model withCompletion:(void(^)())completion;
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
 - (void)scrollToEntry;
 - (BOOL)isEntryCell:(NSIndexPath*)indexPath;

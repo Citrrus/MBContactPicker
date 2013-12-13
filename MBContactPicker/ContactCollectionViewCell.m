@@ -7,7 +7,6 @@
 //
 
 #import "ContactCollectionViewCell.h"
-#import "ContactCollectionViewCellModel.h"
 
 @interface ContactCollectionViewCell()
 
@@ -64,13 +63,16 @@
     self.focused = self.focused;
 }
 
-- (void)setModel:(ContactCollectionViewCellModel *)model
+- (void)setModel:(id<MBContactPickerModelProtocol>)model
 {
     _model = model;
-    self.contactTitleLabel.text = self.model.contactTitle;
+    if ([model respondsToSelector:@selector(contactTitle)])
+    {
+        self.contactTitleLabel.text = self.model.contactTitle;
+    }
 }
 
-- (CGSize)sizeForCellWithContact:(ContactCollectionViewCellModel *)model
+- (CGSize)sizeForCellWithContact:(id<MBContactPickerModelProtocol>)model
 {
     UIFont *font = self.contactTitleLabel.font;
     CGSize size = [model.contactTitle boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:0 attributes:@{ NSFontAttributeName: font } context:nil].size;

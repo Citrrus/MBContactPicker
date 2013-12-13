@@ -1,16 +1,16 @@
 //
-//  ContactCollectionViewCellModel.h
+//  ContactObject.h
 //  MBContactPicker
 //
-//  Created by Matt Bowman on 11/20/13.
+//  Created by Matt Bowman on 12/12/13.
 //  Copyright (c) 2013 Citrrus, LLC. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
+#import "MBContactPickerModel.h"
 
-@interface ContactCollectionViewCellModel : NSObject
+@interface ContactObject : NSObject <MBContactPickerModelProtocol>
 
-@property (nonatomic) id contactObject;
 @property (nonatomic, copy) NSString *contactTitle;
 
 @end
