@@ -9,6 +9,7 @@
 #import "MBContactPicker.h"
 
 const CGFloat kMaxVisibleRows = 2;
+NSString * const kMBPrompt = @"To:";
 
 @interface MBContactPicker()
 
@@ -56,8 +57,7 @@ const CGFloat kMaxVisibleRows = 2;
 {
     self.originalHeight = -1;
     self.originalYOffset = -1;
-    self.cellHeight = kCellHeight;
-    self.prompt = [kPrompt copy];
+    self.prompt = kMBPrompt;
     self.maxVisibleRows = kMaxVisibleRows;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     
@@ -101,6 +101,8 @@ const CGFloat kMaxVisibleRows = 2;
                                                                  options:0
                                                                  metrics:nil
                                                                    views:NSDictionaryOfVariableBindings(searchTableView)]];
+    
+    [self updateCollectionViewHeightConstraints];
     
 #ifdef DEBUG_BORDERS
     self.layer.borderColor = [UIColor grayColor].CGColor;
@@ -161,7 +163,7 @@ const CGFloat kMaxVisibleRows = 2;
 
 - (CGFloat)currentContentHeight
 {
-    return MIN(self.contactCollectionView.contentSize.height, self.maxVisibleRows * self.cellHeight);
+    return MIN(self.contactCollectionView.contentSize.height, self.maxVisibleRows * self.contactCollectionView.cellHeight);
 }
 
 #pragma mark - UICollectionViewDataSource
@@ -416,7 +418,7 @@ const CGFloat kMaxVisibleRows = 2;
                 }
                 else if (constraint.relation == NSLayoutRelationGreaterThanOrEqual)
                 {
-                    constraint.constant = self.cellHeight;
+                    constraint.constant = self.contactCollectionView.cellHeight;
                 }
             }
         }
