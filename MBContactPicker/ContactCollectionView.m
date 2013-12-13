@@ -14,7 +14,7 @@
 NSInteger const kCellHeight = 31;
 NSString * const kPrompt = @"To:";
 
-@interface ContactCollectionView() <UICollectionViewDataSource, UICollectionViewDelegate>
+@interface ContactCollectionView() <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved>
 
 @property (nonatomic, readonly) NSIndexPath *indexPathOfSelectedCell;
 @property (nonatomic) ContactCollectionViewCell *prototypeCell;
@@ -326,7 +326,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     {
         ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
                                                                                                                            forIndexPath:indexPath];
-        cell.delegate = self.contactEntryTextDelegate;
+        cell.delegate = self;
         collectionCell = cell;
         
         if ([self isFirstResponder] && self.indexPathOfSelectedCell == nil)
@@ -353,6 +353,50 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
     
     return collectionCell;
+}
+
+#pragma mark - UITextFieldDelegateImproved
+
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
+    
+    // If backspace is pressed and there isn't any text in the field, we want to select the
+    // last selected contact and not let them delete the space we inserted (the space allows
+    // us to catch the last backspace press - without it, we get no event!)
+    if ([newString isEqualToString:@""] &&
+        [string isEqualToString:@""] &&
+        range.location == 0 &&
+        range.length == 1)
+    {
+        if (self.selectedContacts.count > 0)
+        {
+            [textField resignFirstResponder];
+            NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.selectedContacts.count
+                                                                    inSection:0];
+            [self selectItemAtIndexPath:newSelectedIndexPath
+                                                     animated:YES
+                                               scrollPosition:UICollectionViewScrollPositionBottom];
+            [self.delegate collectionView:self didSelectItemAtIndexPath:newSelectedIndexPath];
+            [self becomeFirstResponder];
+        }
+        return NO;
+    }
+    
+    return YES;
+}
+
+- (void)textFieldDidChange:(UITextField *)textField
+{
+    if ([self.contactDelegate respondsToSelector:@selector(entryTextDidChange:inContactCollectionView:)])
+    {
+        [self.contactDelegate entryTextDidChange:textField.text inContactCollectionView:self];
+    }
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    return NO;
 }
 
 @end

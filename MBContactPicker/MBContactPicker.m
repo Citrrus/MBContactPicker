@@ -60,7 +60,6 @@ NSString * const kMBPrompt = @"To:";
     
     ContactCollectionView *contactCollectionView = [ContactCollectionView contactCollectionViewWithFrame:self.bounds];
     contactCollectionView.contactDelegate = self;
-    contactCollectionView.contactEntryTextDelegate = self;
     contactCollectionView.clipsToBounds = YES;
     contactCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
     [self addSubview:contactCollectionView];
@@ -163,69 +162,6 @@ NSString * const kMBPrompt = @"To:";
     return MIN(self.contactCollectionView.contentSize.height, self.maxVisibleRows * self.contactCollectionView.cellHeight);
 }
 
-#pragma mark - UITextFieldDelegateImproved
-
-
-#warning All of the logic in this method has to do with what happens when the user hits backspace.  Can move down to collection view, most likely
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-
-    // If backspace is pressed and there isn't any text in the field, we want to select the
-    // last selected contact and not let them delete the space we inserted (the space allows
-    // us to catch the last backspace press - without it, we get no event!)
-    if ([newString isEqualToString:@""] &&
-        [string isEqualToString:@""] &&
-        range.location == 0 &&
-        range.length == 1)
-    {
-        if (self.contactCollectionView.selectedContacts.count > 0)
-        {
-            [textField resignFirstResponder];
-            NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.contactsSelected.count
-                                                                    inSection:0];
-            [self.contactCollectionView selectItemAtIndexPath:newSelectedIndexPath
-                                              animated:YES
-                                        scrollPosition:UICollectionViewScrollPositionBottom];
-            [self.contactCollectionView.delegate collectionView:self.contactCollectionView didSelectItemAtIndexPath:newSelectedIndexPath];
-            [self.contactCollectionView becomeFirstResponder];
-        }
-        return NO;
-    }
-    
-    return YES;
-}
-
-- (void)textFieldDidChange:(UITextField *)textField
-{
-
-    [self.contactCollectionView performBatchUpdates:^{
-        [self.contactCollectionView.collectionViewLayout invalidateLayout];
-        [self updateCollectionViewHeightConstraints];
-    }
-    completion:^(BOOL finished) {
-        [self.contactCollectionView scrollToEntry];
-    }];
-
-    if ([textField.text isEqualToString:@" "])
-    {
-        [self hideSearchTableView];
-    }
-    else
-    {
-        [self showSearchTableView];
-        NSString *searchString = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
-        self.filteredContacts = [self.contacts filteredArrayUsingPredicate:predicate];
-        [self.searchTableView reloadData];
-    }
-}
-
-- (BOOL)textFieldShouldReturn:(UITextField *)textField
-{
-    return NO;
-}
-
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -260,6 +196,30 @@ NSString * const kMBPrompt = @"To:";
 }
 
 #pragma mark - ContactCollectionViewDelegate
+
+- (void)entryTextDidChange:(NSString*)text inContactCollectionView:(ContactCollectionView*)collectionView
+{
+    [self.contactCollectionView performBatchUpdates:^{
+        [self.contactCollectionView.collectionViewLayout invalidateLayout];
+        [self updateCollectionViewHeightConstraints];
+    }
+    completion:^(BOOL finished) {
+        [self.contactCollectionView scrollToEntry];
+    }];
+    
+    if ([text isEqualToString:@" "])
+    {
+        [self hideSearchTableView];
+    }
+    else
+    {
+        [self showSearchTableView];
+        NSString *searchString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
+        self.filteredContacts = [self.contacts filteredArrayUsingPredicate:predicate];
+        [self.searchTableView reloadData];
+    }
+}
 
 - (void)didRemoveContact:(ContactCollectionViewCellModel *)model fromContactCollectionView:(ContactCollectionView *)collectionView
 {

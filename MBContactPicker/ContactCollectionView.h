@@ -17,6 +17,7 @@
 
 @optional
 
+- (void)entryTextDidChange:(NSString*)text inContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didSelectContact:(ContactCollectionViewCellModel*)model inContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didAddContact:(ContactCollectionViewCellModel*)model toContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didRemoveContact:(ContactCollectionViewCellModel*)model fromContactCollectionView:(ContactCollectionView*)collectionView;
@@ -27,7 +28,6 @@
 
 @property (nonatomic) NSMutableArray *selectedContacts;
 @property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
-@property (nonatomic, weak) id<UITextFieldDelegateImproved> contactEntryTextDelegate;
 
 - (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
