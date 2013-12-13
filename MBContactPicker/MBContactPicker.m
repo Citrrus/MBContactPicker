@@ -203,9 +203,9 @@ NSString * const kMBPrompt = @"To:";
         [self.contactCollectionView.collectionViewLayout invalidateLayout];
         [self updateCollectionViewHeightConstraints];
     }
-                                  completion:^(BOOL finished) {
-                                      [self.contactCollectionView scrollToEntry];
-                                  }];
+    completion:^(BOOL finished) {
+        [self.contactCollectionView scrollToEntry];
+    }];
 
     if ([textField.text isEqualToString:@" "])
     {
