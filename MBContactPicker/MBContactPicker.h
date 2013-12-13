@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MBContactPickerModel.h"
+#import "MBContactModel.h"
 #import "ContactCollectionView.h"
 #import "ContactCollectionViewCell.h"
 #import "ContactCollectionViewPromptCell.h"

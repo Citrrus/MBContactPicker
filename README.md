@@ -13,43 +13,25 @@ My secondary goal was to make using it extremely simple while still providing a 
 
 ## Code Example
 
-The fastest way to get started using this library is to first change your contact object so that it implements the `MBContactPickerModelProtocol`.
+If you don't already have a contact model class, you can use `MBContactModel`, the default implementation available. If you already have a contact object, you will need to update it to implement the `MBContactPickerModelProtocol` as shown below:
 
 #### Header
 
 ```objc
-#import "MBContactPickerModel.h"
+#import "MBContactModel.h"
 
 @interface ContactObject : NSObject <MBContactPickerModelProtocol>
-.
-.
-.
+...
 @property (nonatomic, copy) NSString *contactTitle;
 @property (nonatomic, copy) NSString *contactSubtitle;
-.
-.
-.
-@end
-```
-
-#### Implementation
-
-```objc
-@implementation ContactObject
-.
-.
-.
-@synthesize contactTitle;
-@synthesize contactSubtitle;
-.
-.
-.
+@property (nonatomic) UIImage *contactImage;
+...
 @end
 ```
 
 ### ViewController Code
 
-Then, copy this code into your view controller:
+Below you'll find a rudimentary example of a view controller using the `MBContactPicker`.
 
 ```objc
 
@@ -93,6 +75,7 @@ Then, copy this code into your view controller:
 
 #pragma mark - ContactPickerDataSource
 
+// REQUIRED
 - (NSArray*)contactModelsForCollectionView:(ContactCollectionView*)collectionView
 {
     return self.contacts;
@@ -100,16 +83,19 @@ Then, copy this code into your view controller:
 
 #pragma mark - ContactPickerDelegate
 
+// OPTIONAL
 - (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView*)collectionView
 {
     NSLog(@"Did Select: %@", model.contactTitle);
 }
 
+// OPTIONAL
 - (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView*)collectionView
 {
     NSLog(@"Did Add: %@", model.contactTitle);
 }
 
+// OPTIONAL
 - (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView*)collectionView
 {
     NSLog(@"Did Remove: %@", model.contactTitle);

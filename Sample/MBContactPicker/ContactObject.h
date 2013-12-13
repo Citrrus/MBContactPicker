@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MBContactPickerModel.h"
+#import "MBContactModel.h"
 
 @interface ContactObject : NSObject <MBContactPickerModelProtocol>
 

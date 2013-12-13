@@ -1,13 +1,12 @@
 //
-//  MBContactPickerModel.h
+//  MBContactModel.h
 //  MBContactPicker
 //
-//  Created by Matt Bowman on 12/12/13.
+//  Created by Matt Bowman on 12/13/13.
 //  Copyright (c) 2013 Citrrus, LLC. All rights reserved.
 //
 
-#ifndef MBContactPicker_MBContactPickerModel_h
-#define MBContactPicker_MBContactPickerModel_h
+#import <Foundation/Foundation.h>
 
 @protocol MBContactPickerModelProtocol <NSObject>
 
@@ -22,4 +21,10 @@
 
 @end
 
-#endif
+@interface MBContactModel : NSObject <MBContactPickerModelProtocol>
+
+@property (nonatomic, copy) NSString *contactTitle;
+@property (nonatomic, copy) NSString *contactSubtitle;
+@property (nonatomic) UIImage *contactImage;
+
+@end

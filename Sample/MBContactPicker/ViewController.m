@@ -41,7 +41,7 @@
 	NSMutableArray *contacts = [[NSMutableArray alloc] initWithCapacity:array.count];
     for (NSDictionary *contact in array)
     {
-        ContactObject *model = [[ContactObject alloc] init];
+        MBContactModel *model = [[MBContactModel alloc] init];
         model.contactTitle = contact[@"Name"];
         model.contactSubtitle = contact[@"Title"];
         [contacts addObject:model];
