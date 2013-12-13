@@ -22,7 +22,9 @@ If you don't already have a contact model class, you can use `MBContactModel`, t
 
 @interface ContactObject : NSObject <MBContactPickerModelProtocol>
 ...
+// Required
 @property (nonatomic, copy) NSString *contactTitle;
+// Optional
 @property (nonatomic, copy) NSString *contactSubtitle;
 @property (nonatomic) UIImage *contactImage;
 ...
