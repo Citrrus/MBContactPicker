@@ -205,12 +205,13 @@ const CGFloat kMaxVisibleRows = 2;
                                                                                                                            forIndexPath:indexPath];
         cell.delegate = self;
         collectionCell = cell;
-        if (!self.collectionView.indexPathOfSelectedCell)
+
+        if ([self.collectionView isFirstResponder] && self.collectionView.indexPathOfSelectedCell == nil)
         {
             [cell setFocus];
         }
+
         self.entryCell = cell;
-        
     }
     else
     {
@@ -410,8 +411,7 @@ const CGFloat kMaxVisibleRows = 2;
                 [self.delegate updateViewHeightTo:self.currentContentHeight];
             }
         } completion:^(BOOL finished) {
-            [self.collectionView scrollToEntry];
-            [self.entryCell setFocus];
+            [self becomeFirstResponder];
         }];
     }];
 }
@@ -447,6 +447,37 @@ const CGFloat kMaxVisibleRows = 2;
     {
         [self.delegate didSelectContact:model inContactCollectionView:collectionView];
     }
+}
+
+#pragma mark - UIResponder
+
+- (BOOL)canBecomeFirstResponder
+{
+    return YES;
+}
+
+- (BOOL)becomeFirstResponder
+{
+    if (![self isFirstResponder])
+    {
+        if (self.collectionView.indexPathOfSelectedCell)
+        {
+            [self.collectionView scrollToItemAtIndexPath:self.collectionView.indexPathOfSelectedCell atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
+        }
+        else
+        {
+            [self.collectionView scrollToEntry];
+            [self.entryCell setFocus];
+        }
+    }
+    
+    return YES;
+}
+
+- (BOOL)resignFirstResponder
+{
+    [super resignFirstResponder];
+    return [self.collectionView resignFirstResponder];
 }
 
 #pragma mark Helper Methods
