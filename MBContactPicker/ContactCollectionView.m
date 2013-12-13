@@ -116,7 +116,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     if ([self indexPathsForSelectedItems].count > 0)
     {
             [self removeFromSelectedContacts:[self selectedContactIndexFromRow:self.indexPathOfSelectedCell.row] withCompletion:^{
-                [self scrollToEntry];
+                [self focusOnEntry];
                 [self resignFirstResponder];
                 ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
                 [entryCell setFocus];
@@ -226,9 +226,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
-- (void)scrollToEntry
+- (void)focusOnEntry
 {
     [self scrollToEntryAnimated:YES];
+    [self.entryCell setFocus];
 }
 
 - (void)scrollToEntryAnimated:(BOOL)animated

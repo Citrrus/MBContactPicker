@@ -30,7 +30,7 @@
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
-- (void)scrollToEntry;
+- (void)focusOnEntry;
 - (BOOL)isEntryCell:(NSIndexPath*)indexPath;
 - (BOOL)isPromptCell:(NSIndexPath*)indexPath;
 - (BOOL)isContactCell:(NSIndexPath*)indexPath;

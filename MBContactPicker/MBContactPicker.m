@@ -225,7 +225,7 @@ NSString * const kMBPrompt = @"To:";
         [self updateCollectionViewHeightConstraints];
     }
     completion:^(BOOL finished) {
-        [self.contactCollectionView scrollToEntry];
+        [self.contactCollectionView focusOnEntry];
     }];
     
     if ([text isEqualToString:@" "])
@@ -283,7 +283,6 @@ NSString * const kMBPrompt = @"To:";
 
 - (BOOL)becomeFirstResponder
 {
-#warning need to push this logic down into ContactCollectionView, it'll make more sense there
     if (![self isFirstResponder])
     {
         if (self.contactCollectionView.indexPathOfSelectedCell)
@@ -292,9 +291,7 @@ NSString * const kMBPrompt = @"To:";
         }
         else
         {
-            [self.contactCollectionView scrollToEntry];
-
-//            [self.entryCell setFocus];
+            [self.contactCollectionView focusOnEntry];
         }
     }
     
