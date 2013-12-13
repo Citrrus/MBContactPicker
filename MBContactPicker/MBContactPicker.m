@@ -88,7 +88,6 @@ const CGFloat kMaxVisibleRows = 2;
     searchTableView.delegate = self;
     searchTableView.translatesAutoresizingMaskIntoConstraints = NO;
     searchTableView.hidden = YES;
-    [searchTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self addSubview:searchTableView];
     self.searchTableView = searchTableView;
     
@@ -139,7 +138,7 @@ const CGFloat kMaxVisibleRows = 2;
     self.contacts = [self.datasource contactModelsForCollectionView:self.collectionView];
 }
 
-- (void)addPreselectedContact:(ContactCollectionViewCellModel*)model
+- (void)addPreselectedContact:(id<MBContactPickerModelProtocol>)model
 {
     [self.collectionView.selectedContacts addObject:model];
 }
@@ -282,7 +281,7 @@ const CGFloat kMaxVisibleRows = 2;
     }
     else
     {
-        ContactCollectionViewCellModel *model = self.contactsSelected[[self.collectionView selectedContactIndexFromIndexPath:indexPath]];
+        id<MBContactPickerModelProtocol>model = self.contactsSelected[[self.collectionView selectedContactIndexFromIndexPath:indexPath]];
         CGSize actualSize = [self.prototypeCell sizeForCellWithContact:model];
         CGSize maxSize = CGSizeMake(self.frame.size.width - self.collectionView.contentInset.left - self.collectionView.contentInset.right, actualSize.height);
         if (actualSize.width > maxSize.width)
@@ -366,8 +365,30 @@ const CGFloat kMaxVisibleRows = 2;
 
 - (UITableViewCell*)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
-    cell.textLabel.text = ((ContactCollectionViewCellModel*)self.filteredContacts[indexPath.row]).contactTitle;
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
+    if (!cell)
+    {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle
+                                      reuseIdentifier:@"Cell"];
+    }
+
+    id<MBContactPickerModelProtocol> model = (id<MBContactPickerModelProtocol>)self.filteredContacts[indexPath.row];
+
+    cell.textLabel.text = model.contactTitle;
+
+    cell.detailTextLabel.text = nil;
+    cell.imageView.image = nil;
+    
+    if ([model respondsToSelector:@selector(contactSubtitle)])
+    {
+        cell.detailTextLabel.text = model.contactSubtitle;
+    }
+    
+    if ([model respondsToSelector:@selector(contactImage)])
+    {
+        cell.imageView.image = model.contactImage;
+    }
+    
     return cell;
 }
 
@@ -375,7 +396,7 @@ const CGFloat kMaxVisibleRows = 2;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    ContactCollectionViewCellModel *model = self.filteredContacts[indexPath.row];
+    id<MBContactPickerModelProtocol> model = self.filteredContacts[indexPath.row];
     [self.entryCell reset];
     [self hideSearchTableView];
     [self.collectionView addToSelectedContacts:model withCompletion:^{
@@ -393,7 +414,7 @@ const CGFloat kMaxVisibleRows = 2;
 
 #pragma mark - ContactCollectionViewDelegate
 
-- (void)didRemoveContact:(ContactCollectionViewCellModel *)model fromContactCollectionView:(ContactCollectionView *)collectionView
+- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView *)collectionView
 {
     [UIView animateWithDuration:.25 animations:^{
         [self updateCollectionViewHeightConstraints];
@@ -408,7 +429,7 @@ const CGFloat kMaxVisibleRows = 2;
     }
 }
 
-- (void)didAddContact:(ContactCollectionViewCellModel *)model toContactCollectionView:(ContactCollectionView *)collectionView
+- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView *)collectionView
 {
     if ([self.delegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
     {
@@ -416,7 +437,7 @@ const CGFloat kMaxVisibleRows = 2;
     }
 }
 
-- (void)didSelectContact:(ContactCollectionViewCellModel *)model inContactCollectionView:(ContactCollectionView *)collectionView
+- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView *)collectionView
 {
     if ([self.delegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
     {
