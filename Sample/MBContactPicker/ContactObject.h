@@ -12,5 +12,6 @@
 @interface ContactObject : NSObject <MBContactPickerModelProtocol>
 
 @property (nonatomic, copy) NSString *contactTitle;
+@property (nonatomic, copy) NSString *contactSubtitle;
 
 @end
