@@ -137,6 +137,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)addToSelectedContacts:(ContactCollectionViewCellModel*)model withCompletion:(void(^)())completion
 {
+    [self.entryCell reset];
+    
     if (![self.selectedContacts containsObject:model])
     {
         [self.selectedContacts addObject:model];

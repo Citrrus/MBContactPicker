@@ -243,8 +243,6 @@ NSString * const kMBPrompt = @"To:";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     ContactCollectionViewCellModel *model = self.filteredContacts[indexPath.row];
-#warning TODO: Figure this out somehow.  Maybe a reloadData overload?
-//    [self.entryCell reset];
     [self hideSearchTableView];
     [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
         [UIView animateWithDuration:.25 animations:^{
