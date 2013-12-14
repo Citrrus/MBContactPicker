@@ -138,9 +138,9 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion
 {
-    ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
-    if (entryCell)
+    if ([[self indexPathsForVisibleItems] containsObject:self.entryCellIndexPath])
     {
+        ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
         [entryCell reset];
     }
     else
@@ -348,7 +348,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         {
             [cell setFocus];
         }
-        [cell setText:self.searchText];
+
+        cell.text = self.searchText;
     }
     else
     {
