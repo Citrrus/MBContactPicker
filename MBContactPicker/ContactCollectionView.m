@@ -117,8 +117,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     if ([self indexPathsForSelectedItems].count > 0)
     {
             [self removeFromSelectedContacts:[self selectedContactIndexFromRow:self.indexPathOfSelectedCell.row] withCompletion:^{
-                [self focusOnEntry];
-                [self resignFirstResponder];
+//                [self resignFirstResponder];
+//                [self focusOnEntry];
                 ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
                 [entryCell setFocus];
             }];
@@ -151,8 +151,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     if (![self.selectedContacts containsObject:model])
     {
         [self.selectedContacts addObject:model];
+        CGPoint originalOffset = self.contentOffset;
         [self performBatchUpdates:^{
             [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
+            self.contentOffset = originalOffset;
         } completion:^(BOOL finished) {
             if (completion)
             {
@@ -237,20 +239,33 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)focusOnEntry
 {
-    [UIView animateWithDuration:.25 animations:^{
-        [self scrollToEntryAnimated:YES];
-        
-    } completion:^(BOOL finished) {
+    [self scrollToEntryAnimated:YES onComplete:^{
         ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
         [entryCell setFocus];
     }];
 }
 
-- (void)scrollToEntryAnimated:(BOOL)animated
+- (void)scrollToEntryAnimated:(BOOL)animated onComplete:(void(^)())complete
 {
-    [self scrollToItemAtIndexPath:[self entryCellIndexPath]
-                 atScrollPosition:UICollectionViewScrollPositionBottom
-                         animated:animated];
+    if (animated)
+    {
+        [UIView animateWithDuration:.25
+                         animations:^{
+                             self.contentOffset = CGPointMake(0, self.contentSize.height - self.bounds.size.height);
+                         }
+                         completion:^(BOOL finished) {
+                             if (complete)
+                             {
+                                 complete();
+                             }
+                         }];
+    }
+    else
+    {
+        [self scrollToItemAtIndexPath:[self entryCellIndexPath]
+                     atScrollPosition:UICollectionViewScrollPositionBottom
+                             animated:NO];
+    }
 }
 
 #pragma mark - UICollectionViewDelegate
@@ -278,7 +293,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     cell.focused = NO;
 }
 
-#pragma mark - UICollectionViewDelegateFlowLayout
+#pragma mark - UICollectionViewDelegateContactFlowLayout
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -292,7 +307,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     {
         ContactEntryCollectionViewCell *prototype = [[ContactEntryCollectionViewCell alloc] init];
         
-        CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
+        CGFloat newWidth = MAX(50, MIN([prototype widthForText:self.searchText], self.bounds.size.width));
+        NSLog(@"New Width: %f", newWidth);
         CGSize cellSize = CGSizeMake(newWidth, self.cellHeight);
         return cellSize;
     }
@@ -309,6 +325,14 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         {
             return actualSize;
         }
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGRect)currentSize to:(CGRect)newSize
+{
+    if ([self.contactDelegate respondsToSelector:@selector(collectionView:willChangeContentSizeFrom:to:)])
+    {
+        [self.contactDelegate collectionView:self willChangeContentSizeFrom:currentSize to:newSize];
     }
 }
 

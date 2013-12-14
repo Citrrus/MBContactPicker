@@ -43,6 +43,7 @@
 @property (nonatomic) CGFloat maxVisibleRows;
 @property (nonatomic, readonly) CGFloat currentContentHeight;
 @property (nonatomic, readonly) CGFloat keyboardHeight;
+@property (nonatomic) CGFloat animationSpeed;
 
 @property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
 @property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;

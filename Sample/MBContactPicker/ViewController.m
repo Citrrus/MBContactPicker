@@ -29,6 +29,7 @@
                        @{@"Name":@"Matt Bowman", @"Title":@"Software Developer"},
                        @{@"Name":@"Matt Hupman", @"Title":@"Software Developer"},
                        @{@"Name":@"Erica Stein", @"Title":@"Creative"},
+                       @{@"Name":@"Bing Ding", @"Title":@"Creative"},
                        @{@"Name":@"Erin Pfiffner", @"Title":@"Creative"},
                        @{@"Name":@"Ben McGinnis", @"Title":@"Project Manager"},
                        @{@"Name":@"Lenny Pham", @"Title":@"Product Manager"},
@@ -83,8 +84,7 @@
 {
     if (self.contactPickerViewHeightConstraint.constant <= self.contactPickerView.currentContentHeight)
     {
-        [self.view layoutIfNeeded];
-        [UIView animateWithDuration:.25 animations:^{
+        [UIView animateWithDuration:self.contactPickerView.animationSpeed animations:^{
             CGRect pickerRectInWindow = [self.view convertRect:self.contactPickerView.frame fromView:nil];
             CGFloat newHeight = self.view.window.bounds.size.height - pickerRectInWindow.origin.y - self.contactPickerView.keyboardHeight;
             self.contactPickerViewHeightConstraint.constant = newHeight;
@@ -99,8 +99,7 @@
 {
     if (self.contactPickerViewHeightConstraint.constant > self.contactPickerView.currentContentHeight)
     {
-        [self.view layoutIfNeeded];
-        [UIView animateWithDuration:.25 animations:^{
+        [UIView animateWithDuration:self.contactPickerView.animationSpeed animations:^{
             self.contactPickerViewHeightConstraint.constant = self.contactPickerView.currentContentHeight;
             [self.view layoutIfNeeded];
         }];
@@ -112,8 +111,9 @@
 // the number of rows visible, change the maxVisibleRows property of the MBContactPicker
 - (void)updateViewHeightTo:(CGFloat)newHeight
 {
-    [UIView animateWithDuration:.25 animations:^{
-        self.contactPickerViewHeightConstraint.constant = newHeight;
+    self.contactPickerViewHeightConstraint.constant = newHeight;
+    [UIView animateWithDuration:self.contactPickerView.animationSpeed animations:^{
+        [self.view layoutIfNeeded];
     }];
 }
 

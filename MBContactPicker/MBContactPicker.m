@@ -8,8 +8,9 @@
 
 #import "MBContactPicker.h"
 
-const CGFloat kMaxVisibleRows = 2;
+CGFloat const kMaxVisibleRows = 2;
 NSString * const kMBPrompt = @"To:";
+CGFloat const kAnimationSpeed = .25;
 
 @interface MBContactPicker()
 
@@ -18,6 +19,7 @@ NSString * const kMBPrompt = @"To:";
 @property (nonatomic) NSArray *filteredContacts;
 @property (nonatomic) NSArray *contacts;
 @property (nonatomic) CGFloat keyboardHeight;
+@property (nonatomic) BOOL isSearching;
 
 @property CGFloat originalHeight;
 @property CGFloat originalYOffset;
@@ -56,8 +58,10 @@ NSString * const kMBPrompt = @"To:";
     self.originalHeight = -1;
     self.originalYOffset = -1;
     self.maxVisibleRows = kMaxVisibleRows;
+    self.animationSpeed = kAnimationSpeed;
+    self.isSearching = NO;
     self.translatesAutoresizingMaskIntoConstraints = NO;
-    
+    self.clipsToBounds = YES;
     ContactCollectionView *contactCollectionView = [ContactCollectionView contactCollectionViewWithFrame:self.bounds];
     contactCollectionView.contactDelegate = self;
     contactCollectionView.clipsToBounds = YES;
@@ -97,7 +101,6 @@ NSString * const kMBPrompt = @"To:";
                                                                  metrics:nil
                                                                    views:NSDictionaryOfVariableBindings(searchTableView)]];
     
-    [self updateCollectionViewHeightConstraints];
     
 #ifdef DEBUG_BORDERS
     self.layer.borderColor = [UIColor grayColor].CGColor;
@@ -138,7 +141,6 @@ NSString * const kMBPrompt = @"To:";
 - (void)setCellHeight:(NSInteger)cellHeight
 {
     self.contactCollectionView.cellHeight = cellHeight;
-    [self updateCollectionViewHeightConstraints];
     [self.contactCollectionView.collectionViewLayout invalidateLayout];
 }
 
@@ -157,12 +159,22 @@ NSString * const kMBPrompt = @"To:";
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows
 {
     _maxVisibleRows = maxVisibleRows;
-    [self updateCollectionViewHeightConstraints];
+    [self.contactCollectionView.collectionViewLayout invalidateLayout];
 }
 
 - (CGFloat)currentContentHeight
 {
-    return MIN(MAX(self.cellHeight, self.contactCollectionView.contentSize.height), self.maxVisibleRows * self.cellHeight);
+    CGFloat minimumSizeWithContent = MAX(self.cellHeight, self.contactCollectionView.contentSize.height);
+    CGFloat maximumSize;
+    if (self.searchTableView.hidden)
+    {
+        maximumSize = self.maxVisibleRows * self.cellHeight;
+    }
+    else
+    {
+        maximumSize = MAX(self.maxVisibleRows * self.cellHeight, self.bounds.size.height);
+    }
+    return MIN(minimumSizeWithContent, maximumSize);
 }
 
 #pragma mark - UITableViewDataSource
@@ -206,27 +218,39 @@ NSString * const kMBPrompt = @"To:";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     id<MBContactPickerModelProtocol> model = self.filteredContacts[indexPath.row];
+    
     [self hideSearchTableView];
     [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
-        [UIView animateWithDuration:.25 animations:^{
-            [self updateCollectionViewHeightConstraints];
-            if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
-            {
-                [self.delegate updateViewHeightTo:self.currentContentHeight];
-            }
-        } completion:^(BOOL finished) {
-            [self becomeFirstResponder];
-        }];
+        [self becomeFirstResponder];
     }];
 }
 
 #pragma mark - ContactCollectionViewDelegate
 
+- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGRect)currentSize to:(CGRect)newSize
+{
+//    if (self.searchTableView.hidden)
+//    {
+        if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
+        {
+            [self.delegate updateViewHeightTo:self.currentContentHeight];
+            NSLog(@"Current Content Height: %f", self.currentContentHeight);
+        }
+//    }
+    [self updateCollectionViewHeightConstraints];
+    [UIView animateWithDuration:self.animationSpeed animations:^{
+        [self layoutIfNeeded];
+    }];
+}
+
 - (void)entryTextDidChange:(NSString*)text inContactCollectionView:(ContactCollectionView*)collectionView
 {
+    
+//    [self.contactCollectionView.collectionViewLayout invalidateLayout];
+//    [self updateCollectionViewHeightConstraints];
+
     [self.contactCollectionView performBatchUpdates:^{
-        [self.contactCollectionView.collectionViewLayout invalidateLayout];
-        [self updateCollectionViewHeightConstraints];
+        [self layoutIfNeeded];
     }
     completion:^(BOOL finished) {
         [self.contactCollectionView focusOnEntry];
@@ -248,14 +272,6 @@ NSString * const kMBPrompt = @"To:";
 
 - (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView *)collectionView
 {
-    [UIView animateWithDuration:.25 animations:^{
-        [self updateCollectionViewHeightConstraints];
-        if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
-        {
-            [self.delegate updateViewHeightTo:self.currentContentHeight];
-        }
-    }];
-    
     if ([self.delegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
     {
         [self.delegate didRemoveContact:model fromContactCollectionView:collectionView];
@@ -336,17 +352,18 @@ NSString * const kMBPrompt = @"To:";
         {
             if (constraint.firstAttribute == NSLayoutAttributeHeight)
             {
-                if (constraint.relation == NSLayoutRelationLessThanOrEqual)
+                if (constraint.relation == NSLayoutRelationGreaterThanOrEqual)
+                {
+                    constraint.constant = self.cellHeight;
+                }
+                else if (constraint.relation == NSLayoutRelationLessThanOrEqual)
                 {
                     constraint.constant = self.currentContentHeight;
-                }
-                else if (constraint.relation == NSLayoutRelationGreaterThanOrEqual)
-                {
-                    constraint.constant = self.contactCollectionView.cellHeight;
                 }
             }
         }
     }
+
 }
 
 @end

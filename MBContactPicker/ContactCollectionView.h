@@ -10,12 +10,14 @@
 #import "ContactCollectionViewCell.h"
 #import "ContactEntryCollectionViewCell.h"
 #import "ContactCollectionViewPromptCell.h"
+#import "UICollectionViewContactFlowLayout.h"
 @class ContactCollectionView;
 
 @protocol ContactCollectionViewDelegate <NSObject>
 
 @optional
 
+- (void)collectionView:(UICollectionView*)collectionView willChangeContentSizeFrom:(CGRect)currentSize to:(CGRect)newSize;
 - (void)entryTextDidChange:(NSString*)text inContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView*)collectionView;
@@ -23,10 +25,11 @@
 
 @end
 
-@interface ContactCollectionView : UICollectionView <UICollectionViewDelegateFlowLayout, UIKeyInput>
+@interface ContactCollectionView : UICollectionView <UICollectionViewDelegateContactFlowLayout, UIKeyInput>
 
 @property (nonatomic) NSMutableArray *selectedContacts;
 @property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
+@property (nonatomic, weak) id<UICollectionViewDelegateContactFlowLayout> delegate;
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
