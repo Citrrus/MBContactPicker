@@ -13,13 +13,14 @@
 
 NSInteger const kCellHeight = 31;
 NSString * const kPrompt = @"To:";
+NSString * const kDefaultEntryText = @" ";
 
 @interface ContactCollectionView() <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved>
 
 @property (nonatomic, readonly) NSIndexPath *indexPathOfSelectedCell;
 @property (nonatomic) ContactCollectionViewCell *prototypeCell;
 @property (nonatomic) ContactCollectionViewPromptCell *promptCell;
-@property (nonatomic) ContactEntryCollectionViewCell *entryCell;
+@property (nonatomic) NSString *searchText;
 
 @end
 
@@ -90,6 +91,11 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.delegate = self;
 }
 
+- (CGFloat)maxContentWidth
+{
+    return self.frame.size.width - self.contentInset.left - self.contentInset.right;
+}
+
 #pragma mark - UIResponder
 
 - (BOOL)canBecomeFirstResponder
@@ -137,7 +143,15 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion
 {
-    [self.entryCell reset];
+    if ([[self indexPathsForVisibleItems] containsObject:self.entryCellIndexPath])
+    {
+        ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+        [entryCell reset];
+    }
+    else
+    {
+        self.searchText = kDefaultEntryText;
+    }
     
     if (![self.selectedContacts containsObject:model])
     {
@@ -228,8 +242,13 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)focusOnEntry
 {
-    [self scrollToEntryAnimated:YES];
-    [self.entryCell setFocus];
+    [UIView animateWithDuration:.25 animations:^{
+        [self scrollToEntryAnimated:YES];
+        
+    } completion:^(BOOL finished) {
+        ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+        [entryCell setFocus];
+    }];
 }
 
 - (void)scrollToEntryAnimated:(BOOL)animated
@@ -278,15 +297,15 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     {
         ContactEntryCollectionViewCell *prototype = [[ContactEntryCollectionViewCell alloc] init];
         
-        CGFloat newWidth = MAX(50, [prototype widthForText:prototype.text]);
-        CGSize cellSize = CGSizeMake(newWidth, self.cellHeight);
+        CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
+        CGSize cellSize = CGSizeMake(MIN([self maxContentWidth], newWidth), self.cellHeight);
         return cellSize;
     }
     else
     {
         id<MBContactPickerModelProtocol> model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
         CGSize actualSize = [self.prototypeCell sizeForCellWithContact:model];
-        CGSize maxSize = CGSizeMake(self.frame.size.width - self.contentInset.left - self.contentInset.right, actualSize.height);
+        CGSize maxSize = CGSizeMake([self maxContentWidth], actualSize.height);
         if (actualSize.width > maxSize.width)
         {
             return maxSize;
@@ -327,6 +346,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     {
         ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
                                                                                                                            forIndexPath:indexPath];
+        
         cell.delegate = self;
         collectionCell = cell;
         
@@ -334,8 +354,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         {
             [cell setFocus];
         }
-        
-        self.entryCell = cell;
+
+        cell.text = self.searchText;
     }
     else
     {
@@ -389,6 +409,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)textFieldDidChange:(UITextField *)textField
 {
+    self.searchText = textField.text;
     if ([self.contactDelegate respondsToSelector:@selector(entryTextDidChange:inContactCollectionView:)])
     {
         [self.contactDelegate entryTextDidChange:textField.text inContactCollectionView:self];

@@ -87,9 +87,15 @@
     return self.contactEntryTextField.text;
 }
 
+- (void)setText:(NSString *)text
+{
+    self.contactEntryTextField.text = text;
+}
+
 - (void)reset
 {
     self.contactEntryTextField.text = @" ";
+    [self.delegate textFieldDidChange:self.contactEntryTextField];
 }
 
 - (void)setFocus
