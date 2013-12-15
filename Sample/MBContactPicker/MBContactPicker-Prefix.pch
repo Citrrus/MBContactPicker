@@ -16,5 +16,5 @@
 #endif
 
 // Turn this on to see borders on all of the view elements - nice for debugging frame weirdness
-#define DEBUG_BORDERS
+//#define DEBUG_BORDERS
 

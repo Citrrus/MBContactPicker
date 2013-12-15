@@ -92,6 +92,11 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.delegate = self;
 }
 
+- (CGFloat)maxContentWidth
+{
+    return self.frame.size.width - self.contentInset.left - self.contentInset.right;
+}
+
 #pragma mark - UIResponder
 
 - (BOOL)canBecomeFirstResponder
@@ -318,16 +323,16 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     {
         ContactEntryCollectionViewCell *prototype = [[ContactEntryCollectionViewCell alloc] init];
         
-        CGFloat newWidth = MAX(50, MIN([prototype widthForText:self.searchText], self.bounds.size.width));
-        NSLog(@"New Width: %f", newWidth);
-        CGSize cellSize = CGSizeMake(newWidth, self.cellHeight);
+        CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
+        CGSize cellSize = CGSizeMake(MIN([self maxContentWidth], newWidth), self.cellHeight);
+
         return cellSize;
     }
     else
     {
         id<MBContactPickerModelProtocol> model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
         CGSize actualSize = [self.prototypeCell sizeForCellWithContact:model];
-        CGSize maxSize = CGSizeMake(self.frame.size.width - self.contentInset.left - self.contentInset.right, actualSize.height);
+        CGSize maxSize = CGSizeMake([self maxContentWidth], actualSize.height);
         if (actualSize.width > maxSize.width)
         {
             return maxSize;
@@ -376,6 +381,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     {
         ContactEntryCollectionViewCell *cell = (ContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
                                                                                                                            forIndexPath:indexPath];
+        
         cell.delegate = self;
         collectionCell = cell;
         
