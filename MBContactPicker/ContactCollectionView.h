@@ -17,7 +17,7 @@
 
 @optional
 
-- (void)collectionView:(UICollectionView*)collectionView willChangeContentSizeFrom:(CGRect)currentSize to:(CGRect)newSize;
+- (void)collectionView:(UICollectionView*)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize;
 - (void)entryTextDidChange:(NSString*)text inContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView*)collectionView;
 - (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView*)collectionView;

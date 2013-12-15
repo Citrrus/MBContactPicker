@@ -10,7 +10,7 @@
 
 @protocol UICollectionViewDelegateContactFlowLayout <UICollectionViewDelegateFlowLayout>
 
-- (void)collectionView:(UICollectionView*)collectionView willChangeContentSizeFrom:(CGRect)currentSize to:(CGRect)newSize;
+- (void)collectionView:(UICollectionView*)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize;
 
 @end
 

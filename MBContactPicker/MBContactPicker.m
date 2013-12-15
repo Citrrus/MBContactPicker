@@ -19,7 +19,7 @@ CGFloat const kAnimationSpeed = .25;
 @property (nonatomic) NSArray *filteredContacts;
 @property (nonatomic) NSArray *contacts;
 @property (nonatomic) CGFloat keyboardHeight;
-@property (nonatomic) BOOL isSearching;
+@property (nonatomic) CGSize contactCollectionViewContentSize;
 
 @property CGFloat originalHeight;
 @property CGFloat originalYOffset;
@@ -59,7 +59,6 @@ CGFloat const kAnimationSpeed = .25;
     self.originalYOffset = -1;
     self.maxVisibleRows = kMaxVisibleRows;
     self.animationSpeed = kAnimationSpeed;
-    self.isSearching = NO;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     self.clipsToBounds = YES;
     ContactCollectionView *contactCollectionView = [ContactCollectionView contactCollectionViewWithFrame:self.bounds];
@@ -164,16 +163,8 @@ CGFloat const kAnimationSpeed = .25;
 
 - (CGFloat)currentContentHeight
 {
-    CGFloat minimumSizeWithContent = MAX(self.cellHeight, self.contactCollectionView.contentSize.height);
-    CGFloat maximumSize;
-    if (self.searchTableView.hidden)
-    {
-        maximumSize = self.maxVisibleRows * self.cellHeight;
-    }
-    else
-    {
-        maximumSize = MAX(self.maxVisibleRows * self.cellHeight, self.bounds.size.height);
-    }
+    CGFloat minimumSizeWithContent = MAX(self.cellHeight, self.contactCollectionViewContentSize.height);
+    CGFloat maximumSize = self.maxVisibleRows * self.cellHeight;
     return MIN(minimumSizeWithContent, maximumSize);
 }
 
@@ -227,27 +218,20 @@ CGFloat const kAnimationSpeed = .25;
 
 #pragma mark - ContactCollectionViewDelegate
 
-- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGRect)currentSize to:(CGRect)newSize
+- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize
 {
-//    if (self.searchTableView.hidden)
-//    {
-        if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
-        {
-            [self.delegate updateViewHeightTo:self.currentContentHeight];
-            NSLog(@"Current Content Height: %f", self.currentContentHeight);
-        }
-//    }
+    self.contactCollectionViewContentSize = newSize;
     [self updateCollectionViewHeightConstraints];
-    [UIView animateWithDuration:self.animationSpeed animations:^{
-        [self layoutIfNeeded];
-    }];
+
+    if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
+    {
+        [self.delegate updateViewHeightTo:self.currentContentHeight];
+    }
 }
 
 - (void)entryTextDidChange:(NSString*)text inContactCollectionView:(ContactCollectionView*)collectionView
 {
-    
-//    [self.contactCollectionView.collectionViewLayout invalidateLayout];
-//    [self updateCollectionViewHeightConstraints];
+    [self.contactCollectionView.collectionViewLayout invalidateLayout];
 
     [self.contactCollectionView performBatchUpdates:^{
         [self layoutIfNeeded];

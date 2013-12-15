@@ -9,6 +9,12 @@
 #import "UICollectionViewContactFlowLayout.h"
 #import "ContactCollectionView.h"
 
+@interface UICollectionViewContactFlowLayout()
+
+@property (nonatomic) CGSize lastContentSize;
+
+@end
+
 // This is using the answer provided in the stack overflow post: http://bit.ly/INr0ie
 
 @implementation UICollectionViewContactFlowLayout
@@ -91,11 +97,19 @@
     return YES;
 }
 
-- (void)prepareForAnimatedBoundsChange:(CGRect)oldBounds
+- (void)invalidateLayout
 {
-    NSLog(@"Preparing for bounds change from %@ to %@", NSStringFromCGRect(oldBounds), NSStringFromCGRect(self.collectionView.bounds));
-    ContactCollectionView *collectionView = (ContactCollectionView*) self.collectionView;
-    [collectionView collectionView:collectionView willChangeContentSizeFrom:oldBounds to:self.collectionView.bounds];
+    self.lastContentSize = self.collectionViewContentSize;
+    [super invalidateLayout];
+}
+
+- (void)finalizeCollectionViewUpdates
+{
+    if (!CGSizeEqualToSize(self.lastContentSize, self.collectionViewContentSize))
+    {
+        ContactCollectionView *collectionView = (ContactCollectionView*) self.collectionView;
+        [collectionView collectionView:collectionView willChangeContentSizeFrom:self.lastContentSize to:self.collectionViewContentSize];
+    }
 }
 
 @end

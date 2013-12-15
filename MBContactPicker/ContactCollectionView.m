@@ -71,6 +71,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     
     self.cellHeight = kCellHeight;
     self.prompt = kPrompt;
+    self.searchText = kDefaultEntryText;
     
     UICollectionViewContactFlowLayout *layout = (UICollectionViewContactFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 5;
@@ -116,12 +117,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if ([self indexPathsForSelectedItems].count > 0)
     {
-            [self removeFromSelectedContacts:[self selectedContactIndexFromRow:self.indexPathOfSelectedCell.row] withCompletion:^{
-//                [self resignFirstResponder];
-//                [self focusOnEntry];
-                ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
-                [entryCell setFocus];
-            }];
+        [self removeFromSelectedContacts:[self selectedContactIndexFromRow:self.indexPathOfSelectedCell.row] withCompletion:nil];
     }
 }
 
@@ -177,6 +173,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             [self.selectedContacts removeObjectAtIndex:index];
             [self deselectItemAtIndexPath:self.indexPathOfSelectedCell animated:NO];
             [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index + 1 inSection:0]]];
+            [self scrollToItemAtIndexPath:[self entryCellIndexPath] atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
         } completion:^(BOOL finished) {
             if (completion)
             {
@@ -186,6 +183,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 [self.contactDelegate didRemoveContact:model fromContactCollectionView:self];
             }
+            [self focusOnEntry];
         }];
     }
 }
@@ -239,10 +237,23 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)focusOnEntry
 {
-    [self scrollToEntryAnimated:YES onComplete:^{
+    if ([self entryIsVisible])
+    {
         ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
         [entryCell setFocus];
-    }];
+    }
+    else
+    {
+        [self scrollToEntryAnimated:YES onComplete:^{
+            ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+            [entryCell setFocus];
+        }];
+    }
+}
+
+- (BOOL)entryIsVisible
+{
+    return [[self indexPathsForVisibleItems] containsObject:[self entryCellIndexPath]];
 }
 
 - (void)scrollToEntryAnimated:(BOOL)animated onComplete:(void(^)())complete
@@ -328,7 +339,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
-- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGRect)currentSize to:(CGRect)newSize
+- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize
 {
     if ([self.contactDelegate respondsToSelector:@selector(collectionView:willChangeContentSizeFrom:to:)])
     {
