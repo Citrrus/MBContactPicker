@@ -15,7 +15,7 @@ NSInteger const kCellHeight = 31;
 NSString * const kPrompt = @"To:";
 NSString * const kDefaultEntryText = @" ";
 
-@interface ContactCollectionView() <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved>
+@interface ContactCollectionView() <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UICollectionViewDelegateContactFlowLayout, UIKeyInput>
 
 @property (nonatomic, readonly) NSIndexPath *indexPathOfSelectedCell;
 @property (nonatomic) ContactCollectionViewCell *prototypeCell;
@@ -71,6 +71,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     
     self.cellHeight = kCellHeight;
     self.prompt = kPrompt;
+    self.searchText = kDefaultEntryText;
     
     UICollectionViewContactFlowLayout *layout = (UICollectionViewContactFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 5;
@@ -121,12 +122,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if ([self indexPathsForSelectedItems].count > 0)
     {
-            [self removeFromSelectedContacts:[self selectedContactIndexFromRow:self.indexPathOfSelectedCell.row] withCompletion:^{
-                [self focusOnEntry];
-                [self resignFirstResponder];
-                ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
-                [entryCell setFocus];
-            }];
+        [self removeFromSelectedContacts:[self selectedContactIndexFromRow:self.indexPathOfSelectedCell.row] withCompletion:nil];
     }
 }
 
@@ -156,8 +152,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     if (![self.selectedContacts containsObject:model])
     {
         [self.selectedContacts addObject:model];
+        CGPoint originalOffset = self.contentOffset;
         [self performBatchUpdates:^{
             [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
+            self.contentOffset = originalOffset;
         } completion:^(BOOL finished) {
             if (completion)
             {
@@ -180,6 +178,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             [self.selectedContacts removeObjectAtIndex:index];
             [self deselectItemAtIndexPath:self.indexPathOfSelectedCell animated:NO];
             [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index + 1 inSection:0]]];
+            [self scrollToItemAtIndexPath:[self entryCellIndexPath] atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
         } completion:^(BOOL finished) {
             if (completion)
             {
@@ -189,6 +188,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 [self.contactDelegate didRemoveContact:model fromContactCollectionView:self];
             }
+            [self focusOnEntry];
         }];
     }
 }
@@ -242,20 +242,46 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)focusOnEntry
 {
-    [UIView animateWithDuration:.25 animations:^{
-        [self scrollToEntryAnimated:YES];
-        
-    } completion:^(BOOL finished) {
+    if ([self entryIsVisible])
+    {
         ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
         [entryCell setFocus];
-    }];
+    }
+    else
+    {
+        [self scrollToEntryAnimated:YES onComplete:^{
+            ContactEntryCollectionViewCell *entryCell = (ContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+            [entryCell setFocus];
+        }];
+    }
 }
 
-- (void)scrollToEntryAnimated:(BOOL)animated
+- (BOOL)entryIsVisible
 {
-    [self scrollToItemAtIndexPath:[self entryCellIndexPath]
-                 atScrollPosition:UICollectionViewScrollPositionBottom
-                         animated:animated];
+    return [[self indexPathsForVisibleItems] containsObject:[self entryCellIndexPath]];
+}
+
+- (void)scrollToEntryAnimated:(BOOL)animated onComplete:(void(^)())complete
+{
+    if (animated)
+    {
+        [UIView animateWithDuration:.25
+                         animations:^{
+                             self.contentOffset = CGPointMake(0, self.contentSize.height - self.bounds.size.height);
+                         }
+                         completion:^(BOOL finished) {
+                             if (complete)
+                             {
+                                 complete();
+                             }
+                         }];
+    }
+    else
+    {
+        [self scrollToItemAtIndexPath:[self entryCellIndexPath]
+                     atScrollPosition:UICollectionViewScrollPositionBottom
+                             animated:NO];
+    }
 }
 
 #pragma mark - UICollectionViewDelegate
@@ -283,7 +309,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     cell.focused = NO;
 }
 
-#pragma mark - UICollectionViewDelegateFlowLayout
+#pragma mark - UICollectionViewDelegateContactFlowLayout
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -299,6 +325,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         
         CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
         CGSize cellSize = CGSizeMake(MIN([self maxContentWidth], newWidth), self.cellHeight);
+
         return cellSize;
     }
     else
@@ -314,6 +341,14 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         {
             return actualSize;
         }
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize
+{
+    if ([self.contactDelegate respondsToSelector:@selector(collectionView:willChangeContentSizeFrom:to:)])
+    {
+        [self.contactDelegate collectionView:self willChangeContentSizeFrom:currentSize to:newSize];
     }
 }
 

@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+@protocol UICollectionViewDelegateContactFlowLayout
+
+- (void)collectionView:(UICollectionView*)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize;
+
+@end
+
 @interface UICollectionViewContactFlowLayout : UICollectionViewFlowLayout
 
 @end
