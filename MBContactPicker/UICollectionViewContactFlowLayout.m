@@ -7,7 +7,6 @@
 //
 
 #import "UICollectionViewContactFlowLayout.h"
-#import "ContactCollectionView.h"
 
 @interface UICollectionViewContactFlowLayout()
 
@@ -100,6 +99,7 @@
 - (void)invalidateLayout
 {
     self.lastContentSize = self.collectionViewContentSize;
+    
     [super invalidateLayout];
 }
 
@@ -107,8 +107,10 @@
 {
     if (!CGSizeEqualToSize(self.lastContentSize, self.collectionViewContentSize))
     {
-        ContactCollectionView *collectionView = (ContactCollectionView*) self.collectionView;
-        [collectionView collectionView:collectionView willChangeContentSizeFrom:self.lastContentSize to:self.collectionViewContentSize];
+        if ([self.collectionView.delegate respondsToSelector:@selector(collectionView:willChangeContentSizeFrom:to:)])
+        {
+            [(id)self.collectionView.delegate collectionView:self.collectionView willChangeContentSizeFrom:self.lastContentSize to:self.collectionViewContentSize];
+        }
     }
 }
 
