@@ -15,7 +15,7 @@ NSInteger const kCellHeight = 31;
 NSString * const kPrompt = @"To:";
 NSString * const kDefaultEntryText = @" ";
 
-@interface ContactCollectionView() <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UICollectionViewContactFlowLayoutDelegate, UIKeyInput>
+@interface ContactCollectionView() <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UICollectionViewDelegateContactFlowLayout, UIKeyInput>
 
 @property (nonatomic, readonly) NSIndexPath *indexPathOfSelectedCell;
 @property (nonatomic) ContactCollectionViewCell *prototypeCell;
