@@ -25,7 +25,7 @@
 
 @end
 
-@interface ContactCollectionView : UICollectionView <UICollectionViewDelegateContactFlowLayout, UIKeyInput>
+@interface ContactCollectionView : UICollectionView
 
 @property (nonatomic) NSMutableArray *selectedContacts;
 @property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
