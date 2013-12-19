@@ -43,7 +43,7 @@ CGFloat const kAnimationSpeed = .25;
         [nc addObserver:self selector:@selector(keyboardChangedStatus:) name:UIKeyboardWillShowNotification object:nil];
         [nc addObserver:self selector:@selector(keyboardChangedStatus:) name:UIKeyboardWillHideNotification object:nil];
         
-        if (!self.hasLoadedData && self.window)
+        if (!self.hasLoadedData)
         {
             [self reloadData];
             self.hasLoadedData = YES;
