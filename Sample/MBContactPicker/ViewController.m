@@ -62,7 +62,7 @@
 
 - (NSArray *)selectedContactModelsForContactPicker:(MBContactPicker*)contactPickerView
 {
-    return @[self.contacts.firstObject];
+    return @[];
 }
 
 #pragma mark - MBContactPickerDelegate
