@@ -24,6 +24,8 @@ CGFloat const kAnimationSpeed = .25;
 @property CGFloat originalHeight;
 @property CGFloat originalYOffset;
 
+@property (nonatomic) BOOL hasLoadedData;
+
 @end
 
 @implementation MBContactPicker
@@ -40,6 +42,12 @@ CGFloat const kAnimationSpeed = .25;
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc addObserver:self selector:@selector(keyboardChangedStatus:) name:UIKeyboardWillShowNotification object:nil];
         [nc addObserver:self selector:@selector(keyboardChangedStatus:) name:UIKeyboardWillHideNotification object:nil];
+        
+        if (!self.hasLoadedData && self.window)
+        {
+            [self reloadData];
+            self.hasLoadedData = YES;
+        }
     }
 }
 
@@ -121,15 +129,16 @@ CGFloat const kAnimationSpeed = .25;
 
 - (void)reloadData
 {
-    self.contacts = [self.datasource contactModelsForCollectionView:self.contactCollectionView];
+    self.contactCollectionView.selectedContacts = [[NSMutableArray alloc] init];
+    
+    if ([self.datasource respondsToSelector:@selector(selectedContactModelsForContactPicker:)])
+    {
+        [self.contactCollectionView.selectedContacts addObjectsFromArray:[self.datasource selectedContactModelsForContactPicker:self]];
+    }
+    
     self.contacts = [self.datasource contactModelsForContactPicker:self];
     
     [self.contactCollectionView reloadData];
-}
-
-- (void)addPreselectedContact:(id<MBContactPickerModelProtocol>)model
-{
-    [self.contactCollectionView.selectedContacts addObject:model];
 }
 
 #pragma mark - Properties

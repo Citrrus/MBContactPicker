@@ -22,6 +22,7 @@
 @optional
 
 - (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView;
+- (NSArray *)selectedContactModelsForContactPicker:(MBContactPicker*)contactPickerView;
 
 @end
 
@@ -50,7 +51,6 @@
 @property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
 @property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
 
-- (void)addPreselectedContact:(id<MBContactPickerModelProtocol>)model;
 - (void)reloadData;
 
 @end
