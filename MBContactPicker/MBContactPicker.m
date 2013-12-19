@@ -14,7 +14,7 @@ CGFloat const kAnimationSpeed = .25;
 
 @interface MBContactPicker()
 
-@property (nonatomic, weak) ContactCollectionView *contactCollectionView;
+@property (nonatomic, weak) MBContactCollectionView *contactCollectionView;
 @property (nonatomic, weak) UITableView *searchTableView;
 @property (nonatomic) NSArray *filteredContacts;
 @property (nonatomic) NSArray *contacts;
@@ -61,7 +61,7 @@ CGFloat const kAnimationSpeed = .25;
     self.animationSpeed = kAnimationSpeed;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     self.clipsToBounds = YES;
-    ContactCollectionView *contactCollectionView = [ContactCollectionView contactCollectionViewWithFrame:self.bounds];
+    MBContactCollectionView *contactCollectionView = [MBContactCollectionView contactCollectionViewWithFrame:self.bounds];
     contactCollectionView.contactDelegate = self;
     contactCollectionView.clipsToBounds = YES;
     contactCollectionView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -229,7 +229,7 @@ CGFloat const kAnimationSpeed = .25;
     }
 }
 
-- (void)entryTextDidChange:(NSString*)text inContactCollectionView:(ContactCollectionView*)collectionView
+- (void)entryTextDidChange:(NSString*)text inContactCollectionView:(MBContactCollectionView*)collectionView
 {
     [self.contactCollectionView.collectionViewLayout invalidateLayout];
 
@@ -254,7 +254,7 @@ CGFloat const kAnimationSpeed = .25;
     }
 }
 
-- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView *)collectionView
+- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(MBContactCollectionView *)collectionView
 {
     if ([self.delegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
     {
@@ -262,7 +262,7 @@ CGFloat const kAnimationSpeed = .25;
     }
 }
 
-- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView *)collectionView
+- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(MBContactCollectionView *)collectionView
 {
     if ([self.delegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
     {
@@ -270,7 +270,7 @@ CGFloat const kAnimationSpeed = .25;
     }
 }
 
-- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView *)collectionView
+- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(MBContactCollectionView *)collectionView
 {
     if ([self.delegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
     {

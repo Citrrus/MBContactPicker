@@ -56,24 +56,24 @@
 
 #pragma mark - ContactPickerDataSource
 
-- (NSArray*)contactModelsForCollectionView:(ContactCollectionView*)collectionView
+- (NSArray*)contactModelsForCollectionView:(MBContactCollectionView*)collectionView
 {
     return self.contacts;
 }
 
 #pragma mark - ContactPickerDelegate
 
-- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView*)collectionView
+- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(MBContactCollectionView*)collectionView
 {
     NSLog(@"Did Select: %@", model.contactTitle);
 }
 
-- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView*)collectionView
+- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(MBContactCollectionView*)collectionView
 {
     NSLog(@"Did Add: %@", model.contactTitle);
 }
 
-- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView*)collectionView
+- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(MBContactCollectionView*)collectionView
 {
     NSLog(@"Did Remove: %@", model.contactTitle);
 }

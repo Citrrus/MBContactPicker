@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MBContactModel.h"
 
-@interface ContactCollectionViewCell : UICollectionViewCell
+@interface MBContactCollectionViewContactCell : UICollectionViewCell
 
 @property (nonatomic, strong) id<MBContactPickerModelProtocol> model;
 @property (nonatomic) BOOL focused;

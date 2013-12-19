@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ContactCollectionViewPromptCell : UICollectionViewCell
+@interface MBContactCollectionViewPromptCell : UICollectionViewCell
 
 @property (nonatomic, copy) NSString *prompt;
 @property (nonatomic) UIEdgeInsets insets;
