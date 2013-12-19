@@ -13,13 +13,15 @@
 #import "MBContactCollectionViewPromptCell.h"
 #import "MBContactEntryCollectionViewCell.h"
 
+@class MBContactPicker;
+
 @protocol MBContactPickerDataSource <NSObject>
 
 @required
 
 @optional
 
-- (NSArray *)contactModelsForCollectionView:(MBContactCollectionView*)collectionView;
+- (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView;
 
 @end
 

@@ -54,9 +54,9 @@
     [self.contactPickerView reloadData];
 }
 
-#pragma mark - ContactPickerDataSource
+#pragma mark - MBContactPickerDataSource
 
-- (NSArray*)contactModelsForCollectionView:(MBContactCollectionView*)collectionView
+- (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView
 {
     return self.contacts;
 }

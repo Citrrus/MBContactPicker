@@ -122,6 +122,8 @@ CGFloat const kAnimationSpeed = .25;
 - (void)reloadData
 {
     self.contacts = [self.datasource contactModelsForCollectionView:self.contactCollectionView];
+    self.contacts = [self.datasource contactModelsForContactPicker:self];
+    
     [self.contactCollectionView reloadData];
 }
 
