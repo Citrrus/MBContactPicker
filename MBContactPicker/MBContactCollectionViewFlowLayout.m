@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Citrrus, LLC. All rights reserved.
 //
 
-#import "UICollectionViewContactFlowLayout.h"
+#import "MBContactCollectionViewFlowLayout.h"
 
-@interface UICollectionViewContactFlowLayout()
+@interface MBContactCollectionViewFlowLayout()
 
 @property (nonatomic) CGSize lastContentSize;
 
@@ -16,7 +16,7 @@
 
 // This is using the answer provided in the stack overflow post: http://bit.ly/INr0ie
 
-@implementation UICollectionViewContactFlowLayout
+@implementation MBContactCollectionViewFlowLayout
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect
 {

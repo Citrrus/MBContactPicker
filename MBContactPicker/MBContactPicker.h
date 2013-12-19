@@ -8,10 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "MBContactModel.h"
-#import "ContactCollectionView.h"
-#import "ContactCollectionViewCell.h"
-#import "ContactCollectionViewPromptCell.h"
-#import "ContactEntryCollectionViewCell.h"
+#import "MBContactCollectionView.h"
+#import "MBContactCollectionViewContactCell.h"
+#import "MBContactCollectionViewPromptCell.h"
+#import "MBContactEntryCollectionViewCell.h"
 
 @protocol MBContactPickerDataSource <NSObject>
 
@@ -19,11 +19,11 @@
 
 @optional
 
-- (NSArray *)contactModelsForCollectionView:(ContactCollectionView*)collectionView;
+- (NSArray *)contactModelsForCollectionView:(MBContactCollectionView*)collectionView;
 
 @end
 
-@protocol MBContactPickerDelegate <ContactCollectionViewDelegate>
+@protocol MBContactPickerDelegate <MBContactCollectionViewDelegate>
 
 @optional
 
@@ -33,7 +33,7 @@
 
 @end
 
-@interface MBContactPicker : UIView <UITableViewDataSource, UITableViewDelegate, ContactCollectionViewDelegate>
+@interface MBContactPicker : UIView <UITableViewDataSource, UITableViewDelegate, MBContactCollectionViewDelegate>
 
 @property (nonatomic, weak) id<MBContactPickerDelegate> delegate;
 @property (nonatomic, weak) id<MBContactPickerDataSource> datasource;

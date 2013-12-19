@@ -7,28 +7,28 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ContactCollectionViewCell.h"
-#import "ContactEntryCollectionViewCell.h"
-#import "ContactCollectionViewPromptCell.h"
-#import "UICollectionViewContactFlowLayout.h"
-@class ContactCollectionView;
+#import "MBContactCollectionViewContactCell.h"
+#import "MBContactEntryCollectionViewCell.h"
+#import "MBContactCollectionViewPromptCell.h"
+#import "MBContactCollectionViewFlowLayout.h"
+@class MBContactCollectionView;
 
-@protocol ContactCollectionViewDelegate <NSObject>
+@protocol MBContactCollectionViewDelegate <NSObject>
 
 @optional
 
 - (void)collectionView:(UICollectionView*)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize;
-- (void)entryTextDidChange:(NSString*)text inContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView*)collectionView;
-- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView*)collectionView;
+- (void)entryTextDidChange:(NSString*)text inContactCollectionView:(MBContactCollectionView*)collectionView;
+- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(MBContactCollectionView*)collectionView;
+- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(MBContactCollectionView*)collectionView;
+- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(MBContactCollectionView*)collectionView;
 
 @end
 
-@interface ContactCollectionView : UICollectionView
+@interface MBContactCollectionView : UICollectionView
 
 @property (nonatomic) NSMutableArray *selectedContacts;
-@property (nonatomic, weak) id<ContactCollectionViewDelegate> contactDelegate;
+@property (nonatomic, weak) id<MBContactCollectionViewDelegate> contactDelegate;
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
@@ -41,7 +41,7 @@
 - (NSInteger)selectedContactIndexFromRow:(NSInteger)row;
 - (NSIndexPath*)indexPathOfSelectedCell;
 
-+ (ContactCollectionView*)contactCollectionViewWithFrame:(CGRect)frame;
++ (MBContactCollectionView*)contactCollectionViewWithFrame:(CGRect)frame;
 
 @property (nonatomic) NSInteger cellHeight;
 @property (nonatomic, copy) NSString *prompt;
