@@ -179,7 +179,7 @@ pod 'MBContactPicker'
 
 ## Contributors
 
-I am actively maintaining this along with the team at Citrrus[http://www.citrrus.com], so please fork our project and make it better!
+I am actively maintaining this along with the team at [Citrrus](http://www.citrrus.com), so please fork our project and make it better!
 
 Special thanks to [Matt Hupman](http://github.com/mhupman) for putting this library into a project and providing feedback and PRs to make it better.
 
