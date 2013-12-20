@@ -13,13 +13,16 @@
 #import "MBContactCollectionViewPromptCell.h"
 #import "MBContactEntryCollectionViewCell.h"
 
+@class MBContactPicker;
+
 @protocol MBContactPickerDataSource <NSObject>
 
 @required
 
 @optional
 
-- (NSArray *)contactModelsForCollectionView:(MBContactCollectionView*)collectionView;
+- (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView;
+- (NSArray *)selectedContactModelsForContactPicker:(MBContactPicker*)contactPickerView;
 
 @end
 
@@ -48,7 +51,6 @@
 @property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
 @property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
 
-- (void)addPreselectedContact:(id<MBContactPickerModelProtocol>)model;
 - (void)reloadData;
 
 @end

@@ -45,7 +45,7 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
 
 @property (nonatomic) NSArray *contacts;
 @property (weak, nonatomic) IBOutlet MBContactPicker *contactPickerView;
-@property (nonatomic, weak) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
 
 @end
 
@@ -72,38 +72,43 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
     
     self.contactPickerView.delegate = self;
     self.contactPickerView.datasource = self;
-    [self.contactPickerView reloadData];
 }
 
-#pragma mark - ContactPickerDataSource
+#pragma mark - MBContactPickerDataSource
 
-// REQUIRED
-- (NSArray*)contactModelsForCollectionView:(ContactCollectionView*)collectionView
+// Use this method to give the contact picker the entire set of possible contacts.  Required.
+- (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView
 {
     return self.contacts;
 }
 
-#pragma mark - ContactPickerDelegate
+// Use this method to pre-populate contacts in the picker view.  Optional.
+- (NSArray *)selectedContactModelsForContactPicker:(MBContactPicker*)contactPickerView
+{
+    return @[];
+}
 
-// OPTIONAL
+#pragma mark - MBContactPickerDelegate
+
+// Optional
 - (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView*)collectionView
 {
     NSLog(@"Did Select: %@", model.contactTitle);
 }
 
-// OPTIONAL
+// Optional
 - (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView*)collectionView
 {
     NSLog(@"Did Add: %@", model.contactTitle);
 }
 
-// OPTIONAL
+// Optional
 - (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView*)collectionView
 {
     NSLog(@"Did Remove: %@", model.contactTitle);
 }
 
-// OPTIONAL
+// Optional
 // This delegate method is called to allow the parent view to increase the size of
 // the contact picker view to show the search table view
 - (void)showFilteredContacts
@@ -120,7 +125,7 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
     }
 }
 
-// OPTIONAL
+// Optional
 // This delegate method is called to allow the parent view to decrease the size of
 // the contact picker view to hide the search table view
 - (void)hideFilteredContacts
@@ -135,7 +140,7 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
     }
 }
 
-// OPTIONAL
+// Optional
 // This delegate method is invoked to allow the parent to increase the size of the
 // collectionview that shows which contacts have been selected. To increase or decrease
 // the number of rows visible, change the maxVisibleRows property of the MBContactPicker
@@ -174,7 +179,7 @@ pod 'MBContactPicker'
 
 ## Contributors
 
-I am actively maintaining this along with the team at Citrrus, so please fork our project and make it better!
+I am actively maintaining this along with the team at [Citrrus](http://www.citrrus.com), so please fork our project and make it better!
 
 Special thanks to [Matt Hupman](http://github.com/mhupman) for putting this library into a project and providing feedback and PRs to make it better.
 

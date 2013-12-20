@@ -51,17 +51,21 @@
     
     self.contactPickerView.delegate = self;
     self.contactPickerView.datasource = self;
-    [self.contactPickerView reloadData];
 }
 
-#pragma mark - ContactPickerDataSource
+#pragma mark - MBContactPickerDataSource
 
-- (NSArray*)contactModelsForCollectionView:(MBContactCollectionView*)collectionView
+- (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView
 {
     return self.contacts;
 }
 
-#pragma mark - ContactPickerDelegate
+- (NSArray *)selectedContactModelsForContactPicker:(MBContactPicker*)contactPickerView
+{
+    return @[];
+}
+
+#pragma mark - MBContactPickerDelegate
 
 - (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(MBContactCollectionView*)collectionView
 {
