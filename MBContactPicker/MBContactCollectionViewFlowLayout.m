@@ -6,11 +6,17 @@
 //  Copyright (c) 2013 Citrrus, LLC. All rights reserved.
 //
 
-#import "UICollectionViewContactFlowLayout.h"
+#import "MBContactCollectionViewFlowLayout.h"
+
+@interface MBContactCollectionViewFlowLayout()
+
+@property (nonatomic) CGSize lastContentSize;
+
+@end
 
 // This is using the answer provided in the stack overflow post: http://bit.ly/INr0ie
 
-@implementation UICollectionViewContactFlowLayout
+@implementation MBContactCollectionViewFlowLayout
 
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect
 {
@@ -68,7 +74,7 @@
         if (indexPath.row == total - 1)
         {
             CGFloat newWidth = self.collectionView.frame.size.width - sectionInset.left - sectionInset.right;
-            frame.size.width = MAX(MAX(50, newWidth), frame.size.width);
+            frame.size.width = MAX(MAX(50, ceilf(newWidth)), frame.size.width);
         }
         currentItemAttributes.frame = frame;
         return currentItemAttributes;
@@ -79,7 +85,7 @@
     if (indexPath.row == total - 1)
     {
         CGFloat newWidth = self.collectionView.frame.size.width - previousFrameRightPoint - sectionInset.right;
-        frame.size.width = MAX(MAX(50, newWidth), frame.size.width);
+        frame.size.width = MAX(MAX(50, ceilf(newWidth)), frame.size.width);
     }
     currentItemAttributes.frame = frame;
     return currentItemAttributes;
@@ -88,6 +94,24 @@
 - (BOOL)shouldInvalidateLayoutForBoundsChange:(CGRect)newBounds
 {
     return YES;
+}
+
+- (void)invalidateLayout
+{
+    self.lastContentSize = self.collectionViewContentSize;
+    
+    [super invalidateLayout];
+}
+
+- (void)finalizeCollectionViewUpdates
+{
+    if (!CGSizeEqualToSize(self.lastContentSize, self.collectionViewContentSize))
+    {
+        if ([self.collectionView.delegate respondsToSelector:@selector(collectionView:willChangeContentSizeFrom:to:)])
+        {
+            [(id)self.collectionView.delegate collectionView:self.collectionView willChangeContentSizeFrom:self.lastContentSize to:self.collectionViewContentSize];
+        }
+    }
 }
 
 @end

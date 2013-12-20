@@ -7,12 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "ContactCollectionView.h"
-#import "ContactCollectionViewCell.h"
-#import "ContactCollectionViewCellModel.h"
-#import "ContactCollectionViewPromptCell.h"
-#import "ContactEntryCollectionViewCell.h"
-#import "UICollectionViewContactFlowLayout.h"
+#import "MBContactModel.h"
+#import "MBContactCollectionView.h"
+#import "MBContactCollectionViewContactCell.h"
+#import "MBContactCollectionViewPromptCell.h"
+#import "MBContactEntryCollectionViewCell.h"
+
+@class MBContactPicker;
 
 @protocol MBContactPickerDataSource <NSObject>
 
@@ -20,13 +21,14 @@
 
 @optional
 
-- (NSArray *)contactModelsForCollectionView:(ContactCollectionView*)collectionView;
+- (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView;
+- (NSArray *)selectedContactModelsForContactPicker:(MBContactPicker*)contactPickerView;
 
 @end
 
-@protocol MBContactPickerDelegate <ContactCollectionViewDelegate>
+@protocol MBContactPickerDelegate <MBContactCollectionViewDelegate>
 
-@required
+@optional
 
 - (void)showFilteredContacts;
 - (void)hideFilteredContacts;
@@ -34,7 +36,7 @@
 
 @end
 
-@interface MBContactPicker : UIView <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegateImproved, UITableViewDataSource, UITableViewDelegate, ContactCollectionViewDelegate>
+@interface MBContactPicker : UIView <UITableViewDataSource, UITableViewDelegate, MBContactCollectionViewDelegate>
 
 @property (nonatomic, weak) id<MBContactPickerDelegate> delegate;
 @property (nonatomic, weak) id<MBContactPickerDataSource> datasource;
@@ -44,14 +46,11 @@
 @property (nonatomic) CGFloat maxVisibleRows;
 @property (nonatomic, readonly) CGFloat currentContentHeight;
 @property (nonatomic, readonly) CGFloat keyboardHeight;
-@property (nonatomic, readonly) ContactCollectionViewPromptCell *promptCell;
-@property (nonatomic, readonly) ContactEntryCollectionViewCell *entryCell;
+@property (nonatomic) CGFloat animationSpeed;
 
 @property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
 @property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
 
-
-- (void)addPreselectedContact:(ContactCollectionViewCellModel*)model;
 - (void)reloadData;
 
 @end

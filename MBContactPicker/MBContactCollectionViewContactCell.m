@@ -6,16 +6,15 @@
 //  Copyright (c) 2013 Citrrus, LLC. All rights reserved.
 //
 
-#import "ContactCollectionViewCell.h"
-#import "ContactCollectionViewCellModel.h"
+#import "MBContactCollectionViewContactCell.h"
 
-@interface ContactCollectionViewCell()
+@interface MBContactCollectionViewContactCell()
 
 @property (nonatomic, weak) UILabel *contactTitleLabel;
 
 @end
 
-@implementation ContactCollectionViewCell
+@implementation MBContactCollectionViewContactCell
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -60,17 +59,17 @@
                                                                    views:NSDictionaryOfVariableBindings(contactLabel)]];
 }
 
-- (void)tintColorDidChange {
+- (void)tintColorDidChange{
     self.focused = self.focused;
 }
 
-- (void)setModel:(ContactCollectionViewCellModel *)model
+- (void)setModel:(id<MBContactPickerModelProtocol>)model
 {
     _model = model;
     self.contactTitleLabel.text = self.model.contactTitle;
 }
 
-- (CGSize)sizeForCellWithContact:(ContactCollectionViewCellModel *)model
+- (CGSize)sizeForCellWithContact:(id<MBContactPickerModelProtocol>)model
 {
     UIFont *font = self.contactTitleLabel.font;
     CGSize size = [model.contactTitle boundingRectWithSize:CGSizeMake(MAXFLOAT, MAXFLOAT) options:0 attributes:@{ NSFontAttributeName: font } context:nil].size;

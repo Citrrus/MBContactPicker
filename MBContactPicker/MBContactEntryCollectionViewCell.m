@@ -6,16 +6,16 @@
 //  Copyright (c) 2013 Citrrus, LLC. All rights reserved.
 //
 
-#import "ContactEntryCollectionViewCell.h"
+#import "MBContactEntryCollectionViewCell.h"
 
-@interface ContactEntryCollectionViewCell()
+@interface MBContactEntryCollectionViewCell()
 
 @property (nonatomic, weak) UITextField *contactEntryTextField;
 
 @end
 
 
-@implementation ContactEntryCollectionViewCell
+@implementation MBContactEntryCollectionViewCell
 
 - (instancetype)initWithFrame:(CGRect)frame
 {
@@ -87,9 +87,15 @@
     return self.contactEntryTextField.text;
 }
 
+- (void)setText:(NSString *)text
+{
+    self.contactEntryTextField.text = text;
+}
+
 - (void)reset
 {
     self.contactEntryTextField.text = @" ";
+    [self.delegate textFieldDidChange:self.contactEntryTextField];
 }
 
 - (void)setFocus
