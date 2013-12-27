@@ -17,8 +17,6 @@
 
 @protocol MBContactPickerDataSource <NSObject>
 
-@required
-
 @optional
 
 - (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView;
