@@ -91,19 +91,19 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
 #pragma mark - MBContactPickerDelegate
 
 // Optional
-- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(ContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didSelectContact:(id<MBContactPickerModelProtocol>)model
 {
     NSLog(@"Did Select: %@", model.contactTitle);
 }
 
 // Optional
-- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(ContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didAddContact:(id<MBContactPickerModelProtocol>)model
 {
     NSLog(@"Did Add: %@", model.contactTitle);
 }
 
 // Optional
-- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(ContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didRemoveContact:(id<MBContactPickerModelProtocol>)model
 {
     NSLog(@"Did Remove: %@", model.contactTitle);
 }
