@@ -161,9 +161,9 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 completion();
             }
-            if ([self.contactDelegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
+            if ([self.contactDelegate respondsToSelector:@selector(contactCollectionView:didAddContact:)])
             {
-                [self.contactDelegate didAddContact:model toContactCollectionView:self];
+                [self.contactDelegate contactCollectionView:self didAddContact:model];
             }
         }];
     }
@@ -184,9 +184,9 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 completion();
             }
-            if ([self.contactDelegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
+            if ([self.contactDelegate respondsToSelector:@selector(contactCollectionView:didRemoveContact:)])
             {
-                [self.contactDelegate didRemoveContact:model fromContactCollectionView:self];
+                [self.contactDelegate contactCollectionView:self didRemoveContact:model];
             }
             [self focusOnEntry];
         }];
@@ -292,9 +292,9 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     [self becomeFirstResponder];
     cell.focused = YES;
     
-    if ([self.contactDelegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
+    if ([self.contactDelegate respondsToSelector:@selector(contactCollectionView:didSelectContact:)])
     {
-        [self.contactDelegate didSelectContact:cell.model inContactCollectionView:self];
+        [self.contactDelegate contactCollectionView:self didSelectContact:cell.model];
     }
 }
 
@@ -346,9 +346,9 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize
 {
-    if ([self.contactDelegate respondsToSelector:@selector(collectionView:willChangeContentSizeFrom:to:)])
+    if ([self.contactDelegate respondsToSelector:@selector(contactCollectionView:willChangeContentSizeFrom:to:)])
     {
-        [self.contactDelegate collectionView:self willChangeContentSizeFrom:currentSize to:newSize];
+        [self.contactDelegate contactCollectionView:self willChangeContentSizeFrom:currentSize to:newSize];
     }
 }
 
@@ -445,9 +445,9 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 - (void)textFieldDidChange:(UITextField *)textField
 {
     self.searchText = textField.text;
-    if ([self.contactDelegate respondsToSelector:@selector(entryTextDidChange:inContactCollectionView:)])
+    if ([self.contactDelegate respondsToSelector:@selector(contactCollectionView:entryTextDidChange:)])
     {
-        [self.contactDelegate entryTextDidChange:textField.text inContactCollectionView:self];
+        [self.contactDelegate contactCollectionView:self entryTextDidChange:textField.text];
     }
 }
 

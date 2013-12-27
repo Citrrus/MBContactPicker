@@ -67,17 +67,17 @@
 
 #pragma mark - MBContactPickerDelegate
 
-- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(MBContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didSelectContact:(id<MBContactPickerModelProtocol>)model
 {
     NSLog(@"Did Select: %@", model.contactTitle);
 }
 
-- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(MBContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didAddContact:(id<MBContactPickerModelProtocol>)model
 {
     NSLog(@"Did Add: %@", model.contactTitle);
 }
 
-- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(MBContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didRemoveContact:(id<MBContactPickerModelProtocol>)model
 {
     NSLog(@"Did Remove: %@", model.contactTitle);
 }

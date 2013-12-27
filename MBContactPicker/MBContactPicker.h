@@ -17,8 +17,6 @@
 
 @protocol MBContactPickerDataSource <NSObject>
 
-@required
-
 @optional
 
 - (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView;
@@ -47,9 +45,6 @@
 @property (nonatomic, readonly) CGFloat currentContentHeight;
 @property (nonatomic, readonly) CGFloat keyboardHeight;
 @property (nonatomic) CGFloat animationSpeed;
-
-@property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
-@property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
 
 - (void)reloadData;
 
