@@ -46,9 +46,6 @@
 @property (nonatomic, readonly) CGFloat keyboardHeight;
 @property (nonatomic) CGFloat animationSpeed;
 
-@property (nonatomic, weak) id<UITableViewDelegate> searchTableDelegate;
-@property (nonatomic, weak) id<UITableViewDataSource> searchTableDataSource;
-
 - (void)reloadData;
 
 @end
