@@ -111,12 +111,11 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
 // Optional
 // This delegate method is called to allow the parent view to increase the size of
 // the contact picker view to show the search table view
-- (void)showFilteredContacts
+- (void)showFilteredContactsForContactPicker:(MBContactPicker*)contactPicker
 {
-    if (self.contactPickerViewHeightConstraint.constant <= self.contactPickerView.currentContentHeight)
+    if (self.contactPickerViewHeightConstraint.constant <= contactPicker.currentContentHeight)
     {
-        [self.view layoutIfNeeded];
-        [UIView animateWithDuration:.25 animations:^{
+        [UIView animateWithDuration:self.contactPickerView.animationSpeed animations:^{
             CGRect pickerRectInWindow = [self.view convertRect:self.contactPickerView.frame fromView:nil];
             CGFloat newHeight = self.view.window.bounds.size.height - pickerRectInWindow.origin.y - self.contactPickerView.keyboardHeight;
             self.contactPickerViewHeightConstraint.constant = newHeight;
@@ -128,13 +127,12 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
 // Optional
 // This delegate method is called to allow the parent view to decrease the size of
 // the contact picker view to hide the search table view
-- (void)hideFilteredContacts
+- (void)hideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker
 {
     if (self.contactPickerViewHeightConstraint.constant > self.contactPickerView.currentContentHeight)
     {
-        [self.view layoutIfNeeded];
-        [UIView animateWithDuration:.25 animations:^{
-            self.contactPickerViewHeightConstraint.constant = self.contactPickerView.currentContentHeight;
+        [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
+            self.contactPickerViewHeightConstraint.constant = contactPicker.currentContentHeight;
             [self.view layoutIfNeeded];
         }];
     }
@@ -144,10 +142,11 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
 // This delegate method is invoked to allow the parent to increase the size of the
 // collectionview that shows which contacts have been selected. To increase or decrease
 // the number of rows visible, change the maxVisibleRows property of the MBContactPicker
-- (void)updateViewHeightTo:(CGFloat)newHeight
+- (void)contactPicker:(MBContactPicker*)contactPicker updateViewHeightTo:(CGFloat)newHeight
 {
-    [UIView animateWithDuration:.25 animations:^{
-        self.contactPickerViewHeightConstraint.constant = newHeight;
+    self.contactPickerViewHeightConstraint.constant = newHeight;
+    [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
+        [self.view layoutIfNeeded];
     }];
 }
 
