@@ -324,18 +324,18 @@ CGFloat const kAnimationSpeed = .25;
 - (void)showSearchTableView
 {
     self.searchTableView.hidden = NO;
-    if ([self.delegate respondsToSelector:@selector(showFilteredContactsForContactPicker:)])
+    if ([self.delegate respondsToSelector:@selector(didShowFilteredContactsForContactPicker:)])
     {
-        [self.delegate showFilteredContactsForContactPicker:self];
+        [self.delegate didShowFilteredContactsForContactPicker:self];
     }
 }
 
 - (void)hideSearchTableView
 {
     self.searchTableView.hidden = YES;
-    if ([self.delegate respondsToSelector:@selector(hideFilteredContactsForContactPicker:)])
+    if ([self.delegate respondsToSelector:@selector(didHideFilteredContactsForContactPicker:)])
     {
-        [self.delegate hideFilteredContactsForContactPicker:self];
+        [self.delegate didHideFilteredContactsForContactPicker:self];
     }
 }
 

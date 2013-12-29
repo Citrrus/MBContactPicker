@@ -28,9 +28,9 @@
 
 @optional
 
-- (void)showFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
-- (void)hideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
 - (void)contactPicker:(MBContactPicker*)contactPicker updateViewHeightTo:(CGFloat)newHeight;
+- (void)didShowFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
+- (void)didHideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
 
 @end
 

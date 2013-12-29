@@ -84,7 +84,7 @@
 
 // This delegate method is called to allow the parent view to increase the size of
 // the contact picker view to show the search table view
-- (void)showFilteredContactsForContactPicker:(MBContactPicker*)contactPicker
+- (void)didShowFilteredContactsForContactPicker:(MBContactPicker*)contactPicker
 {
     if (self.contactPickerViewHeightConstraint.constant <= contactPicker.currentContentHeight)
     {
@@ -99,7 +99,7 @@
 
 // This delegate method is called to allow the parent view to decrease the size of
 // the contact picker view to hide the search table view
-- (void)hideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker
+- (void)didHideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker
 {
     if (self.contactPickerViewHeightConstraint.constant > contactPicker.currentContentHeight)
     {
