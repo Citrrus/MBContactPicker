@@ -67,30 +67,30 @@
 
 #pragma mark - MBContactPickerDelegate
 
-- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(MBContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didSelectContact:(id<MBContactPickerModelProtocol>)model
 {
     NSLog(@"Did Select: %@", model.contactTitle);
 }
 
-- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(MBContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didAddContact:(id<MBContactPickerModelProtocol>)model
 {
     NSLog(@"Did Add: %@", model.contactTitle);
 }
 
-- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(MBContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didRemoveContact:(id<MBContactPickerModelProtocol>)model
 {
     NSLog(@"Did Remove: %@", model.contactTitle);
 }
 
 // This delegate method is called to allow the parent view to increase the size of
 // the contact picker view to show the search table view
-- (void)showFilteredContacts
+- (void)didShowFilteredContactsForContactPicker:(MBContactPicker*)contactPicker
 {
-    if (self.contactPickerViewHeightConstraint.constant <= self.contactPickerView.currentContentHeight)
+    if (self.contactPickerViewHeightConstraint.constant <= contactPicker.currentContentHeight)
     {
-        [UIView animateWithDuration:self.contactPickerView.animationSpeed animations:^{
-            CGRect pickerRectInWindow = [self.view convertRect:self.contactPickerView.frame fromView:nil];
-            CGFloat newHeight = self.view.window.bounds.size.height - pickerRectInWindow.origin.y - self.contactPickerView.keyboardHeight;
+        [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
+            CGRect pickerRectInWindow = [self.view convertRect:contactPicker.frame fromView:nil];
+            CGFloat newHeight = self.view.window.bounds.size.height - pickerRectInWindow.origin.y - contactPicker.keyboardHeight;
             self.contactPickerViewHeightConstraint.constant = newHeight;
             [self.view layoutIfNeeded];
         }];
@@ -99,12 +99,12 @@
 
 // This delegate method is called to allow the parent view to decrease the size of
 // the contact picker view to hide the search table view
-- (void)hideFilteredContacts
+- (void)didHideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker
 {
-    if (self.contactPickerViewHeightConstraint.constant > self.contactPickerView.currentContentHeight)
+    if (self.contactPickerViewHeightConstraint.constant > contactPicker.currentContentHeight)
     {
-        [UIView animateWithDuration:self.contactPickerView.animationSpeed animations:^{
-            self.contactPickerViewHeightConstraint.constant = self.contactPickerView.currentContentHeight;
+        [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
+            self.contactPickerViewHeightConstraint.constant = contactPicker.currentContentHeight;
             [self.view layoutIfNeeded];
         }];
     }
@@ -113,10 +113,10 @@
 // This delegate method is invoked to allow the parent to increase the size of the
 // collectionview that shows which contacts have been selected. To increase or decrease
 // the number of rows visible, change the maxVisibleRows property of the MBContactPicker
-- (void)updateViewHeightTo:(CGFloat)newHeight
+- (void)contactPicker:(MBContactPicker*)contactPicker didUpdateContentHeightTo:(CGFloat)newHeight
 {
     self.contactPickerViewHeightConstraint.constant = newHeight;
-    [UIView animateWithDuration:self.contactPickerView.animationSpeed animations:^{
+    [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
         [self.view layoutIfNeeded];
     }];
 }

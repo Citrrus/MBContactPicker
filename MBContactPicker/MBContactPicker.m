@@ -229,18 +229,18 @@ CGFloat const kAnimationSpeed = .25;
 
 #pragma mark - ContactCollectionViewDelegate
 
-- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize
 {
     self.contactCollectionViewContentSize = newSize;
     [self updateCollectionViewHeightConstraints];
 
-    if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
+    if ([self.delegate respondsToSelector:@selector(contactPicker:didUpdateContentHeightTo:)])
     {
-        [self.delegate updateViewHeightTo:self.currentContentHeight];
+        [self.delegate contactPicker:self didUpdateContentHeightTo:self.currentContentHeight];
     }
 }
 
-- (void)entryTextDidChange:(NSString*)text inContactCollectionView:(MBContactCollectionView*)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView entryTextDidChange:(NSString*)text
 {
     [self.contactCollectionView.collectionViewLayout invalidateLayout];
 
@@ -265,27 +265,27 @@ CGFloat const kAnimationSpeed = .25;
     }
 }
 
-- (void)didRemoveContact:(id<MBContactPickerModelProtocol>)model fromContactCollectionView:(MBContactCollectionView *)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didRemoveContact:(id<MBContactPickerModelProtocol>)model
 {
-    if ([self.delegate respondsToSelector:@selector(didRemoveContact:fromContactCollectionView:)])
+    if ([self.delegate respondsToSelector:@selector(contactCollectionView:didRemoveContact:)])
     {
-        [self.delegate didRemoveContact:model fromContactCollectionView:collectionView];
+        [self.delegate contactCollectionView:contactCollectionView didRemoveContact:model];
     }
 }
 
-- (void)didAddContact:(id<MBContactPickerModelProtocol>)model toContactCollectionView:(MBContactCollectionView *)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didAddContact:(id<MBContactPickerModelProtocol>)model
 {
-    if ([self.delegate respondsToSelector:@selector(didAddContact:toContactCollectionView:)])
+    if ([self.delegate respondsToSelector:@selector(contactCollectionView:didAddContact:)])
     {
-        [self.delegate didAddContact:model toContactCollectionView:collectionView];
+        [self.delegate contactCollectionView:contactCollectionView didAddContact:model];
     }
 }
 
-- (void)didSelectContact:(id<MBContactPickerModelProtocol>)model inContactCollectionView:(MBContactCollectionView *)collectionView
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didSelectContact:(id<MBContactPickerModelProtocol>)model
 {
-    if ([self.delegate respondsToSelector:@selector(didSelectContact:inContactCollectionView:)])
+    if ([self.delegate respondsToSelector:@selector(contactCollectionView:didSelectContact:)])
     {
-        [self.delegate didSelectContact:model inContactCollectionView:collectionView];
+        [self.delegate contactCollectionView:contactCollectionView didSelectContact:model];
     }
 }
 
@@ -324,18 +324,18 @@ CGFloat const kAnimationSpeed = .25;
 - (void)showSearchTableView
 {
     self.searchTableView.hidden = NO;
-    if ([self.delegate respondsToSelector:@selector(showFilteredContacts)])
+    if ([self.delegate respondsToSelector:@selector(didShowFilteredContactsForContactPicker:)])
     {
-        [self.delegate showFilteredContacts];
+        [self.delegate didShowFilteredContactsForContactPicker:self];
     }
 }
 
 - (void)hideSearchTableView
 {
     self.searchTableView.hidden = YES;
-    if ([self.delegate respondsToSelector:@selector(hideFilteredContacts)])
+    if ([self.delegate respondsToSelector:@selector(didHideFilteredContactsForContactPicker:)])
     {
-        [self.delegate hideFilteredContacts];
+        [self.delegate didHideFilteredContactsForContactPicker:self];
     }
 }
 
