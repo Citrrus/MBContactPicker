@@ -16,6 +16,8 @@
 
 @protocol MBContactCollectionViewDelegate <NSObject>
 
+@optional
+
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize;
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView entryTextDidChange:(NSString*)text;
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didSelectContact:(id<MBContactPickerModelProtocol>)model;

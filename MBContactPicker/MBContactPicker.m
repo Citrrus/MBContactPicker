@@ -234,9 +234,9 @@ CGFloat const kAnimationSpeed = .25;
     self.contactCollectionViewContentSize = newSize;
     [self updateCollectionViewHeightConstraints];
 
-    if ([self.delegate respondsToSelector:@selector(updateViewHeightTo:)])
+    if ([self.delegate respondsToSelector:@selector(contactPicker:didUpdateContentHeightTo:)])
     {
-        [self.delegate updateViewHeightTo:self.currentContentHeight];
+        [self.delegate contactPicker:self didUpdateContentHeightTo:self.currentContentHeight];
     }
 }
 
@@ -324,18 +324,18 @@ CGFloat const kAnimationSpeed = .25;
 - (void)showSearchTableView
 {
     self.searchTableView.hidden = NO;
-    if ([self.delegate respondsToSelector:@selector(showFilteredContacts)])
+    if ([self.delegate respondsToSelector:@selector(didShowFilteredContactsForContactPicker:)])
     {
-        [self.delegate showFilteredContacts];
+        [self.delegate didShowFilteredContactsForContactPicker:self];
     }
 }
 
 - (void)hideSearchTableView
 {
     self.searchTableView.hidden = YES;
-    if ([self.delegate respondsToSelector:@selector(hideFilteredContacts)])
+    if ([self.delegate respondsToSelector:@selector(didHideFilteredContactsForContactPicker:)])
     {
-        [self.delegate hideFilteredContacts];
+        [self.delegate didHideFilteredContactsForContactPicker:self];
     }
 }
 
