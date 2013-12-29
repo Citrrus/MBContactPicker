@@ -234,9 +234,9 @@ CGFloat const kAnimationSpeed = .25;
     self.contactCollectionViewContentSize = newSize;
     [self updateCollectionViewHeightConstraints];
 
-    if ([self.delegate respondsToSelector:@selector(contactPicker:updateViewHeightTo:)])
+    if ([self.delegate respondsToSelector:@selector(contactPicker:didUpdateContentHeightTo:)])
     {
-        [self.delegate contactPicker:self updateViewHeightTo:self.currentContentHeight];
+        [self.delegate contactPicker:self didUpdateContentHeightTo:self.currentContentHeight];
     }
 }
 

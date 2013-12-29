@@ -113,7 +113,7 @@
 // This delegate method is invoked to allow the parent to increase the size of the
 // collectionview that shows which contacts have been selected. To increase or decrease
 // the number of rows visible, change the maxVisibleRows property of the MBContactPicker
-- (void)contactPicker:(MBContactPicker*)contactPicker updateViewHeightTo:(CGFloat)newHeight
+- (void)contactPicker:(MBContactPicker*)contactPicker didUpdateContentHeightTo:(CGFloat)newHeight
 {
     self.contactPickerViewHeightConstraint.constant = newHeight;
     [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
