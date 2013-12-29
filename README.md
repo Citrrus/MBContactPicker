@@ -115,9 +115,9 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
 {
     if (self.contactPickerViewHeightConstraint.constant <= contactPicker.currentContentHeight)
     {
-        [UIView animateWithDuration:self.contactPickerView.animationSpeed animations:^{
-            CGRect pickerRectInWindow = [self.view convertRect:self.contactPickerView.frame fromView:nil];
-            CGFloat newHeight = self.view.window.bounds.size.height - pickerRectInWindow.origin.y - self.contactPickerView.keyboardHeight;
+        [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
+            CGRect pickerRectInWindow = [self.view convertRect:contactPicker.frame fromView:nil];
+            CGFloat newHeight = self.view.window.bounds.size.height - pickerRectInWindow.origin.y - contactPicker.keyboardHeight;
             self.contactPickerViewHeightConstraint.constant = newHeight;
             [self.view layoutIfNeeded];
         }];
@@ -129,7 +129,7 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
 // the contact picker view to hide the search table view
 - (void)hideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker
 {
-    if (self.contactPickerViewHeightConstraint.constant > self.contactPickerView.currentContentHeight)
+    if (self.contactPickerViewHeightConstraint.constant > contactPicker.currentContentHeight)
     {
         [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
             self.contactPickerViewHeightConstraint.constant = contactPicker.currentContentHeight;
