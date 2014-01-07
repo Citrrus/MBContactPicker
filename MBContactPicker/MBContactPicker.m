@@ -260,7 +260,9 @@ CGFloat const kAnimationSpeed = .25;
         [self showSearchTableView];
         NSString *searchString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
-        self.filteredContacts = [self.contacts filteredArrayUsingPredicate:predicate];
+        NSMutableArray *selectableContacts = [NSMutableArray arrayWithArray:self.contacts];
+        [selectableContacts removeObjectsInArray:self.contactCollectionView.selectedContacts];
+        self.filteredContacts = [selectableContacts filteredArrayUsingPredicate:predicate];
         [self.searchTableView reloadData];
     }
 }
