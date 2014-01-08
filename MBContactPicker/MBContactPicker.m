@@ -166,10 +166,10 @@ CGFloat const kAnimationSpeed = .25;
 
 - (void)setPrompt:(NSString *)prompt
 {
-    _prompt = prompt;
+    _prompt = [prompt copy];
     self.contactCollectionView.prompt = prompt;
     [self.contactCollectionView.collectionViewLayout invalidateLayout];
-    [self.contactCollectionView reloadData];
+    [self.contactCollectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]]];
 }
 
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows
