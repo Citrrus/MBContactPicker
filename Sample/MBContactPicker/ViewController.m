@@ -68,6 +68,8 @@
 
     self.contactPickerView.delegate = self;
     self.contactPickerView.datasource = self;
+    
+    [self.testingTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 }
 
 #pragma mark - MBContactPickerDataSource
@@ -136,6 +138,10 @@
     [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
         [self.view layoutIfNeeded];
     }];
+}
+
+- (void)textFieldDidChange:(UITextField *)textField {
+    self.contactPickerView.prompt = textField.text;
 }
 
 @end

@@ -85,7 +85,7 @@
                                     <constraint firstAttribute="height" constant="31" id="8b6-Lk-fgg"/>
                                 </constraints>
                             </view>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="UIResponder Testing Text Box" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uYo-cY-bHv">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="UIResponder and Prompt Testing" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uYo-cY-bHv">
                                 <rect key="frame" x="20" y="66" width="280" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -129,6 +129,7 @@
                     <connections>
                         <outlet property="contactPickerView" destination="gVn-GW-f9z" id="iwJ-RC-IkB"/>
                         <outlet property="contactPickerViewHeightConstraint" destination="8b6-Lk-fgg" id="8h6-YA-Iwd"/>
+                        <outlet property="testingTextField" destination="uYo-cY-bHv" id="3Uc-hf-at3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

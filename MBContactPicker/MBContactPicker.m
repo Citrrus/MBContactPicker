@@ -169,6 +169,7 @@ CGFloat const kAnimationSpeed = .25;
     _prompt = prompt;
     self.contactCollectionView.prompt = prompt;
     [self.contactCollectionView.collectionViewLayout invalidateLayout];
+    [self.contactCollectionView reloadData];
 }
 
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows

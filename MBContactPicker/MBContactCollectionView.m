@@ -316,7 +316,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     if ([self isPromptCell:indexPath])
     {
         if (self.prompt.length < 1) {
-            return CGSizeMake(0.0, 0.0);
+            return CGSizeMake(0.001, self.cellHeight);
         }
         CGFloat width = [MBContactCollectionViewPromptCell widthWithPrompt:self.prompt];
         width += 10;
