@@ -164,6 +164,14 @@ Thanks to [Roman](http://github.com/firmach) for this enhancement.
 
 ![Orange Colored Contacts](assets/orange-contact.png)
 
+### Suppress completion of alread-selected contacts
+
+By default, the picker shows you contacts which have already been added to the collection as options for completion, but discards them when you choose them, to prevent duplicate contacts in the collection. This is to be consistent with the behavior of Apple's Mail app, but is arguably a deficient user experience. To suppress the already-chosen contacts from the completion list, you can set the following property:
+
+```objc
+self.contactPickerView.allowsCompletionOfSelectedContacts = NO;
+```
+
 ## Motivation
 
 This project exists to because no other cocoapods existed that solved the problem of providing a robust contact selector that was easy to implement, used the latest iOS tools, and matched the appearance of iOS7's flat design.
