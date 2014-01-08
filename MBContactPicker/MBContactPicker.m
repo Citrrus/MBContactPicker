@@ -67,6 +67,7 @@ CGFloat const kAnimationSpeed = .25;
     self.originalYOffset = -1;
     self.maxVisibleRows = kMaxVisibleRows;
     self.animationSpeed = kAnimationSpeed;
+    self.allowsCompletionOfSelectedContacts = YES;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     self.clipsToBounds = YES;
     MBContactCollectionView *contactCollectionView = [MBContactCollectionView contactCollectionViewWithFrame:self.bounds];
@@ -266,7 +267,12 @@ CGFloat const kAnimationSpeed = .25;
     {
         [self showSearchTableView];
         NSString *searchString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
+        NSPredicate *predicate;
+        if (self.allowsCompletionOfSelectedContacts) {
+            predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
+        } else {
+            predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@ && !SELF IN %@", searchString, self.contactCollectionView.selectedContacts];
+        }
         self.filteredContacts = [self.contacts filteredArrayUsingPredicate:predicate];
         [self.searchTableView reloadData];
     }
