@@ -10,7 +10,7 @@
 
 @protocol MBContactCollectionViewDelegateFlowLayout
 
-- (void)collectionView:(UICollectionView*)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize;
+- (void)collectionView:(UICollectionView*)collectionView willChangeContentSizeTo:(CGSize)newSize;
 
 @end
 
