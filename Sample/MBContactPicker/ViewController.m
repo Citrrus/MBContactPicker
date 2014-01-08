@@ -13,12 +13,30 @@
 @interface ViewController () <MBContactPickerDataSource, MBContactPickerDelegate>
 
 @property (nonatomic) NSArray *contacts;
+@property (nonatomic) NSArray *selectedContacts;
 @property (weak, nonatomic) IBOutlet MBContactPicker *contactPickerView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
 
 @end
 
 @implementation ViewController
+
+- (IBAction)clearSelectedButtonTouchUpInside:(id)sender
+{
+    self.selectedContacts = @[];
+    [self.contactPickerView reloadData];
+}
+- (IBAction)addContactsButtonTouchUpInside:(id)sender
+{
+    self.selectedContacts = @[
+                              self.contacts[0],
+                              self.contacts[1],
+                              self.contacts[2],
+                              self.contacts[3]
+                              ];
+    
+    [self.contactPickerView reloadData];
+}
 
 - (void)viewDidLoad
 {
@@ -29,7 +47,6 @@
                        @{@"Name":@"Matt Bowman", @"Title":@"Software Developer"},
                        @{@"Name":@"Matt Hupman", @"Title":@"Software Developer"},
                        @{@"Name":@"Erica Stein", @"Title":@"Creative"},
-                       @{@"Name":@"Bing Ding", @"Title":@"Creative"},
                        @{@"Name":@"Erin Pfiffner", @"Title":@"Creative"},
                        @{@"Name":@"Ben McGinnis", @"Title":@"Project Manager"},
                        @{@"Name":@"Lenny Pham", @"Title":@"Product Manager"},
@@ -48,7 +65,7 @@
         [contacts addObject:model];
     }
     self.contacts = contacts;
-    
+
     self.contactPickerView.delegate = self;
     self.contactPickerView.datasource = self;
 }
@@ -62,7 +79,7 @@
 
 - (NSArray *)selectedContactModelsForContactPicker:(MBContactPicker*)contactPickerView
 {
-    return @[];
+    return self.selectedContacts;
 }
 
 #pragma mark - MBContactPickerDelegate

@@ -10,8 +10,6 @@
 
 @interface MBContactCollectionViewFlowLayout()
 
-@property (nonatomic) CGSize lastContentSize;
-
 @end
 
 // This is using the answer provided in the stack overflow post: http://bit.ly/INr0ie
@@ -96,21 +94,11 @@
     return YES;
 }
 
-- (void)invalidateLayout
-{
-    self.lastContentSize = self.collectionViewContentSize;
-    
-    [super invalidateLayout];
-}
-
 - (void)finalizeCollectionViewUpdates
 {
-    if (!CGSizeEqualToSize(self.lastContentSize, self.collectionViewContentSize))
+    if ([self.collectionView.delegate respondsToSelector:@selector(collectionView:willChangeContentSizeTo:)])
     {
-        if ([self.collectionView.delegate respondsToSelector:@selector(collectionView:willChangeContentSizeFrom:to:)])
-        {
-            [(id)self.collectionView.delegate collectionView:self.collectionView willChangeContentSizeFrom:self.lastContentSize to:self.collectionViewContentSize];
-        }
+        [(id)self.collectionView.delegate collectionView:self.collectionView willChangeContentSizeTo:self.collectionViewContentSize];
     }
 }
 

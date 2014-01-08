@@ -344,11 +344,11 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
-- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize
+- (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeTo:(CGSize)newSize
 {
-    if ([self.contactDelegate respondsToSelector:@selector(contactCollectionView:willChangeContentSizeFrom:to:)])
+    if ([self.contactDelegate respondsToSelector:@selector(contactCollectionView:willChangeContentSizeTo:)])
     {
-        [self.contactDelegate contactCollectionView:self willChangeContentSizeFrom:currentSize to:newSize];
+        [self.contactDelegate contactCollectionView:self willChangeContentSizeTo:newSize];
     }
 }
 
