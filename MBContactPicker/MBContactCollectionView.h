@@ -18,7 +18,7 @@
 
 @optional
 
-- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize;
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView willChangeContentSizeTo:(CGSize)newSize;
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView entryTextDidChange:(NSString*)text;
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didSelectContact:(id<MBContactPickerModelProtocol>)model;
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didAddContact:(id<MBContactPickerModelProtocol>)model;
@@ -34,6 +34,7 @@
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
 - (void)focusOnEntry;
+- (void)scrollToEntryAnimated:(BOOL)animated onComplete:(void(^)())complete;
 - (BOOL)isEntryCell:(NSIndexPath*)indexPath;
 - (BOOL)isPromptCell:(NSIndexPath*)indexPath;
 - (BOOL)isContactCell:(NSIndexPath*)indexPath;

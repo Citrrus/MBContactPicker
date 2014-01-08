@@ -139,6 +139,10 @@ CGFloat const kAnimationSpeed = .25;
     self.contacts = [self.datasource contactModelsForContactPicker:self];
     
     [self.contactCollectionView reloadData];
+    [self.contactCollectionView performBatchUpdates:^{
+    } completion:^(BOOL finished) {
+        [self.contactCollectionView scrollToEntryAnimated:NO onComplete:nil];
+    }];
 }
 
 #pragma mark - Properties
@@ -229,14 +233,17 @@ CGFloat const kAnimationSpeed = .25;
 
 #pragma mark - ContactCollectionViewDelegate
 
-- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView willChangeContentSizeTo:(CGSize)newSize
 {
-    self.contactCollectionViewContentSize = newSize;
-    [self updateCollectionViewHeightConstraints];
-
-    if ([self.delegate respondsToSelector:@selector(contactPicker:didUpdateContentHeightTo:)])
+    if (!CGSizeEqualToSize(self.contactCollectionViewContentSize, newSize))
     {
-        [self.delegate contactPicker:self didUpdateContentHeightTo:self.currentContentHeight];
+        self.contactCollectionViewContentSize = newSize;
+        [self updateCollectionViewHeightConstraints];
+        
+        if ([self.delegate respondsToSelector:@selector(contactPicker:didUpdateContentHeightTo:)])
+        {
+            [self.delegate contactPicker:self didUpdateContentHeightTo:self.currentContentHeight];
+        }
     }
 }
 
