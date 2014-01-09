@@ -67,6 +67,7 @@ CGFloat const kAnimationSpeed = .25;
     self.originalYOffset = -1;
     self.maxVisibleRows = kMaxVisibleRows;
     self.animationSpeed = kAnimationSpeed;
+    self.allowsCompletionOfSelectedContacts = YES;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     self.clipsToBounds = YES;
     MBContactCollectionView *contactCollectionView = [MBContactCollectionView contactCollectionViewWithFrame:self.bounds];
@@ -139,6 +140,10 @@ CGFloat const kAnimationSpeed = .25;
     self.contacts = [self.datasource contactModelsForContactPicker:self];
     
     [self.contactCollectionView reloadData];
+    [self.contactCollectionView performBatchUpdates:^{
+    } completion:^(BOOL finished) {
+        [self.contactCollectionView scrollToEntryAnimated:NO onComplete:nil];
+    }];
 }
 
 #pragma mark - Properties
@@ -229,14 +234,17 @@ CGFloat const kAnimationSpeed = .25;
 
 #pragma mark - ContactCollectionViewDelegate
 
-- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView willChangeContentSizeFrom:(CGSize)currentSize to:(CGSize)newSize
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView willChangeContentSizeTo:(CGSize)newSize
 {
-    self.contactCollectionViewContentSize = newSize;
-    [self updateCollectionViewHeightConstraints];
-
-    if ([self.delegate respondsToSelector:@selector(contactPicker:didUpdateContentHeightTo:)])
+    if (!CGSizeEqualToSize(self.contactCollectionViewContentSize, newSize))
     {
-        [self.delegate contactPicker:self didUpdateContentHeightTo:self.currentContentHeight];
+        self.contactCollectionViewContentSize = newSize;
+        [self updateCollectionViewHeightConstraints];
+        
+        if ([self.delegate respondsToSelector:@selector(contactPicker:didUpdateContentHeightTo:)])
+        {
+            [self.delegate contactPicker:self didUpdateContentHeightTo:self.currentContentHeight];
+        }
     }
 }
 
@@ -259,7 +267,12 @@ CGFloat const kAnimationSpeed = .25;
     {
         [self showSearchTableView];
         NSString *searchString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
+        NSPredicate *predicate;
+        if (self.allowsCompletionOfSelectedContacts) {
+            predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
+        } else {
+            predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@ && !SELF IN %@", searchString, self.contactCollectionView.selectedContacts];
+        }
         self.filteredContacts = [self.contacts filteredArrayUsingPredicate:predicate];
         [self.searchTableView reloadData];
     }
