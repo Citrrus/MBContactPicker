@@ -78,7 +78,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gVn-GW-f9z" customClass="MBContactPicker">
-                                <rect key="frame" x="0.0" y="104" width="322" height="31"/>
+                                <rect key="frame" x="0.0" y="40" width="322" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
@@ -86,7 +86,7 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5DW-Oo-iRm">
-                                <rect key="frame" x="20" y="143" width="137" height="30"/>
+                                <rect key="frame" x="20" y="79" width="137" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Clear Selected">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -96,7 +96,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7t9-ye-HPo">
-                                <rect key="frame" x="165" y="143" width="137" height="30"/>
+                                <rect key="frame" x="165" y="79" width="137" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Add Contacts">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -106,7 +106,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zhw-4x-QkP">
-                                <rect key="frame" x="20" y="181" width="282" height="30"/>
+                                <rect key="frame" x="20" y="117" width="282" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Take First Responder">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -116,7 +116,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8iv-gJ-RhI">
-                                <rect key="frame" x="20" y="219" width="282" height="30"/>
+                                <rect key="frame" x="20" y="155" width="282" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Resign First Responder">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -138,7 +138,7 @@
                             <constraint firstItem="7t9-ye-HPo" firstAttribute="leading" secondItem="5DW-Oo-iRm" secondAttribute="trailing" constant="8" id="Icf-RP-gBr"/>
                             <constraint firstItem="5DW-Oo-iRm" firstAttribute="width" secondItem="7t9-ye-HPo" secondAttribute="width" id="MVX-xi-h72"/>
                             <constraint firstAttribute="trailing" secondItem="gVn-GW-f9z" secondAttribute="trailing" id="WZN-GZ-kBf"/>
-                            <constraint firstItem="gVn-GW-f9z" firstAttribute="top" secondItem="VDA-XU-QaJ" secondAttribute="bottom" constant="84" id="Xl9-hb-jrR"/>
+                            <constraint firstItem="gVn-GW-f9z" firstAttribute="top" secondItem="VDA-XU-QaJ" secondAttribute="bottom" constant="20" id="Xl9-hb-jrR"/>
                             <constraint firstItem="Zhw-4x-QkP" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="eb9-2M-AV0"/>
                             <constraint firstItem="5DW-Oo-iRm" firstAttribute="top" secondItem="gVn-GW-f9z" secondAttribute="bottom" constant="8" id="p5K-M5-IQY"/>
                             <constraint firstItem="8iv-gJ-RhI" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="rue-ND-WIx"/>
