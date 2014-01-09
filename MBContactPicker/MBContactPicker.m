@@ -256,7 +256,7 @@ CGFloat const kAnimationSpeed = .25;
         [self layoutIfNeeded];
     }
     completion:^(BOOL finished) {
-        [self.contactCollectionView focusOnEntry];
+        [self.contactCollectionView setFocusOnEntry];
     }];
     
     if ([text isEqualToString:@" "])
@@ -306,7 +306,7 @@ CGFloat const kAnimationSpeed = .25;
 
 - (BOOL)canBecomeFirstResponder
 {
-    return YES;
+    return NO;
 }
 
 - (BOOL)becomeFirstResponder
@@ -319,7 +319,7 @@ CGFloat const kAnimationSpeed = .25;
         }
         else
         {
-            [self.contactCollectionView focusOnEntry];
+            [self.contactCollectionView setFocusOnEntry];
         }
     }
     
@@ -328,7 +328,6 @@ CGFloat const kAnimationSpeed = .25;
 
 - (BOOL)resignFirstResponder
 {
-    [super resignFirstResponder];
     return [self.contactCollectionView resignFirstResponder];
 }
 

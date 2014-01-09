@@ -20,6 +20,7 @@
 @property (nonatomic, copy) NSString *text;
 
 - (void)setFocus;
+- (void)removeFocus;
 - (void)reset;
 - (CGFloat)widthForText:(NSString*)text;
 

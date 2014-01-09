@@ -99,6 +99,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 #pragma mark - UIResponder
 
+// Important to return YES here if we want to become the first responder after a child (i.e., entry UITextField)
+// has given it up so we can respond to keyboard events
 - (BOOL)canBecomeFirstResponder
 {
     return YES;
@@ -113,7 +115,12 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             [self.delegate collectionView:self didDeselectItemAtIndexPath:indexPath];
         }
     }
-    return [super resignFirstResponder];
+    
+    [self removeFocusFromEntry];
+    
+    [super resignFirstResponder];
+    
+    return YES;
 }
 
 #pragma mark - UIKeyInput
@@ -188,7 +195,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 [self.contactDelegate contactCollectionView:self didRemoveContact:model];
             }
-            [self focusOnEntry];
+            [self setFocusOnEntry];
         }];
     }
 }
@@ -240,7 +247,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
-- (void)focusOnEntry
+- (void)setFocusOnEntry
 {
     if ([self entryIsVisible])
     {
@@ -254,6 +261,12 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             [entryCell setFocus];
         }];
     }
+}
+
+- (void)removeFocusFromEntry
+{
+    MBContactEntryCollectionViewCell *entryCell = (MBContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+    [entryCell removeFocus];
 }
 
 - (BOOL)entryIsVisible

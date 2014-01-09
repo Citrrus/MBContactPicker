@@ -14,7 +14,6 @@
 
 @end
 
-
 @implementation MBContactEntryCollectionViewCell
 
 - (instancetype)initWithFrame:(CGRect)frame
@@ -101,6 +100,11 @@
 - (void)setFocus
 {
     [self.contactEntryTextField becomeFirstResponder];
+}
+
+- (void)removeFocus
+{
+    [self.contactEntryTextField resignFirstResponder];
 }
 
 - (CGFloat)widthForText:(NSString *)text
