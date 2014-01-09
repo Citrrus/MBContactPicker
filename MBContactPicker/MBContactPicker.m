@@ -306,7 +306,7 @@ CGFloat const kAnimationSpeed = .25;
 
 - (BOOL)canBecomeFirstResponder
 {
-    return YES;
+    return NO;
 }
 
 - (BOOL)becomeFirstResponder
@@ -328,7 +328,6 @@ CGFloat const kAnimationSpeed = .25;
 
 - (BOOL)resignFirstResponder
 {
-    [super resignFirstResponder];
     return [self.contactCollectionView resignFirstResponder];
 }
 

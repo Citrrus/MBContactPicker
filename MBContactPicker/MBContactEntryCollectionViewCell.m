@@ -103,6 +103,11 @@
     [self.contactEntryTextField becomeFirstResponder];
 }
 
+- (void)unsetFocus
+{
+    [self.contactEntryTextField resignFirstResponder];
+}
+
 - (CGFloat)widthForText:(NSString *)text
 {
     CGFloat width = [text boundingRectWithSize:(CGSize){ .width = CGFLOAT_MAX, .height = CGFLOAT_MAX }

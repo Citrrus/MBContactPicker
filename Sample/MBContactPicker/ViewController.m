@@ -17,6 +17,9 @@
 @property (weak, nonatomic) IBOutlet MBContactPicker *contactPickerView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
 
+- (IBAction)resignFirstResponder:(id)sender;
+- (IBAction)takeFirstResponder:(id)sender;
+
 @end
 
 @implementation ViewController
@@ -26,6 +29,7 @@
     self.selectedContacts = @[];
     [self.contactPickerView reloadData];
 }
+
 - (IBAction)addContactsButtonTouchUpInside:(id)sender
 {
     self.selectedContacts = @[
@@ -136,6 +140,16 @@
     [UIView animateWithDuration:contactPicker.animationSpeed animations:^{
         [self.view layoutIfNeeded];
     }];
+}
+
+- (IBAction)takeFirstResponder:(id)sender
+{
+    [self.contactPickerView becomeFirstResponder];
+}
+
+- (IBAction)resignFirstResponder:(id)sender
+{
+    [self.contactPickerView resignFirstResponder];
 }
 
 @end
