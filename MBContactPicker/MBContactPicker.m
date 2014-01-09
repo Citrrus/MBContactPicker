@@ -256,7 +256,7 @@ CGFloat const kAnimationSpeed = .25;
         [self layoutIfNeeded];
     }
     completion:^(BOOL finished) {
-        [self.contactCollectionView focusOnEntry];
+        [self.contactCollectionView setFocusOnEntry];
     }];
     
     if ([text isEqualToString:@" "])
@@ -319,7 +319,7 @@ CGFloat const kAnimationSpeed = .25;
         }
         else
         {
-            [self.contactCollectionView focusOnEntry];
+            [self.contactCollectionView setFocusOnEntry];
         }
     }
     

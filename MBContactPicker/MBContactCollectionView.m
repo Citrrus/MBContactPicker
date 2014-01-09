@@ -116,7 +116,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         }
     }
     
-    [self unfocusOnEntry];
+    [self removeFocusFromEntry];
     
     [super resignFirstResponder];
     
@@ -195,7 +195,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 [self.contactDelegate contactCollectionView:self didRemoveContact:model];
             }
-            [self focusOnEntry];
+            [self setFocusOnEntry];
         }];
     }
 }
@@ -247,7 +247,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
-- (void)focusOnEntry
+- (void)setFocusOnEntry
 {
     if ([self entryIsVisible])
     {
@@ -263,10 +263,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
-- (void)unfocusOnEntry
+- (void)removeFocusFromEntry
 {
     MBContactEntryCollectionViewCell *entryCell = (MBContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
-    [entryCell unsetFocus];
+    [entryCell removeFocus];
 }
 
 - (BOOL)entryIsVisible
