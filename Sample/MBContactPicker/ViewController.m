@@ -19,6 +19,7 @@
 
 - (IBAction)resignFirstResponder:(id)sender;
 - (IBAction)takeFirstResponder:(id)sender;
+- (IBAction)enabledSwitched:(id)sender;
 
 @end
 
@@ -145,6 +146,11 @@
 - (IBAction)takeFirstResponder:(id)sender
 {
     [self.contactPickerView becomeFirstResponder];
+}
+
+- (IBAction)enabledSwitched:(id)sender
+{
+    self.contactPickerView.enabled = !self.contactPickerView.enabled;
 }
 
 - (IBAction)resignFirstResponder:(id)sender
