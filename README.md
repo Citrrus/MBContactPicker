@@ -168,7 +168,7 @@ Thanks to [Roman](http://github.com/firmach) for this enhancement.
 
 #### Suppress completion of alread-selected contacts
 
-By default, the picker shows you contacts which have already been added to the collection as options for completion, but discards them when you choose them, to prevent duplicate contacts in the collection. This is to be consistent with the behavior of Apple's ```Mail.app```, but is arguably a deficient user experience. To suppress the already-chosen contacts from the completion list, you can set the following property:
+By default, the picker shows you contacts which have already been added to the collection as options for completion, but discards them when you choose them, to prevent duplicate contacts in the collection. This is to be consistent with the behavior of Apple's `Mail.app`, but is arguably a deficient user experience. To suppress the already-chosen contacts from the completion list, you can set the following property:
 
 ```objc
 self.contactPickerView.allowsCompletionOfSelectedContacts = NO;
@@ -176,10 +176,10 @@ self.contactPickerView.allowsCompletionOfSelectedContacts = NO;
 
 #### Enabling/Disabling
 
-The ```MBContactPicker``` control's enabledness can be toggled by setting it's ```-enabled``` property.  ```MBContactCollectionView``` has two properties, ```-allowsSelection``` and ```-allowsTextInput``` that control whether contact cells can be selected/deleted and searching/adding new contacts, respectively.
+The `MBContactPicker` control's enabledness can be toggled by setting it's `-enabled` property.  `MBContactCollectionView` has two properties, `-allowsSelection` and `-allowsTextInput` that control whether contact cells can be selected/deleted and searching/adding new contacts, respectively.
 
 #### UIResponder
-```MBContactPicker``` and ```MBContactCollectionView``` both adhere to the UIResponder protocol.  ```objc_msgSend``` ```becomeFirstResponder``` and ```resignFirstResponder``` away!
+`MBContactPicker` and `MBContactCollectionView` both adhere to the UIResponder protocol.  `objc_msgSend` `becomeFirstResponder` and `resignFirstResponder` to them with abandon!
 
 ## Motivation
 
