@@ -46,6 +46,7 @@
 @property (nonatomic, readonly) CGFloat keyboardHeight;
 @property (nonatomic) CGFloat animationSpeed;
 @property (nonatomic) BOOL allowsCompletionOfSelectedContacts;
+@property (nonatomic) BOOL enabled;
 
 - (void)reloadData;
 

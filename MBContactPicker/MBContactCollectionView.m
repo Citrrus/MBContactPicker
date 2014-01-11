@@ -21,6 +21,7 @@ NSString * const kDefaultEntryText = @" ";
 @property (nonatomic) MBContactCollectionViewContactCell *prototypeCell;
 @property (nonatomic) MBContactCollectionViewPromptCell *promptCell;
 @property (nonatomic) NSString *searchText;
+@property (nonatomic, readonly) NSIndexPath *entryCellIndexPath;
 
 @end
 
@@ -72,6 +73,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.cellHeight = kCellHeight;
     self.prompt = kPrompt;
     self.searchText = kDefaultEntryText;
+    self.allowsTextInput = YES;
     
     MBContactCollectionViewFlowLayout *layout = (MBContactCollectionViewFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 5;
@@ -92,9 +94,26 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.delegate = self;
 }
 
+#pragma mark - Properties
+
 - (CGFloat)maxContentWidth
 {
     return self.frame.size.width - self.contentInset.left - self.contentInset.right;
+}
+
+- (void)setAllowsTextInput:(BOOL)allowsTextInput
+{
+    _allowsTextInput = allowsTextInput;
+    
+    if([self.indexPathsForVisibleItems containsObject:self.entryCellIndexPath] && self.entryCellIndexPath)
+    {
+        [self reloadItemsAtIndexPaths:@[self.entryCellIndexPath]];
+    }
+}
+
+- (NSIndexPath*)entryCellIndexPath
+{
+    return [NSIndexPath indexPathForRow:self.selectedContacts.count + 1 inSection:0];
 }
 
 #pragma mark - UIResponder
@@ -218,11 +237,6 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 - (NSInteger)entryCellIndex
 {
     return self.selectedContacts.count + 1;
-}
-
-- (NSIndexPath*)entryCellIndexPath
-{
-    return [NSIndexPath indexPathForRow:self.selectedContacts.count + 1 inSection:0];
 }
 
 - (NSInteger)selectedContactIndexFromIndexPath:(NSIndexPath*)indexPath
@@ -404,6 +418,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         }
 
         cell.text = self.searchText;
+        cell.enabled = self.allowsTextInput;
     }
     else
     {

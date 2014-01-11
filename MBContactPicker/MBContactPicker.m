@@ -118,6 +118,8 @@ CGFloat const kAnimationSpeed = .25;
     searchTableView.layer.borderColor = [UIColor blueColor].CGColor;
     searchTableView.layer.borderWidth = 1.0;
 #endif
+    
+    self.enabled = YES;
 }
 
 #pragma mark - Keyboard Notification Handling
@@ -182,6 +184,19 @@ CGFloat const kAnimationSpeed = .25;
     CGFloat minimumSizeWithContent = MAX(self.cellHeight, self.contactCollectionViewContentSize.height);
     CGFloat maximumSize = self.maxVisibleRows * self.cellHeight;
     return MIN(minimumSizeWithContent, maximumSize);
+}
+
+- (void)setEnabled:(BOOL)enabled
+{
+    _enabled = enabled;
+    
+    self.contactCollectionView.allowsSelection = enabled;
+    self.contactCollectionView.allowsTextInput = enabled;
+    
+    if (!enabled)
+    {
+        [self resignFirstResponder];
+    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -311,6 +326,11 @@ CGFloat const kAnimationSpeed = .25;
 
 - (BOOL)becomeFirstResponder
 {
+    if (!self.enabled)
+    {
+        return NO;
+    }
+    
     if (![self isFirstResponder])
     {
         if (self.contactCollectionView.indexPathOfSelectedCell)
