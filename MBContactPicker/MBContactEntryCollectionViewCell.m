@@ -91,6 +91,13 @@
     self.contactEntryTextField.text = text;
 }
 
+- (void)setEnabled:(BOOL)enabled
+{
+    _enabled = enabled;
+    
+    self.contactEntryTextField.enabled = enabled;
+}
+
 - (void)reset
 {
     self.contactEntryTextField.text = @" ";

@@ -47,5 +47,6 @@
 
 @property (nonatomic) NSInteger cellHeight;
 @property (nonatomic, copy) NSString *prompt;
+@property (nonatomic) BOOL allowsTextInput;
 
 @end
