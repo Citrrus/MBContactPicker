@@ -138,7 +138,7 @@ Below you'll find a rudimentary example of a view controller using `MBContactPic
 
 ### Contact Objects
 
-Contact objects used in the ```MBContactPickerDataSource``` and ```MBContactPickerDelegate``` protocols must adhere to the ```id<MBContactPickerModelProtocol>``` protocol.  You can use `MBContactModel`, a basic implementation provided for convenience, or you can adjust your model class to adhere to the ```id<MBContactPickerModelProtocol>``` as shown below:
+Contact objects used in the `MBContactPickerDataSource` and `MBContactPickerDelegate` protocols must adhere to the `id<MBContactPickerModelProtocol>` protocol.  You can use `MBContactModel`, a basic implementation provided for convenience, or you can adjust your model class to adhere to the `id<MBContactPickerModelProtocol>` as shown below:
 
 ```objc
 #import "MBContactModel.h"
