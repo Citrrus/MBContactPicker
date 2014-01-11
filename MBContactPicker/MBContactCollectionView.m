@@ -7,7 +7,7 @@
 //
 
 #import "MBContactCollectionView.h"
-#import "MBContactEntryCollectionViewCell.h"
+#import "MBContactCollectionViewEntryCell.h"
 #import "MBContactCollectionViewPromptCell.h"
 #import "MBContactCollectionViewFlowLayout.h"
 
@@ -87,7 +87,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.backgroundColor = [UIColor whiteColor];
     
     [self registerClass:[MBContactCollectionViewContactCell class] forCellWithReuseIdentifier:@"ContactCell"];
-    [self registerClass:[MBContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
+    [self registerClass:[MBContactCollectionViewEntryCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
     [self registerClass:[MBContactCollectionViewPromptCell class] forCellWithReuseIdentifier:@"ContactPromptCell"];
     
     self.dataSource = self;
@@ -167,7 +167,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if ([[self indexPathsForVisibleItems] containsObject:self.entryCellIndexPath])
     {
-        MBContactEntryCollectionViewCell *entryCell = (MBContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+        MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
         [entryCell reset];
     }
     else
@@ -265,13 +265,13 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if ([self entryIsVisible])
     {
-        MBContactEntryCollectionViewCell *entryCell = (MBContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+        MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
         [entryCell setFocus];
     }
     else
     {
         [self scrollToEntryAnimated:YES onComplete:^{
-            MBContactEntryCollectionViewCell *entryCell = (MBContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+            MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
             [entryCell setFocus];
         }];
     }
@@ -279,7 +279,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)removeFocusFromEntry
 {
-    MBContactEntryCollectionViewCell *entryCell = (MBContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+    MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
     [entryCell removeFocus];
 }
 
@@ -348,7 +348,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
     else if ([self isEntryCell:indexPath])
     {
-        MBContactEntryCollectionViewCell *prototype = [[MBContactEntryCollectionViewCell alloc] init];
+        MBContactCollectionViewEntryCell *prototype = [[MBContactCollectionViewEntryCell alloc] init];
         
         CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
         CGSize cellSize = CGSizeMake(MIN([self maxContentWidth], newWidth), self.cellHeight);
@@ -406,7 +406,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
     else if ([self isEntryCell:indexPath])
     {
-        MBContactEntryCollectionViewCell *cell = (MBContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
+        MBContactCollectionViewEntryCell *cell = (MBContactCollectionViewEntryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
                                                                                                                            forIndexPath:indexPath];
         
         cell.delegate = self;

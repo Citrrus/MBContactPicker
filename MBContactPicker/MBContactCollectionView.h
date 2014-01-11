@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MBContactCollectionViewContactCell.h"
-#import "MBContactEntryCollectionViewCell.h"
+#import "MBContactCollectionViewEntryCell.h"
 #import "MBContactCollectionViewPromptCell.h"
 #import "MBContactCollectionViewFlowLayout.h"
 

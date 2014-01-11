@@ -11,7 +11,7 @@
 #import "MBContactCollectionView.h"
 #import "MBContactCollectionViewContactCell.h"
 #import "MBContactCollectionViewPromptCell.h"
-#import "MBContactEntryCollectionViewCell.h"
+#import "MBContactCollectionViewEntryCell.h"
 
 @class MBContactPicker;
 
