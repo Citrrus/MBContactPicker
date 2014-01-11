@@ -11,27 +11,9 @@ My secondary goal was to make using it extremely simple while still providing a 
 
 ![Animated GIF of Contact Picker](assets/contact_picker.gif)
 
-## Code Example
+## Usage
 
-If you don't already have a contact model class, you can use `MBContactModel`, the default implementation available. If you already have a contact object, you will need to update it to implement the `MBContactPickerModelProtocol` as shown below:
-
-#### Header
-
-```objc
-#import "MBContactModel.h"
-
-@interface ContactObject : NSObject <MBContactPickerModelProtocol>
-...
-// Required
-@property (nonatomic, copy) NSString *contactTitle;
-// Optional
-@property (nonatomic, copy) NSString *contactSubtitle;
-@property (nonatomic) UIImage *contactImage;
-...
-@end
-```
-
-### ViewController Code
+### Example
 
 Below you'll find a rudimentary example of a view controller using `MBContactPicker`.
 
@@ -152,6 +134,24 @@ Below you'll find a rudimentary example of a view controller using `MBContactPic
 
 @end
 
+```
+
+### Contact Objects
+
+Contact objects used in the `MBContactPickerDataSource` and `MBContactPickerDelegate` protocols must adhere to the `id<MBContactPickerModelProtocol>` protocol.  You can use `MBContactModel`, a basic implementation provided for convenience, or you can adjust your model class to adhere to the `id<MBContactPickerModelProtocol>` as shown below:
+
+```objc
+#import "MBContactModel.h"
+
+@interface MyContactObject : NSObject <MBContactPickerModelProtocol>
+...
+// Required
+@property (nonatomic, copy) NSString *contactTitle;
+// Optional
+@property (nonatomic, copy) NSString *contactSubtitle;
+@property (nonatomic) UIImage *contactImage;
+...
+@end
 ```
 
 ### Customization/Configuration
