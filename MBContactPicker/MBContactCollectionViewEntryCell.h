@@ -14,7 +14,7 @@
 
 @end
 
-@interface MBContactEntryCollectionViewCell : UICollectionViewCell
+@interface MBContactCollectionViewEntryCell : UICollectionViewCell
 
 @property (nonatomic, weak) id<UITextFieldDelegateImproved> delegate;
 @property (nonatomic, copy) NSString *text;
