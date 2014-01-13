@@ -63,6 +63,7 @@ CGFloat const kAnimationSpeed = .25;
 
 - (void)setup
 {
+    _prompt = kMBPrompt;
     self.originalHeight = -1;
     self.originalYOffset = -1;
     self.maxVisibleRows = kMaxVisibleRows;
@@ -168,9 +169,10 @@ CGFloat const kAnimationSpeed = .25;
 
 - (void)setPrompt:(NSString *)prompt
 {
-    _prompt = prompt;
-    self.contactCollectionView.prompt = prompt;
+    _prompt = [prompt copy];
+    self.contactCollectionView.prompt = _prompt;
     [self.contactCollectionView.collectionViewLayout invalidateLayout];
+    [self.contactCollectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]]];
 }
 
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows

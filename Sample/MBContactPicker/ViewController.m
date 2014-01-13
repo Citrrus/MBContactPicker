@@ -15,11 +15,13 @@
 @property (nonatomic) NSArray *contacts;
 @property (nonatomic) NSArray *selectedContacts;
 @property (weak, nonatomic) IBOutlet MBContactPicker *contactPickerView;
+@property (weak, nonatomic) IBOutlet UITextField *promptTextField;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
 
 - (IBAction)resignFirstResponder:(id)sender;
 - (IBAction)takeFirstResponder:(id)sender;
 - (IBAction)enabledSwitched:(id)sender;
+- (IBAction)completeDuplicatesSwitched:(id)sender;
 
 @end
 
@@ -42,6 +44,11 @@
     
     [self.contactPickerView reloadData];
 }
+
+- (void)promptTextFieldDidChange:(UITextField *)textField {
+    self.contactPickerView.prompt = textField.text;
+}
+
 
 - (void)viewDidLoad
 {
@@ -73,6 +80,9 @@
 
     self.contactPickerView.delegate = self;
     self.contactPickerView.datasource = self;
+    
+    self.promptTextField.text = self.contactPickerView.prompt;
+    [self.promptTextField addTarget:self action:@selector(promptTextFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 }
 
 #pragma mark - MBContactPickerDataSource
@@ -148,14 +158,19 @@
     [self.contactPickerView becomeFirstResponder];
 }
 
-- (IBAction)enabledSwitched:(id)sender
-{
-    self.contactPickerView.enabled = !self.contactPickerView.enabled;
-}
-
 - (IBAction)resignFirstResponder:(id)sender
 {
     [self.contactPickerView resignFirstResponder];
+}
+
+- (IBAction)enabledSwitched:(id)sender
+{
+    self.contactPickerView.enabled = ((UISwitch *)sender).isOn;
+}
+
+- (IBAction)completeDuplicatesSwitched:(id)sender
+{
+    self.contactPickerView.allowsCompletionOfSelectedContacts = ((UISwitch *)sender).isOn;
 }
 
 @end
