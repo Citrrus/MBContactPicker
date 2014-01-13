@@ -21,6 +21,7 @@
 - (IBAction)resignFirstResponder:(id)sender;
 - (IBAction)takeFirstResponder:(id)sender;
 - (IBAction)enabledSwitched:(id)sender;
+- (IBAction)completeDuplicatesSwitched:(id)sender;
 
 @end
 
@@ -157,14 +158,19 @@
     [self.contactPickerView becomeFirstResponder];
 }
 
-- (IBAction)enabledSwitched:(id)sender
-{
-    self.contactPickerView.enabled = !self.contactPickerView.enabled;
-}
-
 - (IBAction)resignFirstResponder:(id)sender
 {
     [self.contactPickerView resignFirstResponder];
+}
+
+- (IBAction)enabledSwitched:(id)sender
+{
+    self.contactPickerView.enabled = ((UISwitch *)sender).isOn;
+}
+
+- (IBAction)completeDuplicatesSwitched:(id)sender
+{
+    self.contactPickerView.allowsCompletionOfSelectedContacts = ((UISwitch *)sender).isOn;
 }
 
 @end
