@@ -15,7 +15,12 @@
 @property (nonatomic) NSArray *contacts;
 @property (nonatomic) NSArray *selectedContacts;
 @property (weak, nonatomic) IBOutlet MBContactPicker *contactPickerView;
+@property (weak, nonatomic) IBOutlet UITextField *promptTextField;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *contactPickerViewHeightConstraint;
+
+- (IBAction)resignFirstResponder:(id)sender;
+- (IBAction)takeFirstResponder:(id)sender;
+- (IBAction)enabledSwitched:(id)sender;
 
 @end
 
@@ -26,6 +31,7 @@
     self.selectedContacts = @[];
     [self.contactPickerView reloadData];
 }
+
 - (IBAction)addContactsButtonTouchUpInside:(id)sender
 {
     self.selectedContacts = @[
@@ -37,6 +43,11 @@
     
     [self.contactPickerView reloadData];
 }
+
+- (void)promptTextFieldDidChange:(UITextField *)textField {
+    self.contactPickerView.prompt = textField.text;
+}
+
 
 - (void)viewDidLoad
 {
@@ -69,7 +80,8 @@
     self.contactPickerView.delegate = self;
     self.contactPickerView.datasource = self;
     
-    [self.testingTextField addTarget:self action:@selector(textFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+    self.promptTextField.text = self.contactPickerView.prompt;
+    [self.promptTextField addTarget:self action:@selector(promptTextFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 }
 
 #pragma mark - MBContactPickerDataSource
@@ -140,8 +152,19 @@
     }];
 }
 
-- (void)textFieldDidChange:(UITextField *)textField {
-    self.contactPickerView.prompt = textField.text;
+- (IBAction)takeFirstResponder:(id)sender
+{
+    [self.contactPickerView becomeFirstResponder];
+}
+
+- (IBAction)enabledSwitched:(id)sender
+{
+    self.contactPickerView.enabled = !self.contactPickerView.enabled;
+}
+
+- (IBAction)resignFirstResponder:(id)sender
+{
+    [self.contactPickerView resignFirstResponder];
 }
 
 @end

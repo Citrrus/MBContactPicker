@@ -63,6 +63,7 @@ CGFloat const kAnimationSpeed = .25;
 
 - (void)setup
 {
+    _prompt = kMBPrompt;
     self.originalHeight = -1;
     self.originalYOffset = -1;
     self.maxVisibleRows = kMaxVisibleRows;
@@ -118,6 +119,8 @@ CGFloat const kAnimationSpeed = .25;
     searchTableView.layer.borderColor = [UIColor blueColor].CGColor;
     searchTableView.layer.borderWidth = 1.0;
 #endif
+    
+    self.enabled = YES;
 }
 
 #pragma mark - Keyboard Notification Handling
@@ -167,7 +170,7 @@ CGFloat const kAnimationSpeed = .25;
 - (void)setPrompt:(NSString *)prompt
 {
     _prompt = [prompt copy];
-    self.contactCollectionView.prompt = prompt;
+    self.contactCollectionView.prompt = _prompt;
     [self.contactCollectionView.collectionViewLayout invalidateLayout];
     [self.contactCollectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]]];
 }
@@ -183,6 +186,19 @@ CGFloat const kAnimationSpeed = .25;
     CGFloat minimumSizeWithContent = MAX(self.cellHeight, self.contactCollectionViewContentSize.height);
     CGFloat maximumSize = self.maxVisibleRows * self.cellHeight;
     return MIN(minimumSizeWithContent, maximumSize);
+}
+
+- (void)setEnabled:(BOOL)enabled
+{
+    _enabled = enabled;
+    
+    self.contactCollectionView.allowsSelection = enabled;
+    self.contactCollectionView.allowsTextInput = enabled;
+    
+    if (!enabled)
+    {
+        [self resignFirstResponder];
+    }
 }
 
 #pragma mark - UITableViewDataSource
@@ -257,7 +273,7 @@ CGFloat const kAnimationSpeed = .25;
         [self layoutIfNeeded];
     }
     completion:^(BOOL finished) {
-        [self.contactCollectionView focusOnEntry];
+        [self.contactCollectionView setFocusOnEntry];
     }];
     
     if ([text isEqualToString:@" "])
@@ -307,11 +323,16 @@ CGFloat const kAnimationSpeed = .25;
 
 - (BOOL)canBecomeFirstResponder
 {
-    return YES;
+    return NO;
 }
 
 - (BOOL)becomeFirstResponder
 {
+    if (!self.enabled)
+    {
+        return NO;
+    }
+    
     if (![self isFirstResponder])
     {
         if (self.contactCollectionView.indexPathOfSelectedCell)
@@ -320,7 +341,7 @@ CGFloat const kAnimationSpeed = .25;
         }
         else
         {
-            [self.contactCollectionView focusOnEntry];
+            [self.contactCollectionView setFocusOnEntry];
         }
     }
     
@@ -329,7 +350,6 @@ CGFloat const kAnimationSpeed = .25;
 
 - (BOOL)resignFirstResponder
 {
-    [super resignFirstResponder];
     return [self.contactCollectionView resignFirstResponder];
 }
 

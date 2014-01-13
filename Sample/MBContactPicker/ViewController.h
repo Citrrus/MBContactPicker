@@ -10,6 +10,4 @@
 
 @interface ViewController : UIViewController
 
-@property (strong, nonatomic) IBOutlet UITextField *testingTextField;
-
 @end

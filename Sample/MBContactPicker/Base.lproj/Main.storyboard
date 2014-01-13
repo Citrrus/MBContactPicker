@@ -78,21 +78,15 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gVn-GW-f9z" customClass="MBContactPicker">
-                                <rect key="frame" x="0.0" y="104" width="322" height="31"/>
+                                <rect key="frame" x="0.0" y="40" width="322" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="31" id="8b6-Lk-fgg"/>
                                 </constraints>
                             </view>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="UIResponder and Prompt Testing" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="uYo-cY-bHv">
-                                <rect key="frame" x="20" y="66" width="280" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5DW-Oo-iRm">
-                                <rect key="frame" x="20" y="143" width="137" height="30"/>
+                                <rect key="frame" x="20" y="79" width="137" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Clear Selected">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -102,7 +96,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7t9-ye-HPo">
-                                <rect key="frame" x="165" y="143" width="137" height="30"/>
+                                <rect key="frame" x="165" y="79" width="137" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Add Contacts">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -111,25 +105,93 @@
                                     <action selector="addContactsButtonTouchUpInside:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="YlX-CF-0gM"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zhw-4x-QkP">
+                                <rect key="frame" x="20" y="117" width="282" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Take First Responder">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="takeFirstResponder:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="jDT-lO-gJK"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8iv-gJ-RhI">
+                                <rect key="frame" x="20" y="155" width="282" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Resign First Responder">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="resignFirstResponder:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="CwK-NV-N2b"/>
+                                </connections>
+                            </button>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ot2-3j-aSE">
+                                <rect key="frame" x="253" y="193" width="51" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="49" id="7bS-fa-veu"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="enabledSwitched:" destination="vXZ-lx-hvc" eventType="valueChanged" id="qfe-J1-rib"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enabled?" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M5x-NO-v9J">
+                                <rect key="frame" x="20" y="198" width="73" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="73" id="TKy-fc-qUm"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Prompt" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8X5-rA-60e">
+                                <rect key="frame" x="18" y="235" width="57" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="bbv-tX-1G2">
+                                <rect key="frame" x="83" y="232" width="219" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </textField>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="M5x-NO-v9J" firstAttribute="top" secondItem="8iv-gJ-RhI" secondAttribute="bottom" constant="13" id="16G-CU-O5w"/>
                             <constraint firstItem="7t9-ye-HPo" firstAttribute="top" secondItem="gVn-GW-f9z" secondAttribute="bottom" constant="8" id="1id-Hq-URW"/>
+                            <constraint firstAttribute="trailing" secondItem="8iv-gJ-RhI" secondAttribute="trailing" constant="20" id="1x6-e1-fZI"/>
+                            <constraint firstAttribute="trailing" secondItem="Zhw-4x-QkP" secondAttribute="trailing" constant="20" id="7eA-Ys-DQs"/>
                             <constraint firstItem="gVn-GW-f9z" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" id="7mJ-0V-NnG"/>
                             <constraint firstItem="5DW-Oo-iRm" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="8PC-xg-VtW"/>
+                            <constraint firstItem="8iv-gJ-RhI" firstAttribute="top" secondItem="Zhw-4x-QkP" secondAttribute="bottom" constant="8" id="9V1-L0-ay4"/>
+                            <constraint firstItem="Zhw-4x-QkP" firstAttribute="top" secondItem="7t9-ye-HPo" secondAttribute="bottom" constant="8" id="EpS-HJ-Ads"/>
+                            <constraint firstAttribute="trailing" secondItem="bbv-tX-1G2" secondAttribute="trailing" constant="20" id="Fjo-w2-bI1"/>
+                            <constraint firstItem="bbv-tX-1G2" firstAttribute="leading" secondItem="8X5-rA-60e" secondAttribute="trailing" constant="8" id="ICY-sF-PKk"/>
                             <constraint firstItem="7t9-ye-HPo" firstAttribute="leading" secondItem="5DW-Oo-iRm" secondAttribute="trailing" constant="8" id="Icf-RP-gBr"/>
+                            <constraint firstItem="ot2-3j-aSE" firstAttribute="top" secondItem="8iv-gJ-RhI" secondAttribute="bottom" constant="8" id="LIJ-ac-u6n"/>
+                            <constraint firstItem="8X5-rA-60e" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="18" id="Lyg-kR-fmH"/>
                             <constraint firstItem="5DW-Oo-iRm" firstAttribute="width" secondItem="7t9-ye-HPo" secondAttribute="width" id="MVX-xi-h72"/>
+                            <constraint firstItem="M5x-NO-v9J" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="VSj-WJ-fGg"/>
                             <constraint firstAttribute="trailing" secondItem="gVn-GW-f9z" secondAttribute="trailing" id="WZN-GZ-kBf"/>
-                            <constraint firstItem="gVn-GW-f9z" firstAttribute="top" secondItem="VDA-XU-QaJ" secondAttribute="bottom" constant="84" id="Xl9-hb-jrR"/>
+                            <constraint firstItem="8X5-rA-60e" firstAttribute="top" secondItem="M5x-NO-v9J" secondAttribute="bottom" constant="16" id="Xhs-0k-5mi"/>
+                            <constraint firstItem="gVn-GW-f9z" firstAttribute="top" secondItem="VDA-XU-QaJ" secondAttribute="bottom" constant="20" id="Xl9-hb-jrR"/>
+                            <constraint firstItem="Zhw-4x-QkP" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="eb9-2M-AV0"/>
                             <constraint firstItem="5DW-Oo-iRm" firstAttribute="top" secondItem="gVn-GW-f9z" secondAttribute="bottom" constant="8" id="p5K-M5-IQY"/>
+                            <constraint firstItem="bbv-tX-1G2" firstAttribute="top" secondItem="M5x-NO-v9J" secondAttribute="bottom" constant="13" id="qh9-H2-iDl"/>
+                            <constraint firstItem="8iv-gJ-RhI" firstAttribute="leading" secondItem="kh9-bI-dsS" secondAttribute="leading" constant="20" id="rue-ND-WIx"/>
                             <constraint firstAttribute="trailing" secondItem="7t9-ye-HPo" secondAttribute="trailing" constant="20" id="vRw-cs-uDf"/>
+                            <constraint firstAttribute="trailing" secondItem="ot2-3j-aSE" secondAttribute="trailing" constant="20" id="yov-Zg-7qt"/>
                             <constraint firstItem="7t9-ye-HPo" firstAttribute="leading" secondItem="5DW-Oo-iRm" secondAttribute="trailing" constant="8" id="z87-Lg-3GE"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="contactPickerView" destination="gVn-GW-f9z" id="iwJ-RC-IkB"/>
                         <outlet property="contactPickerViewHeightConstraint" destination="8b6-Lk-fgg" id="8h6-YA-Iwd"/>
-                        <outlet property="testingTextField" destination="uYo-cY-bHv" id="3Uc-hf-at3"/>
+                        <outlet property="promptTextField" destination="bbv-tX-1G2" id="uwM-Wj-FpV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

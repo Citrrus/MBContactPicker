@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MBContactCollectionViewContactCell.h"
-#import "MBContactEntryCollectionViewCell.h"
+#import "MBContactCollectionViewEntryCell.h"
 #import "MBContactCollectionViewPromptCell.h"
 #import "MBContactCollectionViewFlowLayout.h"
 
@@ -33,7 +33,7 @@
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
-- (void)focusOnEntry;
+- (void)setFocusOnEntry;
 - (void)scrollToEntryAnimated:(BOOL)animated onComplete:(void(^)())complete;
 - (BOOL)isEntryCell:(NSIndexPath*)indexPath;
 - (BOOL)isPromptCell:(NSIndexPath*)indexPath;
@@ -47,5 +47,6 @@
 
 @property (nonatomic) NSInteger cellHeight;
 @property (nonatomic, copy) NSString *prompt;
+@property (nonatomic) BOOL allowsTextInput;
 
 @end

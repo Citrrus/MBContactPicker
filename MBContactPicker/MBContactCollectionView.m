@@ -7,7 +7,7 @@
 //
 
 #import "MBContactCollectionView.h"
-#import "MBContactEntryCollectionViewCell.h"
+#import "MBContactCollectionViewEntryCell.h"
 #import "MBContactCollectionViewPromptCell.h"
 #import "MBContactCollectionViewFlowLayout.h"
 
@@ -21,6 +21,7 @@ NSString * const kDefaultEntryText = @" ";
 @property (nonatomic) MBContactCollectionViewContactCell *prototypeCell;
 @property (nonatomic) MBContactCollectionViewPromptCell *promptCell;
 @property (nonatomic) NSString *searchText;
+@property (nonatomic, readonly) NSIndexPath *entryCellIndexPath;
 
 @end
 
@@ -72,6 +73,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.cellHeight = kCellHeight;
     self.prompt = kPrompt;
     self.searchText = kDefaultEntryText;
+    self.allowsTextInput = YES;
     
     MBContactCollectionViewFlowLayout *layout = (MBContactCollectionViewFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 5;
@@ -85,20 +87,39 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.backgroundColor = [UIColor whiteColor];
     
     [self registerClass:[MBContactCollectionViewContactCell class] forCellWithReuseIdentifier:@"ContactCell"];
-    [self registerClass:[MBContactEntryCollectionViewCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
+    [self registerClass:[MBContactCollectionViewEntryCell class] forCellWithReuseIdentifier:@"ContactEntryCell"];
     [self registerClass:[MBContactCollectionViewPromptCell class] forCellWithReuseIdentifier:@"ContactPromptCell"];
     
     self.dataSource = self;
     self.delegate = self;
 }
 
+#pragma mark - Properties
+
 - (CGFloat)maxContentWidth
 {
     return self.frame.size.width - self.contentInset.left - self.contentInset.right;
 }
 
+- (void)setAllowsTextInput:(BOOL)allowsTextInput
+{
+    _allowsTextInput = allowsTextInput;
+    
+    if([self.indexPathsForVisibleItems containsObject:self.entryCellIndexPath] && self.entryCellIndexPath)
+    {
+        [self reloadItemsAtIndexPaths:@[self.entryCellIndexPath]];
+    }
+}
+
+- (NSIndexPath*)entryCellIndexPath
+{
+    return [NSIndexPath indexPathForRow:self.selectedContacts.count + 1 inSection:0];
+}
+
 #pragma mark - UIResponder
 
+// Important to return YES here if we want to become the first responder after a child (i.e., entry UITextField)
+// has given it up so we can respond to keyboard events
 - (BOOL)canBecomeFirstResponder
 {
     return YES;
@@ -113,7 +134,12 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             [self.delegate collectionView:self didDeselectItemAtIndexPath:indexPath];
         }
     }
-    return [super resignFirstResponder];
+    
+    [self removeFocusFromEntry];
+    
+    [super resignFirstResponder];
+    
+    return YES;
 }
 
 #pragma mark - UIKeyInput
@@ -141,7 +167,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if ([[self indexPathsForVisibleItems] containsObject:self.entryCellIndexPath])
     {
-        MBContactEntryCollectionViewCell *entryCell = (MBContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+        MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
         [entryCell reset];
     }
     else
@@ -188,7 +214,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
             {
                 [self.contactDelegate contactCollectionView:self didRemoveContact:model];
             }
-            [self focusOnEntry];
+            [self setFocusOnEntry];
         }];
     }
 }
@@ -213,11 +239,6 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     return self.selectedContacts.count + 1;
 }
 
-- (NSIndexPath*)entryCellIndexPath
-{
-    return [NSIndexPath indexPathForRow:self.selectedContacts.count + 1 inSection:0];
-}
-
 - (NSInteger)selectedContactIndexFromIndexPath:(NSIndexPath*)indexPath
 {
     return [self selectedContactIndexFromRow:indexPath.row];
@@ -240,20 +261,26 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
-- (void)focusOnEntry
+- (void)setFocusOnEntry
 {
     if ([self entryIsVisible])
     {
-        MBContactEntryCollectionViewCell *entryCell = (MBContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+        MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
         [entryCell setFocus];
     }
     else
     {
         [self scrollToEntryAnimated:YES onComplete:^{
-            MBContactEntryCollectionViewCell *entryCell = (MBContactEntryCollectionViewCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+            MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
             [entryCell setFocus];
         }];
     }
+}
+
+- (void)removeFocusFromEntry
+{
+    MBContactCollectionViewEntryCell *entryCell = (MBContactCollectionViewEntryCell *)[self cellForItemAtIndexPath:[self entryCellIndexPath]];
+    [entryCell removeFocus];
 }
 
 - (BOOL)entryIsVisible
@@ -324,7 +351,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
     else if ([self isEntryCell:indexPath])
     {
-        MBContactEntryCollectionViewCell *prototype = [[MBContactEntryCollectionViewCell alloc] init];
+        MBContactCollectionViewEntryCell *prototype = [[MBContactCollectionViewEntryCell alloc] init];
         
         CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
         CGSize cellSize = CGSizeMake(MIN([self maxContentWidth], newWidth), self.cellHeight);
@@ -382,7 +409,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
     else if ([self isEntryCell:indexPath])
     {
-        MBContactEntryCollectionViewCell *cell = (MBContactEntryCollectionViewCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
+        MBContactCollectionViewEntryCell *cell = (MBContactCollectionViewEntryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"ContactEntryCell"
                                                                                                                            forIndexPath:indexPath];
         
         cell.delegate = self;
@@ -394,6 +421,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         }
 
         cell.text = self.searchText;
+        cell.enabled = self.allowsTextInput;
     }
     else
     {
