@@ -11,7 +11,7 @@
 #import "MBContactCollectionView.h"
 #import "MBContactCollectionViewContactCell.h"
 #import "MBContactCollectionViewPromptCell.h"
-#import "MBContactEntryCollectionViewCell.h"
+#import "MBContactCollectionViewEntryCell.h"
 
 @class MBContactPicker;
 
@@ -46,6 +46,7 @@
 @property (nonatomic, readonly) CGFloat keyboardHeight;
 @property (nonatomic) CGFloat animationSpeed;
 @property (nonatomic) BOOL allowsCompletionOfSelectedContacts;
+@property (nonatomic) BOOL enabled;
 
 - (void)reloadData;
 

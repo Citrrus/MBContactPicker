@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MBContactCollectionViewContactCell.h"
-#import "MBContactEntryCollectionViewCell.h"
+#import "MBContactCollectionViewEntryCell.h"
 #import "MBContactCollectionViewPromptCell.h"
 #import "MBContactCollectionViewFlowLayout.h"
 
@@ -47,5 +47,6 @@
 
 @property (nonatomic) NSInteger cellHeight;
 @property (nonatomic, copy) NSString *prompt;
+@property (nonatomic) BOOL allowsTextInput;
 
 @end

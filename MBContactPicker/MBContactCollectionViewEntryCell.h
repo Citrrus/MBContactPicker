@@ -14,10 +14,11 @@
 
 @end
 
-@interface MBContactEntryCollectionViewCell : UICollectionViewCell
+@interface MBContactCollectionViewEntryCell : UICollectionViewCell
 
 @property (nonatomic, weak) id<UITextFieldDelegateImproved> delegate;
 @property (nonatomic, copy) NSString *text;
+@property (nonatomic) BOOL enabled;
 
 - (void)setFocus;
 - (void)removeFocus;

@@ -11,29 +11,11 @@ My secondary goal was to make using it extremely simple while still providing a 
 
 ![Animated GIF of Contact Picker](assets/contact_picker.gif)
 
-## Code Example
+## Usage
 
-If you don't already have a contact model class, you can use `MBContactModel`, the default implementation available. If you already have a contact object, you will need to update it to implement the `MBContactPickerModelProtocol` as shown below:
+### Example
 
-#### Header
-
-```objc
-#import "MBContactModel.h"
-
-@interface ContactObject : NSObject <MBContactPickerModelProtocol>
-...
-// Required
-@property (nonatomic, copy) NSString *contactTitle;
-// Optional
-@property (nonatomic, copy) NSString *contactSubtitle;
-@property (nonatomic) UIImage *contactImage;
-...
-@end
-```
-
-### ViewController Code
-
-Below you'll find a rudimentary example of a view controller using the `MBContactPicker`.
+Below you'll find a rudimentary example of a view controller using `MBContactPicker`.
 
 ```objc
 
@@ -154,7 +136,27 @@ Below you'll find a rudimentary example of a view controller using the `MBContac
 
 ```
 
-### Change Color of the Selected Contacts
+### Contact Objects
+
+Contact objects used in the `MBContactPickerDataSource` and `MBContactPickerDelegate` protocols must adhere to the `id<MBContactPickerModelProtocol>` protocol.  You can use `MBContactModel`, a basic implementation provided for convenience, or you can adjust your model class to adhere to the `id<MBContactPickerModelProtocol>` as shown below:
+
+```objc
+#import "MBContactModel.h"
+
+@interface MyContactObject : NSObject <MBContactPickerModelProtocol>
+...
+// Required
+@property (nonatomic, copy) NSString *contactTitle;
+// Optional
+@property (nonatomic, copy) NSString *contactSubtitle;
+@property (nonatomic) UIImage *contactImage;
+...
+@end
+```
+
+### Customization/Configuration
+
+#### Change Color of the Selected Contacts
 
 Thanks to [Roman](http://github.com/firmach) for this enhancement.
 
@@ -164,13 +166,20 @@ Thanks to [Roman](http://github.com/firmach) for this enhancement.
 
 ![Orange Colored Contacts](assets/orange-contact.png)
 
-### Suppress completion of alread-selected contacts
+#### Suppress completion of alread-selected contacts
 
-By default, the picker shows you contacts which have already been added to the collection as options for completion, but discards them when you choose them, to prevent duplicate contacts in the collection. This is to be consistent with the behavior of Apple's Mail app, but is arguably a deficient user experience. To suppress the already-chosen contacts from the completion list, you can set the following property:
+By default, the picker shows you contacts which have already been added to the collection as options for completion, but discards them when you choose them, to prevent duplicate contacts in the collection. This is to be consistent with the behavior of Apple's `Mail.app`, but is arguably a deficient user experience. To suppress the already-chosen contacts from the completion list, you can set the following property:
 
 ```objc
 self.contactPickerView.allowsCompletionOfSelectedContacts = NO;
 ```
+
+#### Enabling/Disabling
+
+The `MBContactPicker` control's enabledness can be toggled by setting it's `-enabled` property.  `MBContactCollectionView` has two properties, `-allowsSelection` and `-allowsTextInput` that control whether contact cells can be selected/deleted and searching/adding new contacts, respectively.
+
+#### UIResponder
+`MBContactPicker` and `MBContactCollectionView` both adhere to the UIResponder protocol.  `objc_msgSend` `becomeFirstResponder` and `resignFirstResponder` to them with abandon!
 
 ## Motivation
 
