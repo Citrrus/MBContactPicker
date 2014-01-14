@@ -88,7 +88,7 @@
                                         options:NSStringDrawingUsesLineFragmentOrigin
                                      attributes:nil
                                         context:nil];
-    return ceilf(frame.size.width) + 10;
+    return ceilf(frame.size.width);
 }
 
 @end
