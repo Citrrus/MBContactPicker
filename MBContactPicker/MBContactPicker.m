@@ -172,7 +172,6 @@ CGFloat const kAnimationSpeed = .25;
 {
     _prompt = [prompt copy];
     self.contactCollectionView.prompt = _prompt;
-    [self.contactCollectionView reloadData];
 }
 
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows
@@ -203,8 +202,8 @@ CGFloat const kAnimationSpeed = .25;
 
 - (void)setShowPrompt:(BOOL)showPrompt
 {
+    _showPrompt = showPrompt;
     self.contactCollectionView.showPrompt = showPrompt;
-    [self.contactCollectionView reloadData];
 }
 
 #pragma mark - UITableViewDataSource
