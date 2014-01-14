@@ -64,6 +64,8 @@ CGFloat const kAnimationSpeed = .25;
 - (void)setup
 {
     _prompt = kMBPrompt;
+    _showPrompt = YES;
+    
     self.originalHeight = -1;
     self.originalYOffset = -1;
     self.maxVisibleRows = kMaxVisibleRows;
@@ -71,6 +73,8 @@ CGFloat const kAnimationSpeed = .25;
     self.allowsCompletionOfSelectedContacts = YES;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     self.clipsToBounds = YES;
+    self.enabled = YES;
+    
     MBContactCollectionView *contactCollectionView = [MBContactCollectionView contactCollectionViewWithFrame:self.bounds];
     contactCollectionView.contactDelegate = self;
     contactCollectionView.clipsToBounds = YES;
@@ -119,9 +123,6 @@ CGFloat const kAnimationSpeed = .25;
     searchTableView.layer.borderColor = [UIColor blueColor].CGColor;
     searchTableView.layer.borderWidth = 1.0;
 #endif
-    
-    self.enabled = YES;
-    _showPrompt = YES;
 }
 
 #pragma mark - Keyboard Notification Handling
