@@ -47,6 +47,7 @@
 @property (nonatomic) CGFloat animationSpeed;
 @property (nonatomic) BOOL allowsCompletionOfSelectedContacts;
 @property (nonatomic) BOOL enabled;
+@property (nonatomic) BOOL showPrompt;
 
 - (void)reloadData;
 

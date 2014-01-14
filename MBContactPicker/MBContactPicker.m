@@ -121,6 +121,7 @@ CGFloat const kAnimationSpeed = .25;
 #endif
     
     self.enabled = YES;
+    _showPrompt = YES;
 }
 
 #pragma mark - Keyboard Notification Handling
@@ -171,8 +172,7 @@ CGFloat const kAnimationSpeed = .25;
 {
     _prompt = [prompt copy];
     self.contactCollectionView.prompt = _prompt;
-    [self.contactCollectionView.collectionViewLayout invalidateLayout];
-    [self.contactCollectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]]];
+    [self.contactCollectionView reloadData];
 }
 
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows
@@ -199,6 +199,12 @@ CGFloat const kAnimationSpeed = .25;
     {
         [self resignFirstResponder];
     }
+}
+
+- (void)setShowPrompt:(BOOL)showPrompt
+{
+    self.contactCollectionView.showPrompt = showPrompt;
+    [self.contactCollectionView reloadData];
 }
 
 #pragma mark - UITableViewDataSource

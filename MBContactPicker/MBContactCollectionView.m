@@ -74,6 +74,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.prompt = kPrompt;
     self.searchText = kDefaultEntryText;
     self.allowsTextInput = YES;
+    self.showPrompt = YES;
     
     MBContactCollectionViewFlowLayout *layout = (MBContactCollectionViewFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 5;
