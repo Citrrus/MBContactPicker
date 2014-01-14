@@ -113,7 +113,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (NSIndexPath*)entryCellIndexPath
 {
-    return [NSIndexPath indexPathForRow:self.selectedContacts.count + 1 inSection:0];
+    return [NSIndexPath indexPathForRow:self.selectedContacts.count + (self.showPrompt ? 1 : 0) inSection:0];
 }
 
 #pragma mark - UIResponder
@@ -180,7 +180,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         [self.selectedContacts addObject:model];
         CGPoint originalOffset = self.contentOffset;
         [self performBatchUpdates:^{
-            [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
+            [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count - (self.showPrompt ? 0 : 1) inSection:0]]];
             self.contentOffset = originalOffset;
         } completion:^(BOOL finished) {
             if (completion)
@@ -203,7 +203,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         [self performBatchUpdates:^{
             [self.selectedContacts removeObjectAtIndex:index];
             [self deselectItemAtIndexPath:self.indexPathOfSelectedCell animated:NO];
-            [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index + 1 inSection:0]]];
+            [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index + (self.showPrompt ? 1 : 0) inSection:0]]];
             [self scrollToItemAtIndexPath:[self entryCellIndexPath] atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
         } completion:^(BOOL finished) {
             if (completion)
@@ -226,7 +226,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (BOOL)isPromptCell:(NSIndexPath*)indexPath
 {
-    return indexPath.row == 0;
+    return self.showPrompt && indexPath.row == 0;
 }
 
 - (BOOL)isContactCell:(NSIndexPath*)indexPath
@@ -236,7 +236,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (NSInteger)entryCellIndex
 {
-    return self.selectedContacts.count + 1;
+    return self.selectedContacts.count + (self.showPrompt ? 1 : 0);
 }
 
 - (NSInteger)selectedContactIndexFromIndexPath:(NSIndexPath*)indexPath
@@ -246,7 +246,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (NSInteger)selectedContactIndexFromRow:(NSInteger)row
 {
-    return row - 1;
+    return row - (self.showPrompt ? 1 : 0);
 }
 
 - (NSIndexPath*)indexPathOfSelectedCell
@@ -303,7 +303,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
                              }
                          }];
     }
-    else
+    else if (self.showPrompt)
     {
         [self scrollToItemAtIndexPath:[self entryCellIndexPath]
                      atScrollPosition:UICollectionViewScrollPositionBottom
@@ -391,9 +391,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    // Index 0 is the prompt (To:)
-    // self.selectedContacts.count + 1 is the input box (where you put in your search terms)
-    return self.selectedContacts.count + 2;
+    return self.selectedContacts.count + (self.showPrompt ? 1 : 0) + 1;
 }
 
 - (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -459,7 +457,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         if (self.selectedContacts.count > 0)
         {
             [textField resignFirstResponder];
-            NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.selectedContacts.count
+            NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.selectedContacts.count - (self.showPrompt ? 0 : 1)
                                                                     inSection:0];
             [self selectItemAtIndexPath:newSelectedIndexPath
                                                      animated:YES
