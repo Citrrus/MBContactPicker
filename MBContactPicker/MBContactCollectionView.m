@@ -71,10 +71,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.selectedContacts = [[NSMutableArray alloc] init];
     
     self.cellHeight = kCellHeight;
-    self.prompt = kPrompt;
+    _prompt = kPrompt;
     self.searchText = kDefaultEntryText;
     self.allowsTextInput = YES;
-    self.showPrompt = YES;
+    _showPrompt = YES;
     
     MBContactCollectionViewFlowLayout *layout = (MBContactCollectionViewFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 5;
@@ -115,6 +115,32 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 - (NSIndexPath*)entryCellIndexPath
 {
     return [NSIndexPath indexPathForRow:self.selectedContacts.count + (self.showPrompt ? 1 : 0) inSection:0];
+}
+
+- (void)setShowPrompt:(BOOL)showPrompt
+{
+    if (_showPrompt == showPrompt)
+    {
+        return;
+    }
+    
+    _showPrompt = showPrompt;
+    
+    if (_showPrompt)
+    {
+        [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+    }
+    else
+    {
+        [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+    }
+}
+
+- (void)setPrompt:(NSString *)prompt
+{
+    _prompt = prompt.copy;
+    
+    [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
 }
 
 #pragma mark - UIResponder
