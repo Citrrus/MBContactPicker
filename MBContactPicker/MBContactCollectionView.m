@@ -140,7 +140,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     _prompt = prompt.copy;
     
-    [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+    if (self.showPrompt)
+    {
+        [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+    }
 }
 
 #pragma mark - UIResponder
