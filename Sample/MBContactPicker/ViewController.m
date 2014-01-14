@@ -45,11 +45,6 @@
     [self.contactPickerView reloadData];
 }
 
-- (void)promptTextFieldDidChange:(UITextField *)textField {
-    self.contactPickerView.prompt = textField.text;
-}
-
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -171,6 +166,11 @@
 - (IBAction)completeDuplicatesSwitched:(id)sender
 {
     self.contactPickerView.allowsCompletionOfSelectedContacts = ((UISwitch *)sender).isOn;
+}
+
+- (void)promptTextFieldDidChange:(UITextField *)textField
+{
+    self.contactPickerView.prompt = textField.text;
 }
 
 @end
