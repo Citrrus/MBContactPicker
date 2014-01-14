@@ -78,15 +78,22 @@
 
 - (void)setPrompt:(NSString *)prompt
 {
-    _prompt = prompt;
+    _prompt = prompt.copy;
     self.promptLabel.text = prompt;
 }
 
+static UILabel *templateLabel;
+
 + (CGFloat)widthWithPrompt:(NSString *)prompt
 {
+    if (!templateLabel)
+    {
+        templateLabel = [[UILabel alloc] init];
+    }
+    
     CGRect frame = [prompt boundingRectWithSize:(CGSize){ .width = CGFLOAT_MAX, .height = CGFLOAT_MAX }
                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                     attributes:nil
+                                     attributes:@{ NSFontAttributeName : templateLabel.font }
                                         context:nil];
     return ceilf(frame.size.width);
 }
