@@ -12,12 +12,12 @@
 
 @required
 
-@property (nonatomic, copy) NSString *contactTitle;
+@property (readonly, nonatomic, copy) NSString *contactTitle;
 
 @optional
 
-@property (nonatomic, copy) NSString *contactSubtitle;
-@property (nonatomic) UIImage *contactImage;
+@property (readonly, nonatomic, copy) NSString *contactSubtitle;
+@property (readonly, nonatomic) UIImage *contactImage;
 
 @end
 
