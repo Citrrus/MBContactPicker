@@ -396,7 +396,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         
         CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
         CGSize cellSize = CGSizeMake(MIN([self maxContentWidth], newWidth), self.cellHeight);
-
+        
         return cellSize;
     }
     else
