@@ -404,7 +404,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     else
     {
         id<MBContactPickerModelProtocol> model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
-        sizeForItem = [self.prototypeCell sizeForCellWithContact:model];
+        sizeForItem = CGSizeMake([self.prototypeCell widthForCellWithContact:model], self.cellHeight);
     }
     
     return CGSizeMake(MIN([self maxContentWidth], sizeForItem.width), sizeForItem.height);
