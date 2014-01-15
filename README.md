@@ -176,10 +176,13 @@ self.contactPickerView.allowsCompletionOfSelectedContacts = NO;
 
 #### Enabling/Disabling
 
-The `MBContactPicker` control's enabledness can be toggled by setting it's `-enabled` property.  `MBContactCollectionView` has two properties, `-allowsSelection` and `-allowsTextInput` that control whether contact cells can be selected/deleted and searching/adding new contacts, respectively.
+The `MBContactPicker` control's enabledness can be toggled by setting it's `-enabled` property.  `MBContactCollectionView` has two properties, `-allowsSelection` and `-allowsTextInput`, that control whether contact cells can be selected/deleted and searching/adding new contacts, respectively.
 
 #### UIResponder
 `MBContactPicker` and `MBContactCollectionView` both adhere to the UIResponder protocol.  `objc_msgSend` `becomeFirstResponder` and `resignFirstResponder` to them with abandon!
+
+#### Custom Prompts
+Modify `MBContactPicker.prompt` to change the prompt value from the default of `@"To:"`.  Set `MBContactPicker.showPrompt` to `NO` in order to remove the prompt completely.  For i18n support, the prompt text is customizable in `Localizable.strings` via the `"MBContactPickerPrompt"` key.
 
 ## Motivation
 

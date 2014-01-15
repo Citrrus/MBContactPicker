@@ -64,6 +64,8 @@ CGFloat const kAnimationSpeed = .25;
 - (void)setup
 {
     _prompt = kMBPrompt;
+    _showPrompt = YES;
+    
     self.originalHeight = -1;
     self.originalYOffset = -1;
     self.maxVisibleRows = kMaxVisibleRows;
@@ -71,6 +73,8 @@ CGFloat const kAnimationSpeed = .25;
     self.allowsCompletionOfSelectedContacts = YES;
     self.translatesAutoresizingMaskIntoConstraints = NO;
     self.clipsToBounds = YES;
+    self.enabled = YES;
+    
     MBContactCollectionView *contactCollectionView = [MBContactCollectionView contactCollectionViewWithFrame:self.bounds];
     contactCollectionView.contactDelegate = self;
     contactCollectionView.clipsToBounds = YES;
@@ -119,8 +123,6 @@ CGFloat const kAnimationSpeed = .25;
     searchTableView.layer.borderColor = [UIColor blueColor].CGColor;
     searchTableView.layer.borderWidth = 1.0;
 #endif
-    
-    self.enabled = YES;
 }
 
 #pragma mark - Keyboard Notification Handling
@@ -171,8 +173,6 @@ CGFloat const kAnimationSpeed = .25;
 {
     _prompt = [prompt copy];
     self.contactCollectionView.prompt = _prompt;
-    [self.contactCollectionView.collectionViewLayout invalidateLayout];
-    [self.contactCollectionView reloadItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForRow:0 inSection:0]]];
 }
 
 - (void)setMaxVisibleRows:(CGFloat)maxVisibleRows
@@ -199,6 +199,12 @@ CGFloat const kAnimationSpeed = .25;
     {
         [self resignFirstResponder];
     }
+}
+
+- (void)setShowPrompt:(BOOL)showPrompt
+{
+    _showPrompt = showPrompt;
+    self.contactCollectionView.showPrompt = showPrompt;
 }
 
 #pragma mark - UITableViewDataSource

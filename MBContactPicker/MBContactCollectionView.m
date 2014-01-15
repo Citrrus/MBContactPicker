@@ -71,9 +71,10 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     self.selectedContacts = [[NSMutableArray alloc] init];
     
     self.cellHeight = kCellHeight;
-    self.prompt = kPrompt;
+    _prompt = NSLocalizedStringWithDefaultValue(@"MBContactPickerPrompt", nil, [NSBundle mainBundle], kPrompt, @"Prompt text shown in the prompt cell");
     self.searchText = kDefaultEntryText;
     self.allowsTextInput = YES;
+    _showPrompt = YES;
     
     MBContactCollectionViewFlowLayout *layout = (MBContactCollectionViewFlowLayout*)self.collectionViewLayout;
     layout.minimumInteritemSpacing = 5;
@@ -113,7 +114,50 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (NSIndexPath*)entryCellIndexPath
 {
-    return [NSIndexPath indexPathForRow:self.selectedContacts.count + 1 inSection:0];
+    return [NSIndexPath indexPathForRow:self.selectedContacts.count + (self.showPrompt ? 1 : 0) inSection:0];
+}
+
+- (void)setShowPrompt:(BOOL)showPrompt
+{
+    if (_showPrompt == showPrompt)
+    {
+        return;
+    }
+    
+    _showPrompt = showPrompt;
+    
+    // If there aren't any visible cells, then one of the following is true:
+    //
+    // 1)   -[UICollectionView reloadData] hasn't yet been called.  In that case, calling `insertItemsAtIndexPaths:` or
+    //      `deleteItemsAtIndexPaths:` could cause undesired behavior.
+    // 2)   There really aren't any cells.  This shouldn't happen since, at a minimum, the entry cell should be present.
+    if (self.visibleCells.count == 0)
+    {
+        return;
+    }
+    
+    if (_showPrompt)
+    {
+        [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+    }
+    else
+    {
+        [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+    }
+}
+
+- (void)setPrompt:(NSString *)prompt
+{
+    _prompt = prompt.copy;
+    
+    // If there aren't any visible cells, then one of the following is true:
+    //
+    // 1)   -[UICollectionView reloadData] hasn't yet been called.  In that case, calling `reloadItemsAtIndexPaths:` could cause undesired behavior.
+    // 2)   There really aren't any cells.  This shouldn't happen since, at a minimum, the entry cell should be present.
+    if (self.showPrompt && self.visibleCells.count > 0)
+    {
+        [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
+    }
 }
 
 #pragma mark - UIResponder
@@ -180,7 +224,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         [self.selectedContacts addObject:model];
         CGPoint originalOffset = self.contentOffset;
         [self performBatchUpdates:^{
-            [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count inSection:0]]];
+            [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:self.selectedContacts.count - (self.showPrompt ? 0 : 1) inSection:0]]];
             self.contentOffset = originalOffset;
         } completion:^(BOOL finished) {
             if (completion)
@@ -203,7 +247,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         [self performBatchUpdates:^{
             [self.selectedContacts removeObjectAtIndex:index];
             [self deselectItemAtIndexPath:self.indexPathOfSelectedCell animated:NO];
-            [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index + 1 inSection:0]]];
+            [self deleteItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:index + (self.showPrompt ? 1 : 0) inSection:0]]];
             [self scrollToItemAtIndexPath:[self entryCellIndexPath] atScrollPosition:UICollectionViewScrollPositionNone animated:YES];
         } completion:^(BOOL finished) {
             if (completion)
@@ -226,7 +270,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (BOOL)isPromptCell:(NSIndexPath*)indexPath
 {
-    return indexPath.row == 0;
+    return self.showPrompt && indexPath.row == 0;
 }
 
 - (BOOL)isContactCell:(NSIndexPath*)indexPath
@@ -236,7 +280,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (NSInteger)entryCellIndex
 {
-    return self.selectedContacts.count + 1;
+    return self.selectedContacts.count + (self.showPrompt ? 1 : 0);
 }
 
 - (NSInteger)selectedContactIndexFromIndexPath:(NSIndexPath*)indexPath
@@ -246,7 +290,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (NSInteger)selectedContactIndexFromRow:(NSInteger)row
 {
-    return row - 1;
+    return row - (self.showPrompt ? 1 : 0);
 }
 
 - (NSIndexPath*)indexPathOfSelectedCell
@@ -303,7 +347,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
                              }
                          }];
     }
-    else
+    else if (self.showPrompt)
     {
         [self scrollToItemAtIndexPath:[self entryCellIndexPath]
                      atScrollPosition:UICollectionViewScrollPositionBottom
@@ -342,11 +386,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     if ([self isPromptCell:indexPath])
     {
-        if (self.prompt.length < 1) {
-            return CGSizeMake(0.001, self.cellHeight);
-        }
         CGFloat width = [MBContactCollectionViewPromptCell widthWithPrompt:self.prompt];
-        width += 10;
+        width += 20;
         return CGSizeMake(width, self.cellHeight);
     }
     else if ([self isEntryCell:indexPath])
@@ -355,7 +396,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         
         CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
         CGSize cellSize = CGSizeMake(MIN([self maxContentWidth], newWidth), self.cellHeight);
-
+        
         return cellSize;
     }
     else
@@ -391,9 +432,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    // Index 0 is the prompt (To:)
-    // self.selectedContacts.count + 1 is the input box (where you put in your search terms)
-    return self.selectedContacts.count + 2;
+    return self.selectedContacts.count + (self.showPrompt ? 1 : 0) + 1;
 }
 
 - (UICollectionViewCell*)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
@@ -459,7 +498,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         if (self.selectedContacts.count > 0)
         {
             [textField resignFirstResponder];
-            NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.selectedContacts.count
+            NSIndexPath *newSelectedIndexPath = [NSIndexPath indexPathForItem:self.selectedContacts.count - (self.showPrompt ? 0 : 1)
                                                                     inSection:0];
             [self selectItemAtIndexPath:newSelectedIndexPath
                                                      animated:YES
