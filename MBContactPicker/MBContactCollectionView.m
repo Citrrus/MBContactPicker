@@ -99,7 +99,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (CGFloat)maxContentWidth
 {
-    return self.frame.size.width - self.contentInset.left - self.contentInset.right;
+    UIEdgeInsets sectionInset = ((UICollectionViewFlowLayout*)self.collectionViewLayout).sectionInset;
+    return self.frame.size.width - sectionInset.left - sectionInset.right;
 }
 
 - (void)setAllowsTextInput:(BOOL)allowsTextInput
