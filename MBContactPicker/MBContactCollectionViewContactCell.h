@@ -14,6 +14,6 @@
 @property (nonatomic, strong) id<MBContactPickerModelProtocol> model;
 @property (nonatomic) BOOL focused;
 
-- (CGSize)sizeForCellWithContact:(id<MBContactPickerModelProtocol>)model;
+- (CGFloat)widthForCellWithContact:(id<MBContactPickerModelProtocol>)model;
 
 @end
