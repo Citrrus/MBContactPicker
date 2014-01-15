@@ -126,6 +126,16 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     
     _showPrompt = showPrompt;
     
+    // If there aren't any visible cells, then one of the following is true:
+    //
+    // 1)   -[UICollectionView reloadData] hasn't yet been called.  In that case, calling `insertItemsAtIndexPaths:` or
+    //      `deleteItemsAtIndexPaths:` could cause undesired behavior.
+    // 2)   There really aren't any cells.  This shouldn't happen since, at a minimum, the entry cell should be present.
+    if (self.visibleCells.count == 0)
+    {
+        return;
+    }
+    
     if (_showPrompt)
     {
         [self insertItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
@@ -140,7 +150,11 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 {
     _prompt = prompt.copy;
     
-    if (self.showPrompt)
+    // If there aren't any visible cells, then one of the following is true:
+    //
+    // 1)   -[UICollectionView reloadData] hasn't yet been called.  In that case, calling `reloadItemsAtIndexPaths:` could cause undesired behavior.
+    // 2)   There really aren't any cells.  This shouldn't happen since, at a minimum, the entry cell should be present.
+    if (self.showPrompt && self.visibleCells.count > 0)
     {
         [self reloadItemsAtIndexPaths:@[[NSIndexPath indexPathForRow:0 inSection:0]]];
     }
@@ -382,7 +396,7 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
         
         CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
         CGSize cellSize = CGSizeMake(MIN([self maxContentWidth], newWidth), self.cellHeight);
-
+        
         return cellSize;
     }
     else
