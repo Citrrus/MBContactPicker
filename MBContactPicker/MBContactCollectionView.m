@@ -385,29 +385,25 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    CGSize sizeForItem;
+    CGFloat widthForItem;
     
     if ([self isPromptCell:indexPath])
     {
-        CGFloat width = [MBContactCollectionViewPromptCell widthWithPrompt:self.prompt];
-        width += 20;
-        sizeForItem = CGSizeMake(width, self.cellHeight);
+        widthForItem = [MBContactCollectionViewPromptCell widthWithPrompt:self.prompt];
+        widthForItem += 20;
     }
     else if ([self isEntryCell:indexPath])
     {
         MBContactCollectionViewEntryCell *prototype = [[MBContactCollectionViewEntryCell alloc] init];
-        
-        CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
-        
-        sizeForItem = CGSizeMake(newWidth, self.cellHeight);
+        widthForItem = MAX(50, [prototype widthForText:self.searchText]);
     }
     else
     {
         id<MBContactPickerModelProtocol> model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
-        sizeForItem = CGSizeMake([self.prototypeCell widthForCellWithContact:model], self.cellHeight);
+        widthForItem = [self.prototypeCell widthForCellWithContact:model];
     }
     
-    return CGSizeMake(MIN([self maxContentWidth], sizeForItem.width), sizeForItem.height);
+    return CGSizeMake(MIN([self maxContentWidth], widthForItem), self.cellHeight);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeTo:(CGSize)newSize
