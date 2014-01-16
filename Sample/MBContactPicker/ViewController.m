@@ -173,4 +173,13 @@
     self.contactPickerView.prompt = textField.text;
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+//    [self.contactPickerView resignFirstResponder];
+}
+
+- (IBAction)unwindToThisViewController:(UIStoryboardSegue *)unwindSegue
+{
+}
+
 @end
