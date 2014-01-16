@@ -66,6 +66,42 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     return self;
 }
 
+- (void)setFrame:(CGRect)frame
+{
+    CGFloat origWidth = self.frame.size.width;
+    
+    [super setFrame:frame];
+    
+    [self handleWidthChangeFrom:origWidth to:frame.size.width];
+}
+
+- (void)setBounds:(CGRect)bounds
+{
+    CGFloat origWidth = self.bounds.size.width;
+    
+    [super setBounds:bounds];
+    
+    [self handleWidthChangeFrom:origWidth to:bounds.size.width];
+}
+
+- (void)handleWidthChangeFrom:(CGFloat)oldWidth to:(CGFloat)newWidth
+{
+    if (oldWidth != newWidth)
+    {
+        [self forceRelayout];
+    }
+}
+
+- (void)forceRelayout
+{
+    // * Technique taken from http://stackoverflow.com/a/13656570
+    //
+    // -[UICollectionViewLayout invalidateLayout] causes the layout to recalculate the layout of the cells, but it doesn't cause the
+    // size of the cells to be requeried via `collectionView:layout:sizeForItemAtIndexPath:`.  `performBatchUpdates:completion:`, however
+    // causes both an `invalidateLayout` and a the cell sizes to be requeried, which is exactly what we want.
+    [self performBatchUpdates:nil completion:nil];
+}
+
 - (void)setup
 {
     self.selectedContacts = [[NSMutableArray alloc] init];
