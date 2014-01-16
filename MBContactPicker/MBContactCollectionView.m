@@ -97,8 +97,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     // * Technique taken from http://stackoverflow.com/a/13656570
     //
     // -[UICollectionViewLayout invalidateLayout] causes the layout to recalculate the layout of the cells, but it doesn't cause the
-    // size of the cells to be requeried via `collectionView:layout:sizeForItemAtIndexPath:`.  `performBatchUpdates:completion:`, however
-    // causes both an `invalidateLayout` and a the cell sizes to be requeried, which is exactly what we want.
+    // size of the cells to be requeried via `collectionView:layout:sizeForItemAtIndexPath:`.  `performBatchUpdates:completion:`,
+    // however, causes both an `invalidateLayout` and a the cell sizes to be requeried, which is exactly what we want.
     [self performBatchUpdates:nil completion:nil];
 }
 
