@@ -8,6 +8,50 @@
 
 #import "MBContactCollectionViewContactCell.h"
 
+@interface MBUILabel : UILabel
+@end
+@implementation MBUILabel
+
+- (void)setTextColor:(UIColor *)textColor
+{
+    CGFloat red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0;
+    
+    if ([textColor respondsToSelector:@selector(getRed:green:blue:alpha:)]) {
+        [textColor getRed:&red green:&green blue:&blue alpha:&alpha];
+    } else {
+        const CGFloat *components = CGColorGetComponents(textColor.CGColor);
+        red = components[0];
+        green = components[1];
+        blue = components[2];
+        alpha = components[3];
+    }
+    
+    NSLog(@"setTextColor: RGB = (%f, %f, %f), %@", red, green, blue, self.text);
+    
+    [super setTextColor:textColor];
+}
+
+- (void)setBackgroundColor:(UIColor *)backgroundColor
+{
+    CGFloat red = 0.0, green = 0.0, blue = 0.0, alpha = 0.0;
+    
+    if ([backgroundColor respondsToSelector:@selector(getRed:green:blue:alpha:)]) {
+        [backgroundColor getRed:&red green:&green blue:&blue alpha:&alpha];
+    } else {
+        const CGFloat *components = CGColorGetComponents(backgroundColor.CGColor);
+        red = components[0];
+        green = components[1];
+        blue = components[2];
+        alpha = components[3];
+    }
+    
+    NSLog(@"setBackgroundColor: RGB = (%f, %f, %f), %@", red, green, blue, self.text);
+    
+    [super setBackgroundColor:backgroundColor];
+}
+
+@end
+
 @interface MBContactCollectionViewContactCell()
 
 @property (nonatomic, weak) UILabel *contactTitleLabel;
@@ -41,7 +85,7 @@
 
 - (void)setup
 {
-    UILabel *contactLabel = [[UILabel alloc] initWithFrame:self.bounds];
+    MBUILabel *contactLabel = [[MBUILabel alloc] initWithFrame:self.bounds];
     [self addSubview:contactLabel];
     contactLabel.textColor = [UIColor blueColor];
     contactLabel.textAlignment = NSTextAlignmentCenter;

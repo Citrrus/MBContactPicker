@@ -80,6 +80,16 @@
     [self.promptTextField addTarget:self action:@selector(promptTextFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
 }
 
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+}
+
 #pragma mark - MBContactPickerDataSource
 
 - (NSArray *)contactModelsForContactPicker:(MBContactPicker*)contactPickerView
