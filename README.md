@@ -184,6 +184,9 @@ The `MBContactPicker` control's enabledness can be toggled by setting it's `-ena
 #### Custom Prompts
 Modify `MBContactPicker.prompt` to change the prompt value from the default of `@"To:"`.  Set `MBContactPicker.showPrompt` to `NO` in order to remove the prompt completely.  For i18n support, the prompt text is customizable in `Localizable.strings` via the `"MBContactPickerPrompt"` key.
 
+### Add Contact Picker Programmatically
+If you have to add `MBContactPicker` programmatically, you will need to either manually add the constraints (preferred) or set `translatesAutoresizingMaskToConstraints` to `YES` and then set the frame. See [this comment](https://github.com/Citrrus/MBContactPicker/pull/62#issuecomment-34449308) for more information
+
 ## Motivation
 
 This project exists to because no other cocoapods existed that solved the problem of providing a robust contact selector that was easy to implement, used the latest iOS tools, and matched the appearance of iOS7's flat design.
