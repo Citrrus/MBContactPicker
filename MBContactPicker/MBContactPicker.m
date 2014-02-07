@@ -80,7 +80,7 @@ CGFloat const kAnimationSpeed = .25;
     self.maxVisibleRows = kMaxVisibleRows;
     self.animationSpeed = kAnimationSpeed;
     self.allowsCompletionOfSelectedContacts = YES;
-    self.translatesAutoresizingMaskIntoConstraints = NO;
+//    self.translatesAutoresizingMaskIntoConstraints = NO;
     self.clipsToBounds = YES;
     self.enabled = YES;
     
@@ -124,14 +124,14 @@ CGFloat const kAnimationSpeed = .25;
                                                                    views:NSDictionaryOfVariableBindings(searchTableView)]];
     
     
-#ifdef DEBUG_BORDERS
+//#ifdef DEBUG_BORDERS
     self.layer.borderColor = [UIColor grayColor].CGColor;
     self.layer.borderWidth = 1.0;
     contactCollectionView.layer.borderColor = [UIColor redColor].CGColor;
     contactCollectionView.layer.borderWidth = 1.0;
     searchTableView.layer.borderColor = [UIColor blueColor].CGColor;
     searchTableView.layer.borderWidth = 1.0;
-#endif
+//#endif
 }
 
 #pragma mark - Keyboard Notification Handling
