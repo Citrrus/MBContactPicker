@@ -30,6 +30,15 @@ CGFloat const kAnimationSpeed = .25;
 
 @implementation MBContactPicker
 
+- (id)initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+        [self setup];
+    }
+    return self;
+}
+
 - (void)awakeFromNib
 {
     [self setup];

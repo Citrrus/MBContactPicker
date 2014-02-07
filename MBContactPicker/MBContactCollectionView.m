@@ -66,6 +66,42 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     return self;
 }
 
+- (void)setFrame:(CGRect)frame
+{
+    CGFloat origWidth = self.frame.size.width;
+    
+    [super setFrame:frame];
+    
+    [self handleWidthChangeFrom:origWidth to:frame.size.width];
+}
+
+- (void)setBounds:(CGRect)bounds
+{
+    CGFloat origWidth = self.bounds.size.width;
+    
+    [super setBounds:bounds];
+    
+    [self handleWidthChangeFrom:origWidth to:bounds.size.width];
+}
+
+- (void)handleWidthChangeFrom:(CGFloat)oldWidth to:(CGFloat)newWidth
+{
+    if (oldWidth != newWidth)
+    {
+        [self forceRelayout];
+    }
+}
+
+- (void)forceRelayout
+{
+    // * Technique taken from http://stackoverflow.com/a/13656570
+    //
+    // -[UICollectionViewLayout invalidateLayout] causes the layout to recalculate the layout of the cells, but it doesn't cause the
+    // size of the cells to be requeried via `collectionView:layout:sizeForItemAtIndexPath:`.  `performBatchUpdates:completion:`,
+    // however, causes both an `invalidateLayout` and a the cell sizes to be requeried, which is exactly what we want.
+    [self performBatchUpdates:nil completion:nil];
+}
+
 - (void)setup
 {
     self.selectedContacts = [[NSMutableArray alloc] init];
@@ -99,7 +135,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (CGFloat)maxContentWidth
 {
-    return self.frame.size.width - self.contentInset.left - self.contentInset.right;
+    UIEdgeInsets sectionInset = ((UICollectionViewFlowLayout*)self.collectionViewLayout).sectionInset;
+    return self.frame.size.width - sectionInset.left - sectionInset.right;
 }
 
 - (void)setAllowsTextInput:(BOOL)allowsTextInput
@@ -384,35 +421,25 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    CGFloat widthForItem;
+    
     if ([self isPromptCell:indexPath])
     {
-        CGFloat width = [MBContactCollectionViewPromptCell widthWithPrompt:self.prompt];
-        width += 20;
-        return CGSizeMake(width, self.cellHeight);
+        widthForItem = [MBContactCollectionViewPromptCell widthWithPrompt:self.prompt];
+        widthForItem += 20;
     }
     else if ([self isEntryCell:indexPath])
     {
         MBContactCollectionViewEntryCell *prototype = [[MBContactCollectionViewEntryCell alloc] init];
-        
-        CGFloat newWidth = MAX(50, [prototype widthForText:self.searchText]);
-        CGSize cellSize = CGSizeMake(MIN([self maxContentWidth], newWidth), self.cellHeight);
-        
-        return cellSize;
+        widthForItem = MAX(50, [prototype widthForText:self.searchText]);
     }
     else
     {
         id<MBContactPickerModelProtocol> model = self.selectedContacts[[self selectedContactIndexFromIndexPath:indexPath]];
-        CGSize actualSize = [self.prototypeCell sizeForCellWithContact:model];
-        CGSize maxSize = CGSizeMake([self maxContentWidth], actualSize.height);
-        if (actualSize.width > maxSize.width)
-        {
-            return maxSize;
-        }
-        else
-        {
-            return actualSize;
-        }
+        widthForItem = [self.prototypeCell widthForCellWithContact:model];
     }
+    
+    return CGSizeMake(MIN([self maxContentWidth], widthForItem), self.cellHeight);
 }
 
 - (void)collectionView:(UICollectionView *)collectionView willChangeContentSizeTo:(CGSize)newSize
