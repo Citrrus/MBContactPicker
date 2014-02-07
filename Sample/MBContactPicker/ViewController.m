@@ -73,11 +73,24 @@
     }
     self.contacts = contacts;
 
+    MBContactPicker* mcp = [[MBContactPicker alloc] init];
+    [self.view addSubview:mcp];
+    [self.view bringSubviewToFront:mcp];
+    mcp.delegate = self;
+    mcp.datasource = self;
+    self.contactPickerView = mcp;
+    self.contactPickerView.backgroundColor = [UIColor greenColor];
+    
     self.contactPickerView.delegate = self;
     self.contactPickerView.datasource = self;
     
     self.promptTextField.text = self.contactPickerView.prompt;
     [self.promptTextField addTarget:self action:@selector(promptTextFieldDidChange:) forControlEvents:UIControlEventEditingChanged];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    self.contactPickerView.frame = CGRectMake(20, 200, 280, 60);
 }
 
 #pragma mark - MBContactPickerDataSource
