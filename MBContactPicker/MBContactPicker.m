@@ -300,7 +300,11 @@ CGFloat const kAnimationSpeed = .25;
         [self showSearchTableView];
         NSString *searchString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         NSPredicate *predicate;
-        if (self.allowsCompletionOfSelectedContacts) {
+        
+        if ([self.delegate respondsToSelector:@selector(customFilterPredicate:)])
+        {
+            predicate = [self.delegate customFilterPredicate:searchString];
+        } else if (self.allowsCompletionOfSelectedContacts) {
             predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
         } else {
             predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@ && !SELF IN %@", searchString, self.contactCollectionView.selectedContacts];
@@ -334,6 +338,22 @@ CGFloat const kAnimationSpeed = .25;
     }
 }
 
+- (void) contactcollectionView:(MBContactCollectionView *)contactCollectionView didEnterCustomContact:(NSString *)text
+{
+    if ([self.delegate respondsToSelector:@selector(contactcollectionView:didEnterCustomContact:)])
+    {
+        [self.delegate contactcollectionView:contactCollectionView didEnterCustomContact:text];
+        [self hideSearchTableView];
+
+    }
+}
+
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model
+{
+    [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
+        [self becomeFirstResponder];
+    }];
+}
 #pragma mark - UIResponder
 
 - (BOOL)canBecomeFirstResponder

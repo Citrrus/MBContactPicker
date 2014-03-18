@@ -31,6 +31,7 @@
 - (void)contactPicker:(MBContactPicker*)contactPicker didUpdateContentHeightTo:(CGFloat)newHeight;
 - (void)didShowFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
 - (void)didHideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
+- (NSPredicate*) customFilterPredicate:(NSString*)searchString;
 
 @end
 
@@ -50,5 +51,5 @@
 @property (nonatomic) BOOL showPrompt;
 
 - (void)reloadData;
-
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model;
 @end

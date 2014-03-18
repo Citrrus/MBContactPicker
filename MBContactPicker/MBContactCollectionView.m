@@ -94,12 +94,11 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)forceRelayout
 {
-    // * Technique taken from http://stackoverflow.com/a/13656570
-    //
-    // -[UICollectionViewLayout invalidateLayout] causes the layout to recalculate the layout of the cells, but it doesn't cause the
-    // size of the cells to be requeried via `collectionView:layout:sizeForItemAtIndexPath:`.  `performBatchUpdates:completion:`,
-    // however, causes both an `invalidateLayout` and a the cell sizes to be requeried, which is exactly what we want.
-    [self performBatchUpdates:nil completion:nil];
+    // Use the flow layout call chain to relayout. This is also called by the performBatchUpdates call,
+    // but that was leading to an untimely access to the layout object after it had be dealloc'd during
+    // view destruction. It seems some event was being queued up after the dealloc had been scheduled.
+    MBContactCollectionViewFlowLayout *layout = (MBContactCollectionViewFlowLayout*)self.collectionViewLayout;
+    [layout finalizeCollectionViewUpdates];
 }
 
 - (void)setup
@@ -550,7 +549,27 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
+    if ([self.contactDelegate respondsToSelector:@selector(contactcollectionView:didEnterCustomContact:)])
+    {
+        NSString *trimmedString = [textField.text stringByTrimmingCharactersInSet:
+                                   [NSCharacterSet whitespaceCharacterSet]];
+        if (trimmedString.length > 0)
+        {
+            [self.contactDelegate contactcollectionView:self didEnterCustomContact:trimmedString];
+        }
+    }
     return NO;
 }
 
+- (UITextRange*) selectedTextRange
+{
+    // prevents crash when hitting delete on real keyboard
+    return nil;
+}
+
+- (id<UITextInputDelegate>) inputDelegate
+{
+    // prevents crash when hitting delete on real keyboard
+    return nil;
+}
 @end

@@ -148,6 +148,25 @@
     }];
 }
 
+// This delegate method is invoked when the user types a contact that is not in the original
+// list provided to the contact picker.  Specifically this is triggered when the user presses
+// the 'return' key on the keyboard.
+- (void) contactcollectionView:(MBContactCollectionView *)contactCollectionView didEnterCustomContact:(NSString *)text
+{
+    MBContactModel *model = [[MBContactModel alloc] init];
+    model.contactTitle = text;
+    [self.contactPickerView addToSelectedContacts:model];
+}
+
+// This delegate method allows custom filtering by providing a predicate that filters
+// MBContactModel or a custom subclass that you have created. If this is not declared
+// then the default filtering implementation is used.
+- (NSPredicate*) customFilterPredicate:(NSString *)searchString
+{
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"contactTitle BEGINSWITH[cd] %@", searchString];
+    return predicate;
+}
+
 - (IBAction)takeFirstResponder:(id)sender
 {
     [self.contactPickerView becomeFirstResponder];
