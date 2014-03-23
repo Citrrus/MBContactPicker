@@ -154,10 +154,7 @@ CGFloat const kAnimationSpeed = .25;
     self.contacts = [self.datasource contactModelsForContactPicker:self];
     
     [self.contactCollectionView reloadData];
-    [self.contactCollectionView performBatchUpdates:^{
-    } completion:^(BOOL finished) {
-        [self.contactCollectionView scrollToEntryAnimated:NO onComplete:nil];
-    }];
+    [self.contactCollectionView scrollToEntryAnimated:NO onComplete:nil];
 }
 
 #pragma mark - Properties

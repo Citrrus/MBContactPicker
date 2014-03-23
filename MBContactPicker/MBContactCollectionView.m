@@ -92,6 +92,12 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
+- (void) reloadData
+{
+    [super reloadData];
+    [self forceRelayout];
+}
+
 - (void)forceRelayout
 {
     // Use the flow layout call chain to relayout. This is also called by the performBatchUpdates call,
