@@ -92,6 +92,8 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     }
 }
 
+static int batchLayoutsNeeded = 0;
+
 - (void)forceRelayout
 {
     // * Technique taken from http://stackoverflow.com/a/13656570
@@ -99,7 +101,33 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     // -[UICollectionViewLayout invalidateLayout] causes the layout to recalculate the layout of the cells, but it doesn't cause the
     // size of the cells to be requeried via `collectionView:layout:sizeForItemAtIndexPath:`.  `performBatchUpdates:completion:`,
     // however, causes both an `invalidateLayout` and a the cell sizes to be requeried, which is exactly what we want.
-    [self performBatchUpdates:nil completion:nil];
+    __block void(^runner)() = [^{
+        if (batchLayoutsNeeded > 0)
+        {
+            [self performBatchUpdates:nil completion:^(BOOL finished){
+                batchLayoutsNeeded--;
+                
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-retain-cycles"
+                runner();
+#pragma clang diagnostic pop
+            }];
+        }
+        else
+        {
+            runner = nil;
+        }
+    } copy];
+    
+    if (batchLayoutsNeeded == 0)
+    {
+        batchLayoutsNeeded++;
+        runner();
+    }
+    else
+    {
+        batchLayoutsNeeded++;
+    }
 }
 
 - (void)setup
