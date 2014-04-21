@@ -29,7 +29,7 @@
 @interface MBContactCollectionView : UICollectionView
 
 @property (nonatomic) NSMutableArray *selectedContacts;
-@property (nonatomic, weak) id<MBContactCollectionViewDelegate> contactDelegate;
+@property (nonatomic, weak) IBOutlet id<MBContactCollectionViewDelegate> contactDelegate;
 
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(void(^)())completion;
 - (void)removeFromSelectedContacts:(NSInteger)index withCompletion:(void(^)())completion;
