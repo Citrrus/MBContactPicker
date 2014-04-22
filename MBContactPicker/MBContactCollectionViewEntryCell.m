@@ -101,7 +101,7 @@
 - (void)reset
 {
     self.contactEntryTextField.text = @" ";
-//    [self.delegate textFieldDidChange:self.contactEntryTextField];
+    [self.delegate textFieldDidChange:self.contactEntryTextField];
 }
 
 - (void)setFocus
