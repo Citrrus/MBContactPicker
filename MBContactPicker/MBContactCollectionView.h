@@ -23,6 +23,7 @@
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didSelectContact:(id<MBContactPickerModelProtocol>)model;
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didAddContact:(id<MBContactPickerModelProtocol>)model;
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didRemoveContact:(id<MBContactPickerModelProtocol>)model;
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didEnterCustomText:(NSString*)text;
 
 @end
 

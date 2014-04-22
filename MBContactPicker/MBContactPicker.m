@@ -216,6 +216,11 @@ CGFloat const kAnimationSpeed = .25;
     self.contactCollectionView.showPrompt = showPrompt;
 }
 
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(CompletionBlock)completion
+{
+    [self.contactCollectionView addToSelectedContacts:model withCompletion:completion];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -259,9 +264,7 @@ CGFloat const kAnimationSpeed = .25;
     id<MBContactPickerModelProtocol> model = self.filteredContacts[indexPath.row];
     
     [self hideSearchTableView];
-    [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
-        [self becomeFirstResponder];
-    }];
+    [self.contactCollectionView addToSelectedContacts:model withCompletion:nil];
 }
 
 #pragma mark - ContactCollectionViewDelegate
@@ -331,6 +334,14 @@ CGFloat const kAnimationSpeed = .25;
     if ([self.delegate respondsToSelector:@selector(contactCollectionView:didSelectContact:)])
     {
         [self.delegate contactCollectionView:contactCollectionView didSelectContact:model];
+    }
+}
+
+- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didEnterCustomText:(NSString*)text
+{
+    if ([self.delegate respondsToSelector:@selector(contactPicker:didEnterCustomText:)])
+    {
+        [self.delegate contactPicker:self didEnterCustomText:text];
     }
 }
 
