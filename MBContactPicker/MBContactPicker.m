@@ -407,7 +407,6 @@ CGFloat const kAnimationSpeed = .25;
             }
         }
     }
-
 }
 
 @end
