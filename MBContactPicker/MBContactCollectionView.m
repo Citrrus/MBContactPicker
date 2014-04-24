@@ -69,8 +69,11 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 - (void)setFrame:(CGRect)frame
 {
     [self.collectionViewLayout invalidateLayout];
-    
+
     [super setFrame:frame];
+    
+    MBContactCollectionViewFlowLayout *layout = (MBContactCollectionViewFlowLayout*)self.collectionViewLayout;
+    [layout finalizeCollectionViewUpdates];
 }
 
 - (void)setBounds:(CGRect)bounds
@@ -78,6 +81,9 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
     [self.collectionViewLayout invalidateLayout];
     
     [super setBounds:bounds];
+    
+    MBContactCollectionViewFlowLayout *layout = (MBContactCollectionViewFlowLayout*)self.collectionViewLayout;
+    [layout finalizeCollectionViewUpdates];
 }
 
 - (void)setup
