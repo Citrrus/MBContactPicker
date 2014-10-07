@@ -69,18 +69,19 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 - (void)setFrame:(CGRect)frame
 {
     CGFloat origWidth = self.frame.size.width;
-    
+    [self.collectionViewLayout invalidateLayout];
+
     [super setFrame:frame];
-    
+
     [self handleWidthChangeFrom:origWidth to:frame.size.width];
 }
 
 - (void)setBounds:(CGRect)bounds
 {
     CGFloat origWidth = self.bounds.size.width;
+    [self.collectionViewLayout invalidateLayout];
     
     [super setBounds:bounds];
-    
     [self handleWidthChangeFrom:origWidth to:bounds.size.width];
 }
 

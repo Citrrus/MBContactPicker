@@ -45,7 +45,13 @@
     [self addSubview:contactLabel];
     contactLabel.textColor = [UIColor blueColor];
     contactLabel.textAlignment = NSTextAlignmentCenter;
-    [contactLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    contactLabel.clipsToBounds = YES;
+    UIFont *font = [[self.class appearance] font];
+    if (font)
+    {
+        contactLabel.font = font;
+    }
+    contactLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.contactTitleLabel = contactLabel;
 
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(2)-[contactLabel]-(2)-|"

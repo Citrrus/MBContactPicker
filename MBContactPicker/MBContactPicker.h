@@ -37,8 +37,8 @@
 
 @interface MBContactPicker : UIView <UITableViewDataSource, UITableViewDelegate, MBContactCollectionViewDelegate>
 
-@property (nonatomic, weak) id<MBContactPickerDelegate> delegate;
-@property (nonatomic, weak) id<MBContactPickerDataSource> datasource;
+@property (nonatomic, weak) IBOutlet id<MBContactPickerDelegate> delegate;
+@property (nonatomic, weak) IBOutlet id<MBContactPickerDataSource> datasource;
 @property (nonatomic, readonly) NSArray *contactsSelected;
 @property (nonatomic) NSInteger cellHeight;
 @property (nonatomic, copy) NSString *prompt;
@@ -49,6 +49,7 @@
 @property (nonatomic) BOOL allowsCompletionOfSelectedContacts;
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL showPrompt;
+@property (nonatomic, strong) UIFont *font UI_APPEARANCE_SELECTOR;
 
 - (void)reloadData;
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model;

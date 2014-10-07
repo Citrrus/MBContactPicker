@@ -232,6 +232,11 @@ CGFloat const kAnimationSpeed = .25;
     id<MBContactPickerModelProtocol> model = (id<MBContactPickerModelProtocol>)self.filteredContacts[indexPath.row];
 
     cell.textLabel.text = model.contactTitle;
+    UIFont *font = [[self.class appearance] font];
+    if (font)
+    {
+        cell.textLabel.font = font;
+    }
 
     cell.detailTextLabel.text = nil;
     cell.imageView.image = nil;
@@ -279,21 +284,20 @@ CGFloat const kAnimationSpeed = .25;
 
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView entryTextDidChange:(NSString*)text
 {
-    [self.contactCollectionView.collectionViewLayout invalidateLayout];
-
-    [self.contactCollectionView performBatchUpdates:^{
-        [self layoutIfNeeded];
-    }
-    completion:^(BOOL finished) {
-        [self.contactCollectionView setFocusOnEntry];
-    }];
-    
     if ([text isEqualToString:@" "])
     {
         [self hideSearchTableView];
     }
     else
     {
+        [self.contactCollectionView.collectionViewLayout invalidateLayout];
+        
+        [self.contactCollectionView performBatchUpdates:^{
+            [self layoutIfNeeded];
+        } completion:^(BOOL finished) {
+             [self.contactCollectionView setFocusOnEntry];
+        }];
+        
         [self showSearchTableView];
         NSString *searchString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         NSPredicate *predicate;
@@ -424,7 +428,6 @@ CGFloat const kAnimationSpeed = .25;
             }
         }
     }
-
 }
 
 @end
