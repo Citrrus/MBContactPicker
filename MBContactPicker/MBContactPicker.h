@@ -48,6 +48,7 @@
 @property (nonatomic) BOOL allowsCompletionOfSelectedContacts;
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL showPrompt;
+@property (nonatomic, strong) UIFont *font UI_APPEARANCE_SELECTOR;
 
 - (void)reloadData;
 

@@ -45,6 +45,11 @@
     [self addSubview:contactLabel];
     contactLabel.textColor = [UIColor blueColor];
     contactLabel.textAlignment = NSTextAlignmentCenter;
+    UIFont *font = [[self.class appearance] font];
+    if (font)
+    {
+        contactLabel.font = font;
+    }
     [contactLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
     self.contactTitleLabel = contactLabel;
 
