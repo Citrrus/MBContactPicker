@@ -235,6 +235,11 @@ CGFloat const kAnimationSpeed = .25;
     id<MBContactPickerModelProtocol> model = (id<MBContactPickerModelProtocol>)self.filteredContacts[indexPath.row];
 
     cell.textLabel.text = model.contactTitle;
+    UIFont *font = [[self.class appearance] font];
+    if (font)
+    {
+        cell.textLabel.font = font;
+    }
 
     cell.detailTextLabel.text = nil;
     cell.imageView.image = nil;
