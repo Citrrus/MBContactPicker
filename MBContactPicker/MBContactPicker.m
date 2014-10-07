@@ -287,21 +287,20 @@ CGFloat const kAnimationSpeed = .25;
 
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView entryTextDidChange:(NSString*)text
 {
-    [self.contactCollectionView.collectionViewLayout invalidateLayout];
-
-    [self.contactCollectionView performBatchUpdates:^{
-        [self layoutIfNeeded];
-    }
-    completion:^(BOOL finished) {
-        [self.contactCollectionView setFocusOnEntry];
-    }];
-    
     if ([text isEqualToString:@" "])
     {
         [self hideSearchTableView];
     }
     else
     {
+        [self.contactCollectionView.collectionViewLayout invalidateLayout];
+        
+        [self.contactCollectionView performBatchUpdates:^{
+            [self layoutIfNeeded];
+        } completion:^(BOOL finished) {
+             [self.contactCollectionView setFocusOnEntry];
+        }];
+        
         [self showSearchTableView];
         NSString *searchString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         NSPredicate *predicate;
@@ -412,7 +411,6 @@ CGFloat const kAnimationSpeed = .25;
             }
         }
     }
-
 }
 
 @end

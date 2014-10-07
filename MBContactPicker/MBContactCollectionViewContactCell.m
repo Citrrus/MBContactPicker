@@ -51,7 +51,7 @@
     {
         contactLabel.font = font;
     }
-    [contactLabel setTranslatesAutoresizingMaskIntoConstraints:NO];
+    contactLabel.translatesAutoresizingMaskIntoConstraints = NO;
     self.contactTitleLabel = contactLabel;
 
     [self addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(2)-[contactLabel]-(2)-|"

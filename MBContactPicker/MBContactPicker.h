@@ -36,8 +36,8 @@
 
 @interface MBContactPicker : UIView <UITableViewDataSource, UITableViewDelegate, MBContactCollectionViewDelegate>
 
-@property (nonatomic, weak) id<MBContactPickerDelegate> delegate;
-@property (nonatomic, weak) id<MBContactPickerDataSource> datasource;
+@property (nonatomic, weak) IBOutlet id<MBContactPickerDelegate> delegate;
+@property (nonatomic, weak) IBOutlet id<MBContactPickerDataSource> datasource;
 @property (nonatomic, readonly) NSArray *contactsSelected;
 @property (nonatomic) NSInteger cellHeight;
 @property (nonatomic, copy) NSString *prompt;

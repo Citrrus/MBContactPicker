@@ -22,23 +22,8 @@
 		63B41D49183DA31100C4321B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 63B41D47183DA31100C4321B /* Main.storyboard */; };
 		63B41D4C183DA31100C4321B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63B41D4B183DA31100C4321B /* ViewController.m */; };
 		63B41D4E183DA31100C4321B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 63B41D4D183DA31100C4321B /* Images.xcassets */; };
-		63B41D55183DA31200C4321B /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B41D54183DA31200C4321B /* XCTest.framework */; };
-		63B41D56183DA31200C4321B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B41D35183DA31100C4321B /* Foundation.framework */; };
-		63B41D57183DA31200C4321B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63B41D39183DA31100C4321B /* UIKit.framework */; };
-		63B41D5F183DA31200C4321B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 63B41D5D183DA31200C4321B /* InfoPlist.strings */; };
-		63B41D61183DA31200C4321B /* MBContactPickerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 63B41D60183DA31200C4321B /* MBContactPickerTests.m */; };
 		81D87232185B5AB600E8813B /* MBContactModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 81D87231185B5AB600E8813B /* MBContactModel.m */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		63B41D58183DA31200C4321B /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 63B41D2A183DA31100C4321B /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 63B41D31183DA31100C4321B;
-			remoteInfo = MBContactPicker;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		632577CD185181B600211E57 /* MBContactCollectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBContactCollectionView.h; sourceTree = "<group>"; };
@@ -67,11 +52,7 @@
 		63B41D4A183DA31100C4321B /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		63B41D4B183DA31100C4321B /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		63B41D4D183DA31100C4321B /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		63B41D53183DA31200C4321B /* MBContactPickerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MBContactPickerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		63B41D54183DA31200C4321B /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		63B41D5C183DA31200C4321B /* MBContactPickerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "MBContactPickerTests-Info.plist"; sourceTree = "<group>"; };
-		63B41D5E183DA31200C4321B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		63B41D60183DA31200C4321B /* MBContactPickerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MBContactPickerTests.m; sourceTree = "<group>"; };
 		81D87230185B5AB600E8813B /* MBContactModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBContactModel.h; sourceTree = "<group>"; };
 		81D87231185B5AB600E8813B /* MBContactModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBContactModel.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -84,16 +65,6 @@
 				63B41D38183DA31100C4321B /* CoreGraphics.framework in Frameworks */,
 				63B41D3A183DA31100C4321B /* UIKit.framework in Frameworks */,
 				63B41D36183DA31100C4321B /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		63B41D50183DA31200C4321B /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				63B41D55183DA31200C4321B /* XCTest.framework in Frameworks */,
-				63B41D57183DA31200C4321B /* UIKit.framework in Frameworks */,
-				63B41D56183DA31200C4321B /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,7 +97,6 @@
 			isa = PBXGroup;
 			children = (
 				63B41D3B183DA31100C4321B /* MBContactPicker */,
-				63B41D5A183DA31200C4321B /* MBContactPickerTests */,
 				63B41D34183DA31100C4321B /* Frameworks */,
 				63B41D33183DA31100C4321B /* Products */,
 			);
@@ -136,7 +106,6 @@
 			isa = PBXGroup;
 			children = (
 				63B41D32183DA31100C4321B /* MBContactPicker.app */,
-				63B41D53183DA31200C4321B /* MBContactPickerTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -178,24 +147,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		63B41D5A183DA31200C4321B /* MBContactPickerTests */ = {
-			isa = PBXGroup;
-			children = (
-				63B41D60183DA31200C4321B /* MBContactPickerTests.m */,
-				63B41D5B183DA31200C4321B /* Supporting Files */,
-			);
-			path = MBContactPickerTests;
-			sourceTree = "<group>";
-		};
-		63B41D5B183DA31200C4321B /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				63B41D5C183DA31200C4321B /* MBContactPickerTests-Info.plist */,
-				63B41D5D183DA31200C4321B /* InfoPlist.strings */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -216,24 +167,6 @@
 			productReference = 63B41D32183DA31100C4321B /* MBContactPicker.app */;
 			productType = "com.apple.product-type.application";
 		};
-		63B41D52183DA31200C4321B /* MBContactPickerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 63B41D67183DA31200C4321B /* Build configuration list for PBXNativeTarget "MBContactPickerTests" */;
-			buildPhases = (
-				63B41D4F183DA31200C4321B /* Sources */,
-				63B41D50183DA31200C4321B /* Frameworks */,
-				63B41D51183DA31200C4321B /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				63B41D59183DA31200C4321B /* PBXTargetDependency */,
-			);
-			name = MBContactPickerTests;
-			productName = MBContactPickerTests;
-			productReference = 63B41D53183DA31200C4321B /* MBContactPickerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -242,11 +175,6 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Citrrus, LLC";
-				TargetAttributes = {
-					63B41D52183DA31200C4321B = {
-						TestTargetID = 63B41D31183DA31100C4321B;
-					};
-				};
 			};
 			buildConfigurationList = 63B41D2D183DA31100C4321B /* Build configuration list for PBXProject "MBContactPicker" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -262,7 +190,6 @@
 			projectRoot = "";
 			targets = (
 				63B41D31183DA31100C4321B /* MBContactPicker */,
-				63B41D52183DA31200C4321B /* MBContactPickerTests */,
 			);
 		};
 /* End PBXProject section */
@@ -275,14 +202,6 @@
 				63B41D4E183DA31100C4321B /* Images.xcassets in Resources */,
 				63B41D40183DA31100C4321B /* InfoPlist.strings in Resources */,
 				63B41D49183DA31100C4321B /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		63B41D51183DA31200C4321B /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				63B41D5F183DA31200C4321B /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -306,23 +225,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		63B41D4F183DA31200C4321B /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				63B41D61183DA31200C4321B /* MBContactPickerTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		63B41D59183DA31200C4321B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 63B41D31183DA31100C4321B /* MBContactPicker */;
-			targetProxy = 63B41D58183DA31200C4321B /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		63B41D3E183DA31100C4321B /* InfoPlist.strings */ = {
@@ -339,14 +242,6 @@
 				63B41D48183DA31100C4321B /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		63B41D5D183DA31200C4321B /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				63B41D5E183DA31200C4321B /* en */,
-			);
-			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -450,48 +345,6 @@
 			};
 			name = Release;
 		};
-		63B41D68183DA31200C4321B /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MBContactPicker.app/MBContactPicker";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MBContactPicker/MBContactPicker-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = "MBContactPickerTests/MBContactPickerTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Debug;
-		};
-		63B41D69183DA31200C4321B /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/MBContactPicker.app/MBContactPicker";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "MBContactPicker/MBContactPicker-Prefix.pch";
-				INFOPLIST_FILE = "MBContactPickerTests/MBContactPickerTests-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = xctest;
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -509,15 +362,6 @@
 			buildConfigurations = (
 				63B41D65183DA31200C4321B /* Debug */,
 				63B41D66183DA31200C4321B /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		63B41D67183DA31200C4321B /* Build configuration list for PBXNativeTarget "MBContactPickerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				63B41D68183DA31200C4321B /* Debug */,
-				63B41D69183DA31200C4321B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
