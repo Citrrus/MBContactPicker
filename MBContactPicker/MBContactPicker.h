@@ -34,6 +34,7 @@ typedef void(^CompletionBlock)();
 - (void)didShowFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
 - (void)didHideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
 - (void)contactPicker:(MBContactPicker*)contactPicker didEnterCustomText:(NSString*)text;
+- (NSPredicate*) customFilterPredicate:(NSString*)searchString;
 
 @end
 
@@ -51,8 +52,9 @@ typedef void(^CompletionBlock)();
 @property (nonatomic) BOOL allowsCompletionOfSelectedContacts;
 @property (nonatomic) BOOL enabled;
 @property (nonatomic) BOOL showPrompt;
+@property (nonatomic, strong) UIFont *font UI_APPEARANCE_SELECTOR;
 
 - (void)reloadData;
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model;
 - (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(CompletionBlock)completion;
-
 @end

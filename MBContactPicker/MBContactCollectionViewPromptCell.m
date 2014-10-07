@@ -73,6 +73,11 @@
     label.textAlignment = NSTextAlignmentCenter;
     label.text = self.prompt;
     label.textColor = [UIColor blackColor];
+    UIFont *font = [[self.class appearance] font];
+    if (font)
+    {
+        label.font = font;
+    }
     self.promptLabel = label;
 }
 

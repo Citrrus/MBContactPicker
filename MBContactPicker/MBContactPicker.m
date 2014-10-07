@@ -154,10 +154,7 @@ CGFloat const kAnimationSpeed = .25;
     self.contacts = [self.datasource contactModelsForContactPicker:self];
     
     [self.contactCollectionView reloadData];
-    [self.contactCollectionView performBatchUpdates:^{
-    } completion:^(BOOL finished) {
-        [self.contactCollectionView scrollToEntryAnimated:NO onComplete:nil];
-    }];
+    [self.contactCollectionView scrollToEntryAnimated:NO onComplete:nil];
 }
 
 #pragma mark - Properties
@@ -240,6 +237,11 @@ CGFloat const kAnimationSpeed = .25;
     id<MBContactPickerModelProtocol> model = (id<MBContactPickerModelProtocol>)self.filteredContacts[indexPath.row];
 
     cell.textLabel.text = model.contactTitle;
+    UIFont *font = [[self.class appearance] font];
+    if (font)
+    {
+        cell.textLabel.font = font;
+    }
 
     cell.detailTextLabel.text = nil;
     cell.imageView.image = nil;
@@ -285,25 +287,28 @@ CGFloat const kAnimationSpeed = .25;
 
 - (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView entryTextDidChange:(NSString*)text
 {
-    [self.contactCollectionView.collectionViewLayout invalidateLayout];
-
-    [self.contactCollectionView performBatchUpdates:^{
-        [self layoutIfNeeded];
-    }
-    completion:^(BOOL finished) {
-        [self.contactCollectionView setFocusOnEntry];
-    }];
-    
     if ([text isEqualToString:@" "])
     {
         [self hideSearchTableView];
     }
     else
     {
+        [self.contactCollectionView.collectionViewLayout invalidateLayout];
+        
+        [self.contactCollectionView performBatchUpdates:^{
+            [self layoutIfNeeded];
+        } completion:^(BOOL finished) {
+             [self.contactCollectionView setFocusOnEntry];
+        }];
+        
         [self showSearchTableView];
         NSString *searchString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         NSPredicate *predicate;
-        if (self.allowsCompletionOfSelectedContacts) {
+        
+        if ([self.delegate respondsToSelector:@selector(customFilterPredicate:)])
+        {
+            predicate = [self.delegate customFilterPredicate:searchString];
+        } else if (self.allowsCompletionOfSelectedContacts) {
             predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
         } else {
             predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@ && !SELF IN %@", searchString, self.contactCollectionView.selectedContacts];
@@ -337,12 +342,20 @@ CGFloat const kAnimationSpeed = .25;
     }
 }
 
-- (void)contactCollectionView:(MBContactCollectionView*)contactCollectionView didEnterCustomText:(NSString*)text
+- (void) contactcollectionView:(MBContactCollectionView *)contactCollectionView didEnterCustomContact:(NSString *)text
 {
-    if ([self.delegate respondsToSelector:@selector(contactPicker:didEnterCustomText:)])
+    if ([self.delegate respondsToSelector:@selector(contactcollectionView:didEnterCustomContact:)])
     {
-        [self.delegate contactPicker:self didEnterCustomText:text];
+        [self.delegate contactcollectionView:contactCollectionView didEnterCustomContact:text];
+        [self hideSearchTableView];
     }
+}
+
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model
+{
+    [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
+        [self becomeFirstResponder];
+    }];
 }
 
 #pragma mark - UIResponder
@@ -418,7 +431,6 @@ CGFloat const kAnimationSpeed = .25;
             }
         }
     }
-
 }
 
 @end

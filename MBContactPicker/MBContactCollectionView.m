@@ -68,16 +68,44 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (void)setFrame:(CGRect)frame
 {
+    CGFloat origWidth = self.frame.size.width;
     [self.collectionViewLayout invalidateLayout];
-    
+
     [super setFrame:frame];
+
+    [self handleWidthChangeFrom:origWidth to:frame.size.width];
 }
 
 - (void)setBounds:(CGRect)bounds
 {
+    CGFloat origWidth = self.bounds.size.width;
     [self.collectionViewLayout invalidateLayout];
     
     [super setBounds:bounds];
+    [self handleWidthChangeFrom:origWidth to:bounds.size.width];
+}
+
+- (void)handleWidthChangeFrom:(CGFloat)oldWidth to:(CGFloat)newWidth
+{
+    if (oldWidth != newWidth)
+    {
+        [self forceRelayout];
+    }
+}
+
+- (void) reloadData
+{
+    [super reloadData];
+    [self forceRelayout];
+}
+
+- (void)forceRelayout
+{
+    // Use the flow layout call chain to relayout. This is also called by the performBatchUpdates call,
+    // but that was leading to an untimely access to the layout object after it had be dealloc'd during
+    // view destruction. It seems some event was being queued up after the dealloc had been scheduled.
+    MBContactCollectionViewFlowLayout *layout = (MBContactCollectionViewFlowLayout*)self.collectionViewLayout;
+    [layout finalizeCollectionViewUpdates];
 }
 
 - (void)setup
@@ -528,17 +556,27 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    if ([self.contactDelegate respondsToSelector:@selector(contactCollectionView:didEnterCustomText:)])
+    if ([self.contactDelegate respondsToSelector:@selector(contactcollectionView:didEnterCustomContact:)])
     {
-        NSString *trimmedString = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        
+        NSString *trimmedString = [textField.text stringByTrimmingCharactersInSet:
+                                   [NSCharacterSet whitespaceCharacterSet]];
         if (trimmedString.length > 0)
         {
-            [self.contactDelegate contactCollectionView:self didEnterCustomText:trimmedString];
+            [self.contactDelegate contactcollectionView:self didEnterCustomContact:trimmedString];
         }
     }
-    
     return NO;
 }
 
+- (UITextRange*) selectedTextRange
+{
+    // prevents crash when hitting delete on real keyboard
+    return nil;
+}
+
+- (id<UITextInputDelegate>) inputDelegate
+{
+    // prevents crash when hitting delete on real keyboard
+    return nil;
+}
 @end
