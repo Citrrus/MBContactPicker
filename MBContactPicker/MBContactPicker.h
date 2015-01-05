@@ -13,6 +13,8 @@
 #import "MBContactCollectionViewPromptCell.h"
 #import "MBContactCollectionViewEntryCell.h"
 
+typedef void(^CompletionBlock)();
+
 @class MBContactPicker;
 
 @protocol MBContactPickerDataSource <NSObject>
@@ -31,6 +33,8 @@
 - (void)contactPicker:(MBContactPicker*)contactPicker didUpdateContentHeightTo:(CGFloat)newHeight;
 - (void)didShowFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
 - (void)didHideFilteredContactsForContactPicker:(MBContactPicker*)contactPicker;
+- (void)contactPicker:(MBContactPicker*)contactPicker didEnterCustomText:(NSString*)text;
+- (NSPredicate*) customFilterPredicate:(NSString*)searchString;
 
 @end
 
@@ -51,5 +55,6 @@
 @property (nonatomic, strong) UIFont *font UI_APPEARANCE_SELECTOR;
 
 - (void)reloadData;
-
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model;
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(CompletionBlock)completion;
 @end

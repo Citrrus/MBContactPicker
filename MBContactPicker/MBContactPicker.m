@@ -154,10 +154,7 @@ CGFloat const kAnimationSpeed = .25;
     self.contacts = [self.datasource contactModelsForContactPicker:self];
     
     [self.contactCollectionView reloadData];
-    [self.contactCollectionView performBatchUpdates:^{
-    } completion:^(BOOL finished) {
-        [self.contactCollectionView scrollToEntryAnimated:NO onComplete:nil];
-    }];
+    [self.contactCollectionView scrollToEntryAnimated:NO onComplete:nil];
 }
 
 #pragma mark - Properties
@@ -216,6 +213,11 @@ CGFloat const kAnimationSpeed = .25;
     self.contactCollectionView.showPrompt = showPrompt;
 }
 
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model withCompletion:(CompletionBlock)completion
+{
+    [self.contactCollectionView addToSelectedContacts:model withCompletion:completion];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -264,9 +266,7 @@ CGFloat const kAnimationSpeed = .25;
     id<MBContactPickerModelProtocol> model = self.filteredContacts[indexPath.row];
     
     [self hideSearchTableView];
-    [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
-        [self becomeFirstResponder];
-    }];
+    [self.contactCollectionView addToSelectedContacts:model withCompletion:nil];
 }
 
 #pragma mark - ContactCollectionViewDelegate
@@ -304,7 +304,11 @@ CGFloat const kAnimationSpeed = .25;
         [self showSearchTableView];
         NSString *searchString = [text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         NSPredicate *predicate;
-        if (self.allowsCompletionOfSelectedContacts) {
+        
+        if ([self.delegate respondsToSelector:@selector(customFilterPredicate:)])
+        {
+            predicate = [self.delegate customFilterPredicate:searchString];
+        } else if (self.allowsCompletionOfSelectedContacts) {
             predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@", searchString];
         } else {
             predicate = [NSPredicate predicateWithFormat:@"contactTitle contains[cd] %@ && !SELF IN %@", searchString, self.contactCollectionView.selectedContacts];
@@ -336,6 +340,22 @@ CGFloat const kAnimationSpeed = .25;
     {
         [self.delegate contactCollectionView:contactCollectionView didSelectContact:model];
     }
+}
+
+- (void) contactcollectionView:(MBContactCollectionView *)contactCollectionView didEnterCustomContact:(NSString *)text
+{
+    if ([self.delegate respondsToSelector:@selector(contactcollectionView:didEnterCustomContact:)])
+    {
+        [self.delegate contactcollectionView:contactCollectionView didEnterCustomContact:text];
+        [self hideSearchTableView];
+    }
+}
+
+- (void)addToSelectedContacts:(id<MBContactPickerModelProtocol>)model
+{
+    [self.contactCollectionView addToSelectedContacts:model withCompletion:^{
+        [self becomeFirstResponder];
+    }];
 }
 
 #pragma mark - UIResponder
