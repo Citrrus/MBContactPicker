@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  git_tag        = "0.1.4"
+  git_tag        = "0.1.5"
   s.name         = "MBContactPicker"
   s.version      = git_tag
   s.summary      = "A contact picker that looks like the one in Apple mail for iOS7. This implementation uses a UICollectionView."
