@@ -12,19 +12,20 @@ Pod::Spec.new do |s|
                    our company used in the past. My main goal when I created this library was to build
                    something that behaved and felt like the native mail app's contact selector.
 
-                   My secondary goal was to make using it extremely simple while still providing 
+                   My secondary goal was to make using it extremely simple while still providing
                    a high level of flexibility for projects that need it.
                    DESC
 
   s.homepage     = "http://github.com/Citrrus/MBContactPicker"
   s.license      = 'MIT'
-  s.author       = { 
+  s.author       = {
                       "Matt Bowman" => "mbowman@citrrus.com",
                       "Matt Hupman" => "mhupman@citrrus.com"
                    }
   s.platform     = :ios, '7.0'
   s.source       = { :git => "https://github.com/Citrrus/MBContactPicker.git", :tag => git_tag }
-  s.source_files  = 'MBContactPicker'
+  s.source_files = 'MBContactPicker'
   s.requires_arc = true
+  s.frameworks   = 'UIKit'
 
 end
