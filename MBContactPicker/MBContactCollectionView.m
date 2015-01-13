@@ -556,13 +556,13 @@ typedef NS_ENUM(NSInteger, ContactCollectionViewSection) {
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField
 {
-    if ([self.contactDelegate respondsToSelector:@selector(contactcollectionView:didEnterCustomContact:)])
+    if ([self.contactDelegate respondsToSelector:@selector(contactCollectionView:didEnterCustomContact:)])
     {
         NSString *trimmedString = [textField.text stringByTrimmingCharactersInSet:
                                    [NSCharacterSet whitespaceCharacterSet]];
         if (trimmedString.length > 0)
         {
-            [self.contactDelegate contactcollectionView:self didEnterCustomContact:trimmedString];
+            [self.contactDelegate contactCollectionView:self didEnterCustomContact:trimmedString];
         }
     }
     return NO;
