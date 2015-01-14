@@ -342,11 +342,11 @@ CGFloat const kAnimationSpeed = .25;
     }
 }
 
-- (void) contactcollectionView:(MBContactCollectionView *)contactCollectionView didEnterCustomContact:(NSString *)text
+- (void) contactCollectionView:(MBContactCollectionView *)contactCollectionView didEnterCustomContact:(NSString *)text
 {
-    if ([self.delegate respondsToSelector:@selector(contactcollectionView:didEnterCustomContact:)])
+    if ([self.delegate respondsToSelector:@selector(contactPicker:didEnterCustomText:)])
     {
-        [self.delegate contactcollectionView:contactCollectionView didEnterCustomContact:text];
+        [self.delegate contactPicker:self didEnterCustomText:text];
         [self hideSearchTableView];
     }
 }
