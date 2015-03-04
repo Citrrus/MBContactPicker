@@ -51,6 +51,7 @@
     textField.text = @" ";
     textField.autocorrectionType = UITextAutocorrectionTypeNo;
     UIFont *font = [[self.class appearance] font];
+    textField.tintColor = [[self.class appearance] tintColor];
     if (font)
     {
         textField.font = font;
