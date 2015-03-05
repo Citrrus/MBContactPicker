@@ -72,7 +72,7 @@
                                                                    views:NSDictionaryOfVariableBindings(label)]];
     label.textAlignment = NSTextAlignmentCenter;
     label.text = self.prompt;
-    label.textColor = [UIColor blackColor];
+    label.textColor = [[self.class appearance] tintColor];
     UIFont *font = [[self.class appearance] font];
     if (font)
     {
