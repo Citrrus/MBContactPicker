@@ -36,12 +36,12 @@ Below you'll find a rudimentary example of a view controller using `MBContactPic
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+
     NSArray *array = @[
                        @{@"Name":@"Contact 1", @"Title":@"CTO"},
                        @{@"Name":@"Contact 2", @"Title":@"CEO"}
                        ];
-    
+
     NSMutableArray *contacts = [[NSMutableArray alloc] initWithCapacity:array.count];
     for (NSDictionary *contact in array)
     {
@@ -51,7 +51,7 @@ Below you'll find a rudimentary example of a view controller using `MBContactPic
         [contacts addObject:model];
     }
     self.contacts = contacts;
-    
+
     self.contactPickerView.delegate = self;
     self.contactPickerView.datasource = self;
 }
@@ -165,6 +165,15 @@ Thanks to [Roman](http://github.com/firmach) for this enhancement.
 ```
 
 ![Orange Colored Contacts](assets/orange-contact.png)
+
+##### Additional Appearance Settings
+
+You can also set the color of the input text and the prompt.
+
+```objc
+[[MBContactCollectionViewPromptCell appearance] setTintColor:[UIColor redColor]];
+[[MBContactCollectionViewEntryCell appearance] setTintColor:[UIColor purpleColor]];
+```
 
 #### Suppress completion of alread-selected contacts
 
