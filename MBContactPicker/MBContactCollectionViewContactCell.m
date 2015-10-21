@@ -66,7 +66,7 @@
 }
 
 - (void)tintColorDidChange{
-    self.focused = self.focused;
+    self.mbfocused = self.mbfocused;
 }
 
 - (void)setModel:(id<MBContactPickerModelProtocol>)model
@@ -82,10 +82,10 @@
     return ceilf(size.width) + 10;
 }
 
-- (void)setFocused:(BOOL)focused
+- (void)setMbfocused:(BOOL)focused
 {
     _mbfocused = focused;
-    
+
     if (focused)
     {
         self.contactTitleLabel.textColor = [UIColor whiteColor];
