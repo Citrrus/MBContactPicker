@@ -66,7 +66,7 @@
 }
 
 - (void)tintColorDidChange{
-    self.focused = self.focused;
+    self.mbfocused = self.mbfocused;
 }
 
 - (void)setModel:(id<MBContactPickerModelProtocol>)model
